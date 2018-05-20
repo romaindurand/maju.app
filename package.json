@@ -1,0 +1,27 @@
+{
+  "name": "maju.app",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:5000/",
+  "scripts": {
+    "server": "nodemon server/index.js",
+    "build-css": "less-watch-compiler --run-once --main-file=App.less src/less/ src/",
+    "watch-css": "npm run build-css && less-watch-compiler --main-file=App.less src/less/ src/",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p server watch-css start-js",
+    "build-js": "react-scripts build",
+    "build": "npm-run-all build-css build-js",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-scripts": "1.1.4",
+    "less-watch-compiler": "^1.11.3",
+    "nodemon": "^1.17.4",
+    "npm-run-all": "^4.1.3"
+  }
+}
