@@ -2,13 +2,9 @@ const uid = require('randomstring');
 
 module.exports = {
   isValidPoll (poll) {
-    return this.isValidQuestion(poll.question) && this.isValidOptions(poll.options);
-  },
-  isValidQuestion (question) {
-    return typeof question === 'string' && question.length > 0 && question.length <= 280
-  },
-  isValidOptions (options) {
-    return Array.isArray(options) && options.every(option => typeof option === 'string' && option.length <= 280)
+    return Array.isArray(poll.options) &&
+      poll.options.every(option => typeof option === 'string' && option.length <= 280) &&
+      poll.options.length > 1 && poll.options.length < 30
   },
   async getUid (collection) {
     const newUid = await uid.generate({
