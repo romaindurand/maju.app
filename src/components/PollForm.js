@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 class PollForm extends Component {
   constructor() {
     super()
     this.state = {
+      error: null,
       options: ['', '', '']
     }
   }
@@ -22,7 +24,14 @@ class PollForm extends Component {
       body: JSON.stringify(formValues)
     });
     const body = await response.json();
-    console.log(body)
+    if (body.error) {
+      this.setState({error: body.error})
+      this.errorTimeout = window.setTimeout(() => {
+        this.setState({error: null});
+      }, 5000);
+    } else {
+      this.props.history.push(`/${body.uid}`)
+    }
   }
   updateOption(index, event) {
     const options = this.state.options.slice()
@@ -30,16 +39,22 @@ class PollForm extends Component {
     this.setState({options})
   }
 
+  componentWillUnmount() {
+    window.clearTimeout(this.errorTimeout)
+  }
+
   render() {
     const optionInputList = this.state.options.map((option, index) => this.renderOption(index))
     return (
-      <form className="new-poll-form" onSubmit={this.handleSubmit}>
+      <form className="new-poll-form" onSubmit={this.handleSubmit.bind(this)}>
         <h2>Create your <i>majority judgement</i> poll in seconds !</h2>
         <input type="text" placeholder="Type your question here…" name="question"/>
         <h2>Add your poll options here</h2>
         <ol>{optionInputList}</ol>
         <div className="submit-container">
-          <button>Create poll</button>
+          <button className={this.state.error ? 'error' : ''}>Create poll</button>
+          {this.state.error ? <div className="error">Give at least two options</div> : ''}
+          <div style={{clear: 'both'}}></div>
         </div>
       </form>
     );
@@ -65,4 +80,4 @@ class PollForm extends Component {
   }
 }
 
-export default PollForm;
+export default withRouter(PollForm);
