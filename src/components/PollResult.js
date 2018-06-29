@@ -29,9 +29,11 @@ class PollResult extends Component {
 
   
   render() {
+    const winner = this.state.poll && this.state.poll.winner.join(', ')
     return (
       <StyledPollResult>
-        {this.state.error ? this.state.error : null}
+        {this.state.error ? this.state.error : <h2>Results</h2>}
+        {this.state.poll && this.state.poll.winner.length === 1 ? <h3>Winner : {winner}</h3> : <h3>Tie break : {winner}</h3>}
         {this.state.loading ? 'Loading ...' : null}
         {
           this.state.poll &&
@@ -39,8 +41,8 @@ class PollResult extends Component {
             .map(optionName => {
               return this.state.poll.ratios.find(ratio => ratio.name === optionName)
             })
-            .map(ratio => {
-              return (<OptionResult key={ratio.name} name={ratio.name} ratios={ratio.scoreRatio}/>)
+            .map((ratio, index) => {
+              return (<OptionResult rank={index} key={ratio.name} name={ratio.name} ratios={ratio.scoreRatio}/>)
             })
         }
       </StyledPollResult>
