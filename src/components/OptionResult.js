@@ -4,25 +4,29 @@ import styled from 'styled-components';
 
 const StyledOptionResult = styled.div`
   width: 500px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-left: 10px;
 `;
 class OptionResult extends Component {  
   render() {
     const gradient = tinygradient(['#ff0000', '#00ff00'])
     const colors = gradient.hsv(6).map(color => color.toHexString());
+    const width = 400;
     return (
       <StyledOptionResult>
-        <div style={{width: '100px', float: 'left'}}>{this.props.name}</div>
-        <div style={{float: 'left', position: 'relative'}}>
-          <div style={{width: '1px', left: '150px', height: '30px', backgroundColor: 'black', position: 'absolute'}}></div>
+        <div style={{position: 'absolute', textAlign: 'left'}}>{this.props.rank + 1}.</div>
+        <div style={{marginLeft: 40, textAlign: 'left'}}>{this.props.name}</div>
+
+        <div style={{position: 'relative', marginLeft: 40, marginTop: 10}}>
+          <div style={{width: 1, left: width / 2, height: 30, backgroundColor: 'black', position: 'absolute'}}></div>
           {this.props.ratios.map((ratio, index) => {
             return (<div key={index} style={{
               backgroundColor: colors[index],
-              width: `${300 * ratio}px`,
-              height: '25px',
+              width: width * ratio,
+              height: 25,
               float: 'left',
               fontSize: '0.8em',
-              paddingTop: '5px'
+              paddingTop: 5
             }}>{ratio ? String(ratio * 100).substr(0, 4) + '%' : ''}</div>)
           })}
         </div>

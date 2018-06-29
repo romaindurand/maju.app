@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import OptionVoteForm from './OptionVoteForm';
 import styled from 'styled-components';
@@ -16,12 +16,15 @@ const StyledVoteForm = styled.div`
   text-align: center;
 `;
 
+const VoteFormList = styled.div`
+  margin-top: 20px;
+`;
+
 const Question = styled.h1`
   margin: 0;
 `;
 
 const Instructions = styled.div`
-  margin-bottom: 20px;
   color: gray;
 `;
 
@@ -46,23 +49,24 @@ class VoteForm extends Component {
       pollId: match.params.pollId,
       selectedValues: {},
       question: '',
-      canVote: false
+      canVote: false,
+      error: null
     }
   }
 
   async componentDidMount() {
     const response = await fetch(`/api/poll/${this.state.pollId}`);
-    this.setState({ loading: false });
-    if (response.status === 404) return 
+    this.setState({loading: false});
+    if (response.status === 404) return this.setState({ question: '404 POLL NOT FOUND :(', error: '' });
     const poll = await response.json();
+    this.setState({ question: poll.question });
     const voteCookie = cookie.load(this.state.pollId);
-    if (voteCookie) return;
-    this.setState({ canVote: true })
+    if (voteCookie) return this.setState({error: 'You already voted on this poll.'});
     const selectedValues = poll.options.reduce((memo, option) => {
       memo[option] = null
       return memo
     }, {})
-    this.setState({selectedValues, question: poll.question, loading: false});
+    this.setState({ selectedValues, canVote: true });
   }
 
   updateSelectedValue (optionName, value) {
@@ -104,16 +108,21 @@ class VoteForm extends Component {
     const question = (
       <div>
         <Question>{this.state.question}</Question>
-        <Instructions>Please select a grade for each option.</Instructions>
+        <Instructions>{ this.state.canVote ? 'Please select a grade for each option.' : this.state.error }</Instructions>
       </div>)
-    if (this.state.canVote) return (
-      <StyledVoteForm className='voteForm'>
-        <div>{this.state.loading ? '(loading...)' : question}</div>
-        {optionVoteForms}
-        <VoteButton onClick={this.handleVoteClick.bind(this)}>Vote !</VoteButton>
+    return (
+      <StyledVoteForm>
+        <div>{this.state.loading ? 'Loading...' : question}</div>
+        {
+          this.state.canVote ?
+            <Fragment>
+              <VoteFormList>{optionVoteForms}</VoteFormList>,
+              <VoteButton onClick={this.handleVoteClick.bind(this)}>Vote !</VoteButton>
+            </Fragment>
+            : null
+        }
       </StyledVoteForm>
     );
-    return null;
   }
 }
 

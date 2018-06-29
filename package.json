@@ -19,7 +19,7 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "less-watch-compiler": "^1.11.3",
-    "maju": "^1.2.0",
+    "maju": "^2.0.0",
     "mongodb": "^3.1.0-beta4",
     "nodemon": "^1.17.4",
     "npm-run-all": "^4.1.3",

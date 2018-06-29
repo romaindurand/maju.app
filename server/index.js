@@ -41,7 +41,7 @@ function initApi (mongoClient) {
     res.json({
       ratios: majuPoll.getScoreRatio(),
       winner: majuPoll.getWinner(),
-      sortedOptions: majuPoll.getSortedOptions()
+      sortedOptions: majuPoll.getSortedOptions().options
     });
   })
   api.post('/api/new', async (req, res) => {
