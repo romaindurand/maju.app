@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const maju = require('maju');
+const fetch = require('node-fetch');
+
+const recaptchaSecret = process.env.RECAPTCHA_SECRET
 const apiPort = process.env.API_PORT || 5000;
 const nodeEnv = process.env.NODE_ENV || 'dev'
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
@@ -45,8 +48,16 @@ function initApi (mongoClient) {
       voteCount: majuPoll.getVotes().length
     });
   })
+  api.get('/api/recaptcha', async (req, res) => {
+    res.json({ siteKey: process.env.RECAPTCHA_SITEKEY });
+  })
   api.post('/api/new', async (req, res) => {
-    if (!utils.isValidPoll(req.body)) return res.status(400).json({error: `invalid.payload`, payload: req.body});
+    if (!utils.isValidPoll(req.body)) return res.status(400).json({message: `invalid.payload`, payload: req.body});
+
+    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${req.body.token}`)
+    const recaptchaResult = await response.json()
+    if (!recaptchaResult.success) return res.status(401).json({message: 'invalid.recaptcha.token'})
+
     const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls');
     const newUid = await utils.getUid(polls);
     await polls.insertOne({
@@ -55,7 +66,7 @@ function initApi (mongoClient) {
       uid: newUid,
       votes: []
     });
-    res.send({uid: newUid});
+    res.json({uid: newUid});
   });
   api.post('/api/vote/:pollId', async (req, res) => {
     const db = mongoClient.db(process.env.MONGO_DATABASE)

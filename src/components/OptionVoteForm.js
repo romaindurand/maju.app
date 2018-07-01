@@ -44,6 +44,7 @@ const OptionName = styled.div`
 }
 `;
 const BoxesContainer = styled.div`
+  margin-bottom: 10px;
   display: grid;
   overflow: hidden;
   grid-auto-rows: minmax(50px, auto);
