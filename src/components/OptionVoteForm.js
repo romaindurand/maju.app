@@ -12,6 +12,11 @@ const Box = styled.div`
   font-size: 10px;
   padding-top: 15px;
   border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @media screen and (max-width: 300px) {
+    width: 30px;
+  }
 `;
 
 const StyledOptionVoteForm = styled.div`
@@ -40,8 +45,9 @@ const OptionName = styled.div`
 `;
 const BoxesContainer = styled.div`
   display: grid;
+  overflow: hidden;
   grid-auto-rows: minmax(50px, auto);
-  grid-template-columns: repeat(6; 1fr);
+  grid-template-columns: repeat(6 1fr);
 `;
 
 class OptionVoteForm extends Component {

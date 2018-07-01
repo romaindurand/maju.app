@@ -77,11 +77,11 @@ class VoteForm extends Component {
     })
   }
 
+  isVoteValid () {
+    return Object.values(this.state.selectedValues).every(value => value !== null)
+  }
+
   async handleVoteClick (event) {
-    if (Object.values(this.state.selectedValues).some(value => value === null)) {
-      // TODO: handle error
-      return
-    }
     const pollId = this.props.match.params.pollId;
     const expires = new Date()
     expires.setDate(expires.getDate() + 360)
@@ -91,8 +91,8 @@ class VoteForm extends Component {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state.selectedValues)
     });
+    // TODO : handle errors
     const body = await response.json();
-    console.log(body);
     window.location.reload(true);
   }
   
@@ -116,8 +116,8 @@ class VoteForm extends Component {
         {
           this.state.canVote ?
             <Fragment>
-              <VoteFormList>{optionVoteForms}</VoteFormList>,
-              <VoteButton onClick={this.handleVoteClick.bind(this)}>Vote !</VoteButton>
+              <VoteFormList>{optionVoteForms}</VoteFormList>
+              {this.isVoteValid() ? <VoteButton className="drop" onClick={this.handleVoteClick.bind(this)}>Vote !</VoteButton> : null}
             </Fragment>
             : null
         }

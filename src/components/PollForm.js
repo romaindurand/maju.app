@@ -48,7 +48,13 @@ class PollForm extends Component {
     return (
       <form className="new-poll-form" onSubmit={this.handleSubmit.bind(this)}>
         <h2>Create your <i>majority judgement</i> poll in seconds !</h2>
-        <input type="text" placeholder="Type your question here…" name="question"/>
+        <input
+          autoFocus
+          type="text"
+          placeholder="Type your question here…"
+          name="question"
+          className="drop"
+          autoComplete="off"/>
         <h2>Add your poll options here</h2>
         <ol>{optionInputList}</ol>
         <div className="submit-container">
@@ -67,8 +73,9 @@ class PollForm extends Component {
   }
   renderOption(i) {
     return (
-      <li key={i}>
+      <li key={i} className="drop">
         <input
+          autoComplete="off"
           value={this.state.options[i]}
           type="text"
           name={`option${i}`}
