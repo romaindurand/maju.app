@@ -13,7 +13,7 @@ const Header = styled.header`
   background-color: white;
   height: 60px;
   box-shadow: 0 0 5px darkgray;
-  border: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 `;
 
 const StyledLink = styled(Link)`

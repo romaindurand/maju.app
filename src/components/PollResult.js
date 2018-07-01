@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import OptionResult from './OptionResult';
@@ -30,11 +30,17 @@ class PollResult extends Component {
   
   render() {
     const winner = this.state.poll && this.state.poll.winner.join(', ')
+    const resultTitle = <h2>Results <i>({+this.state.voteCount || 0} vote{this.state.voteCount !== 1 ? 's' : ''})</i></h2>
     return (
       <StyledPollResult>
-        {this.state.error ? this.state.error : <h2>Results</h2>}
-        {this.state.poll && this.state.poll.winner.length === 1 ? <h3>Winner : {winner}</h3> : <h3>Tie break : {winner}</h3>}
-        {this.state.loading ? 'Loading ...' : null}
+        
+        {
+          this.state.loading ? 'Loading ...' :
+            <Fragment>
+              {this.state.error ? this.state.error : resultTitle}
+              {this.state.poll && this.state.poll.winner.length === 1 ? <h3>Winner : {winner}</h3> : <h3>Tie break : {winner}</h3>}
+            </Fragment>
+        }
         {
           this.state.poll &&
           this.state.poll.sortedOptions
@@ -54,7 +60,7 @@ class PollResult extends Component {
     this.setState({loading: false})
     if (response.status === 404) return this.setState({error: 'Poll not found'})
     const poll = await response.json();
-    this.setState({poll});
+    this.setState({poll, voteCount: poll.voteCount});
   }
 }
 
