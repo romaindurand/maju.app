@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import OptionVoteForm from './OptionVoteForm';
 import styled from 'styled-components';
 import cookie from 'react-cookies';
+import Recaptcha from 'react-google-invisible-recaptcha';
 
 const StyledVoteForm = styled.div`
   box-shadow: 0 0 5px darkgray;
@@ -55,11 +56,26 @@ class VoteForm extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch(`/api/poll/${this.state.pollId}`);
+    const [recaptchaResponse, pollResponse] = await Promise.all([
+      fetch('/api/recaptcha'),
+      fetch(`/api/poll/${this.state.pollId}`)])
+      
     this.setState({loading: false});
-    if (response.status === 404) return this.setState({ question: '404 POLL NOT FOUND :(', error: '' });
-    const poll = await response.json();
-    this.setState({ question: poll.question });
+
+    if (pollResponse.status === 404) return this.setState({
+      question: '404 POLL NOT FOUND :(',
+      error: ''
+    });
+
+    const [recaptcha, poll] = await Promise.all([
+      recaptchaResponse.json(),
+      pollResponse.json()
+    ])
+    this.setState({
+      recaptchaSiteKey: recaptcha.siteKey,
+      question: poll.question
+    })
+
     const voteCookie = cookie.load(this.state.pollId);
     if (voteCookie) return this.setState({error: 'You already voted on this poll.'});
     const selectedValues = poll.options.reduce((memo, option) => {
@@ -81,7 +97,12 @@ class VoteForm extends Component {
     return Object.values(this.state.selectedValues).every(value => value !== null)
   }
 
-  async handleVoteClick (event) {
+  handleVoteClick () {
+    this.recaptcha.execute()
+  }
+
+  async postFormData () {
+    const token = this.recaptcha.getResponse()
     const pollId = this.props.match.params.pollId;
     const expires = new Date()
     expires.setDate(expires.getDate() + 360)
@@ -89,7 +110,10 @@ class VoteForm extends Component {
     const response = await fetch(`/api/vote/${pollId}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state.selectedValues)
+      body: JSON.stringify({
+        token,
+        vote: this.state.selectedValues
+      })
     });
     // TODO : handle errors
     const body = await response.json();
@@ -117,7 +141,22 @@ class VoteForm extends Component {
           this.state.canVote ?
             <Fragment>
               <VoteFormList>{optionVoteForms}</VoteFormList>
-              {this.isVoteValid() ? <VoteButton className="drop" onClick={this.handleVoteClick.bind(this)}>Vote !</VoteButton> : null}
+              {
+                this.isVoteValid() ?
+                  <VoteButton
+                    className="drop"
+                    onClick={this.handleVoteClick.bind(this)}>
+                    Vote !
+                  </VoteButton> : null
+              }
+              {
+                this.state.recaptchaSiteKey ?
+                  <Recaptcha
+                    ref={ ref => this.recaptcha = ref }
+                    sitekey={ this.state.recaptchaSiteKey }
+                    onResolved={ this.postFormData.bind(this) } />  
+                  : null
+              }
             </Fragment>
             : null
         }

@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import OptionResult from './OptionResult';
+import cookie from 'react-cookies';
 
 const StyledPollResult = styled.div`
   box-shadow: 0 0 5px darkgray;
@@ -14,13 +15,19 @@ const StyledPollResult = styled.div`
   max-width: 600px;
   margin: auto;
   text-align: center;
+  a {
+    text-decoration: none;
+    color: green;
+    font-weight: bold;
+  }
 `;
 
 class PollResult extends Component {
   constructor({match}) {
     super()
     this.state = {
-      loading: true,
+      open: false,
+      loading: false,
       pollId: match.params.pollId,
       poll: null,
       error: null
@@ -31,9 +38,8 @@ class PollResult extends Component {
   render() {
     const winner = this.state.poll && this.state.poll.winner.join(', ')
     const resultTitle = <h2>Results <i>({+this.state.voteCount || 0} vote{this.state.voteCount !== 1 ? 's' : ''})</i></h2>
-    return (
+    return this.state.open ?
       <StyledPollResult>
-        
         {
           this.state.loading ? 'Loading ...' :
             <Fragment>
@@ -52,15 +58,22 @@ class PollResult extends Component {
             })
         }
       </StyledPollResult>
-    );
+      : <StyledPollResult><a href='' onClick={this.showResults.bind(this)}>View results</a></StyledPollResult>
   }
 
-  async componentDidMount() {
+  async showResults(event) {
+    if (event) event.preventDefault()
+    this.setState({open: true, loading: true})
     const response = await fetch(`/api/results/${this.state.pollId}`);
     this.setState({loading: false})
     if (response.status === 404) return this.setState({error: 'Poll not found'})
     const poll = await response.json();
     this.setState({poll, voteCount: poll.voteCount});
+  }
+
+  async componentDidMount() {
+    const voteCookie = cookie.load(this.state.pollId);
+    if(voteCookie) this.showResults()
   }
 }
 
