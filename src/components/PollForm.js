@@ -30,7 +30,7 @@ class PollForm extends Component {
   async handleSubmit(event) {
     event.preventDefault();
     if (this.getOptions().length < 2)
-    return this.notifyError('Give two different options or more.', 5000)
+      return this.notifyError('Give two different options or more.', 5000)
     
     this.recaptcha.execute()
   }

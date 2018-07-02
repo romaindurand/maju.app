@@ -20,27 +20,20 @@ const Box = styled.div`
 `;
 
 const StyledOptionVoteForm = styled.div`
-  background-color: lightgray;
-  border-top: 1px solid white;
-  border-bottom: 1px solid darkgray;
-  border-radius: 3px;
+  border-top: 1px solid darkgray;
+  border-radius: 10px;
+  padding-top: 5px;
 `;
 
 const OptionName = styled.div`
-  float: left;
-  width: 100px;
   position: relative;
-  top: 15px;
-  font-size: 0.8em;
-  @media screen and (max-width: 450px) {
-    float: none;
-    width: auto;
-    position: unset;
-    padding: 5px;
-    font-size: 1em;
-    border-bottom: 1px solid darkgray;
-    margin-bottom: 10px;
-  }
+  font-size: 1em;
+  float: none;
+  text-align: left;
+  padding: 5px;
+  padding-left: 15px;
+  width: auto;
+  margin-bottom: 10px;
 }
 `;
 const BoxesContainer = styled.div`

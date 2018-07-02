@@ -4,9 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const maju = require('maju');
-const fetch = require('node-fetch');
 
-const recaptchaSecret = process.env.RECAPTCHA_SECRET
 const apiPort = process.env.API_PORT || 5000;
 const nodeEnv = process.env.NODE_ENV || 'dev'
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
@@ -53,10 +51,7 @@ function initApi (mongoClient) {
   })
   api.post('/api/new', async (req, res) => {
     if (!utils.isValidPoll(req.body)) return res.status(400).json({message: `invalid.payload`, payload: req.body});
-
-    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${req.body.token}`)
-    const recaptchaResult = await response.json()
-    if (!recaptchaResult.success) return res.status(401).json({message: 'invalid.recaptcha.token'})
+    if (!await utils.isValidRecaptchaToken(req.body.token)) return res.status(401).json({message: 'invalid.recaptcha.token'})
 
     const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls');
     const newUid = await utils.getUid(polls);
@@ -69,11 +64,18 @@ function initApi (mongoClient) {
     res.json({uid: newUid});
   });
   api.post('/api/vote/:pollId', async (req, res) => {
+    if (!await utils.isValidRecaptchaToken(req.body.token)) return res.status(401).json({message: 'invalid.recaptcha.token'})
     const db = mongoClient.db(process.env.MONGO_DATABASE)
+    
+    const polls = db.collection('polls');
+    const poll = await polls.findOne({uid: req.params.pollId})
+    if (!utils.stringArrayEqual(Object.keys(req.body.vote).sort(), poll.options.sort()))
+      return res.status(400).json({ message: 'Given vote doesnt match available poll options.' })
+
     const votes = db.collection('votes');
     const response = await votes.insertOne({
       pollId: req.params.pollId,
-      values: req.body
+      values: req.body.vote
     });
     res.json({message: 'ok'});
   });
