@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import logo from './logo.png';
 import './App.css';
-import PollForm from './components/PollForm';
+import HomeView from './components/HomeView';
 import PollView from './components/PollView';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,6 +10,7 @@ const Header = styled.header`
   top: 0px;
   width: 100%;
   position: fixed;
+  z-index: 100;
   background-color: white;
   height: 60px;
   box-shadow: 0 0 5px darkgray;
@@ -34,7 +35,7 @@ class App extends Component {
               </StyledLink>
             </Header>
             <div className="content">
-              <Route exact path="/" component={PollForm} />
+              <Route exact path="/" component={HomeView} />
               <Route path="/:pollId" component={PollView} />
             </div>
           </Fragment>

@@ -51,7 +51,10 @@ function initApi (mongoClient) {
   })
   api.post('/api/new', async (req, res) => {
     if (!utils.isValidPoll(req.body)) return res.status(400).json({message: `invalid.payload`, payload: req.body});
-    if (!await utils.isValidRecaptchaToken(req.body.token)) return res.status(401).json({message: 'invalid.recaptcha.token'})
+    if (process.env.NODE_ENV === 'production') {
+      if (!await utils.isValidRecaptchaToken(req.body.token))
+        return res.status(401).json({message: 'invalid.recaptcha.token'})
+    }
 
     const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls');
     const newUid = await utils.getUid(polls);
@@ -64,7 +67,10 @@ function initApi (mongoClient) {
     res.json({uid: newUid});
   });
   api.post('/api/vote/:pollId', async (req, res) => {
-    if (!await utils.isValidRecaptchaToken(req.body.token)) return res.status(401).json({message: 'invalid.recaptcha.token'})
+    if (process.env.NODE_ENV === 'production') {
+      if (!await utils.isValidRecaptchaToken(req.body.token))
+        return res.status(401).json({message: 'invalid.recaptcha.token'})
+    }
     const db = mongoClient.db(process.env.MONGO_DATABASE)
     
     const polls = db.collection('polls');

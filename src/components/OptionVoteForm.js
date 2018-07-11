@@ -14,15 +14,18 @@ const Box = styled.div`
   border-radius: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
-  @media screen and (max-width: 300px) {
+  @media screen and (max-width: 340px) {
     width: 30px;
   }
 `;
 
 const StyledOptionVoteForm = styled.div`
-  border-top: 1px solid darkgray;
+  border-bottom: 2px solid darkgray;
   border-radius: 10px;
   padding-top: 5px;
+  &:first-child {
+    border-top: 1px solid lightgray;
+  }
 `;
 
 const OptionName = styled.div`

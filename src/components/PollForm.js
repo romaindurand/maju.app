@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import Card from './styled';
 import Recaptcha from 'react-google-invisible-recaptcha';
-
+const FINAL_TITLE_INDEX = 19
 class PollForm extends Component {
   constructor() {
     super()
@@ -9,7 +10,8 @@ class PollForm extends Component {
       error: null,
       question: '',
       options: ['', '', ''],
-      recaptchaSiteKey: null
+      recaptchaSiteKey: process.env.REACT_APP_RECAPTCHA_SITEKEY,
+      majuTitle: 5
     }
   }
 
@@ -32,11 +34,43 @@ class PollForm extends Component {
     if (this.getOptions().length < 2)
       return this.notifyError('Give two different options or more.', 5000)
     
-    this.recaptcha.execute()
+    if (this.isProduction()) this.recaptcha.execute()
+    else this.postFormData()
+  }
+  
+  getMajuTitle (index) {
+    const majority = 'majority '
+    const judgement = 'judgement'
+    return majority.substr(0, Math.floor(index / 2))
+      + judgement.substr(0, Math.floor((index - 1) / 2))
+  }
+
+  handleMajuClick (event) {
+    if (this.state.majuTitle < FINAL_TITLE_INDEX) {
+      event.preventDefault();
+      this.majuInterval = window.setInterval(() => {
+        if (this.state.majuTitle < FINAL_TITLE_INDEX)
+          this.setState({ majuTitle: this.state.majuTitle + 1 })
+        else window.clearInterval(this.majuInterval)
+      }, 70)
+    } else {
+      const faq = document.getElementById('faq')
+      if (typeof faq.scrollIntoView !== 'function') return;
+      event.preventDefault();
+      faq.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    }
+  }
+
+  isProduction() {
+    return process.env.NODE_ENV === 'production';
   }
   
   async postFormData () {
-    const token = this.recaptcha.getResponse()
+    const token = this.isProduction() ? this.recaptcha.getResponse() : null;
     const response = await fetch('/api/new', {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
@@ -61,19 +95,15 @@ class PollForm extends Component {
 
   componentWillUnmount() {
     window.clearTimeout(this.errorTimeout)
-  }
-
-  async componentDidMount() {
-    const response = await fetch('/api/recaptcha')
-    const data = await response.json()
-    this.setState({recaptchaSiteKey: data.siteKey})
+    window.clearInterval(this.majuInterval)
   }
 
   render() {
     const optionInputList = this.state.options.map((option, index) => this.renderOption(index))
     return (
-      <form className="new-poll-form" onSubmit={this.handleSubmit.bind(this)}>
-        <h2>Create your <i>majority judgement</i> poll in seconds !</h2>
+      <Card className="new-poll-form">
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <h2>Create your <a href="#faq" onClick={this.handleMajuClick.bind(this)}>{this.getMajuTitle(this.state.majuTitle)}</a> poll in seconds !</h2>
         <input
           onChange={event => this.setState({ question: event.target.value })}
           autoFocus
@@ -89,7 +119,7 @@ class PollForm extends Component {
           <div style={{clear: 'both'}}></div>
         </div>
         {
-          this.state.recaptchaSiteKey ?
+          this.isProduction() ?
             <Recaptcha
               ref={ ref => this.recaptcha = ref }
               sitekey={ this.state.recaptchaSiteKey }
@@ -97,6 +127,7 @@ class PollForm extends Component {
             : null
         }
       </form>
+      </Card>
     );
   }
   

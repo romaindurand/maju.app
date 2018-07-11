@@ -1,20 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { withRouter } from 'react-router-dom';
 import OptionResult from './OptionResult';
 import cookie from 'react-cookies';
+import Card from './styled';
 
-const StyledPollResult = styled.div`
-  box-shadow: 0 0 5px darkgray;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  padding: 3px;
+const StyledPollResult = Card.extend`
   padding-top: 15px;
-  padding-bottom: 20px;
-  background-color: white;
-  max-width: 600px;
-  margin: auto;
   text-align: center;
+  margin-bottom: 400px;
   a {
     text-decoration: none;
     color: green;
