@@ -4,16 +4,9 @@ import OptionVoteForm from './OptionVoteForm';
 import styled from 'styled-components';
 import cookie from 'react-cookies';
 import Recaptcha from 'react-google-invisible-recaptcha';
+import Card from './styled';
 
-const StyledVoteForm = styled.div`
-  box-shadow: 0 0 5px darkgray;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  padding: 3px;
-  padding-bottom: 20px;
-  background-color: white;
-  max-width: 600px;
-  margin: auto;
+const StyledVoteForm = Card.extend`
   text-align: center;
 `;
 
@@ -51,38 +44,47 @@ class VoteForm extends Component {
       selectedValues: {},
       question: '',
       canVote: false,
+      recaptchaSiteKey: process.env.REACT_APP_RECAPTCHA_SITEKEY,
       error: null
     }
   }
 
   async componentDidMount() {
-    const [recaptchaResponse, pollResponse] = await Promise.all([
-      fetch('/api/recaptcha'),
-      fetch(`/api/poll/${this.state.pollId}`)])
-      
-    this.setState({loading: false});
-
-    if (pollResponse.status === 404) return this.setState({
-      question: '404 POLL NOT FOUND :(',
-      error: ''
-    });
-
-    const [recaptcha, poll] = await Promise.all([
-      recaptchaResponse.json(),
-      pollResponse.json()
-    ])
-    this.setState({
-      recaptchaSiteKey: recaptcha.siteKey,
-      question: poll.question
-    })
-
-    const voteCookie = cookie.load(this.state.pollId);
-    if (voteCookie) return this.setState({error: 'You already voted on this poll.'});
-    const selectedValues = poll.options.reduce((memo, option) => {
-      memo[option] = null
-      return memo
-    }, {})
-    this.setState({ selectedValues, canVote: true });
+    const hasVoted = cookie.load(this.state.pollId);
+    this.setState({hasVoted});
+    fetch('/api/recaptcha')
+      .then(response => response.json())
+      .then(data => this.setState({ recaptchaSiteKey: data.siteKey }))
+    
+    fetch(`/api/poll/${this.state.pollId}`)
+      .then(response => {
+        this.setState({loading: false});
+        if (response.status === 404) throw new Error('404')
+        return response.json()
+      })
+      .then(poll => {
+        if (hasVoted) return this.setState({
+          question: poll.question,
+          error: 'You already voted on this poll.',
+          loading: false
+        });
+        const selectedValues = poll.options.reduce((memo, option) => ({...memo, [option]: null}), {})
+        // {
+        //   memo[option] = null
+        //   return memo
+        // }
+        this.setState({
+          question: poll.question,
+          selectedValues,
+          canVote: true
+        })
+      })
+      .catch(ex => {
+        return this.setState({
+          question: '404 POLL NOT FOUND :(',
+          error: ''
+        });
+      })
   }
 
   updateSelectedValue (optionName, value) {
@@ -97,12 +99,17 @@ class VoteForm extends Component {
     return Object.values(this.state.selectedValues).every(value => value !== null)
   }
 
+  isProduction() {
+    return process.env.NODE_ENV === 'production';
+  }
+
   handleVoteClick () {
-    this.recaptcha.execute()
+    if (this.isProduction()) this.recaptcha.execute()
+    else this.postFormData()
   }
 
   async postFormData () {
-    const token = this.recaptcha.getResponse()
+    const token = this.isProduction() ? this.recaptcha.getResponse() : null
     const pollId = this.props.match.params.pollId;
     const expires = new Date()
     expires.setDate(expires.getDate() + 360)
@@ -150,7 +157,7 @@ class VoteForm extends Component {
                   </VoteButton> : null
               }
               {
-                this.state.recaptchaSiteKey ?
+                this.isProduction() ?
                   <Recaptcha
                     ref={ ref => this.recaptcha = ref }
                     sitekey={ this.state.recaptchaSiteKey }

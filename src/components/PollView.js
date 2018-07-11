@@ -1,26 +1,16 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
 import VoteForm from './VoteForm';
 import PollResult from './PollResult';
 
 class PollView extends Component {
-  constructor({match}) {
-    super()
-    this.state = {
-      error: null,
-      options: ['', '', '']
-    }
-  }
-
-  
   render() {
     return (
-      <div>
-        <VoteForm />
-        <PollResult />
-      </div>
+      <Fragment>
+        <VoteForm/>
+        <PollResult/>
+      </Fragment>
     );
   }
 }
 
-export default withRouter(PollView);
+export default PollView;
