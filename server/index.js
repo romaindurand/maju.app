@@ -6,7 +6,6 @@ const MongoClient = require('mongodb').MongoClient;
 const maju = require('maju');
 
 const apiPort = process.env.API_PORT || 5000;
-const nodeEnv = process.env.NODE_ENV || 'dev'
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
 `@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}?authMechanism=DEFAULT&authSource=${process.env.MONGO_DATABASE}`;
 
@@ -45,9 +44,6 @@ function initApi (mongoClient) {
       sortedOptions: majuPoll.getSortedOptions().options,
       voteCount: majuPoll.getVotes().length
     });
-  })
-  api.get('/api/recaptcha', async (req, res) => {
-    res.json({ siteKey: process.env.RECAPTCHA_SITEKEY });
   })
   api.post('/api/new', async (req, res) => {
     if (!utils.isValidPoll(req.body)) return res.status(400).json({message: `invalid.payload`, payload: req.body});
@@ -89,7 +85,7 @@ function initApi (mongoClient) {
 };
 
 //serve build folder in production
-if (nodeEnv === 'production') {
+if (process.env.NODE_ENV === 'production') {
   const app = express();
   const port = process.env.PORT || 3001;
   app.use(express.static('build'));
