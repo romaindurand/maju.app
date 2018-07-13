@@ -52,10 +52,7 @@ class VoteForm extends Component {
   async componentDidMount() {
     const hasVoted = cookie.load(this.state.pollId);
     this.setState({hasVoted});
-    fetch('/api/recaptcha')
-      .then(response => response.json())
-      .then(data => this.setState({ recaptchaSiteKey: data.siteKey }))
-    
+
     fetch(`/api/poll/${this.state.pollId}`)
       .then(response => {
         this.setState({loading: false});
