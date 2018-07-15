@@ -7,7 +7,7 @@ class PollView extends Component {
     return (
       <Fragment>
         <VoteForm/>
-        <PollResult/>
+        <PollResult language={this.props.language}/>
       </Fragment>
     );
   }

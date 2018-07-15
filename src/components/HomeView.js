@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PollForm from './PollForm';
 import Card from './styled';
+import locales from '../translate';
 
 const Faq = Card.extend`
   margin-bottom: 1500px;
@@ -16,16 +17,17 @@ const Instructions = Card.extend`
 
 class HomeView extends Component {
   render() {
+    const t = locales(this.props.language)
     return (
       <Fragment>
-        <PollForm />
+        <PollForm language={this.props.language}/>
         <Instructions>
-          <div>1. Create a poll</div>
-          <div>2. Share your link</div>
-          <div>3. Analyze poll results</div>
+          <div>{t.home_instruction_create}</div>
+          <div>{t.home_instruction_share}</div>
+          <div>{t.home_instruction_analyze}</div>
         </Instructions>
         <Faq id="faq">
-          <h2>What is majority judgement ?</h2>
+          <h2>{t.home_faq_title}</h2>
         </Faq>
       </Fragment>
     );

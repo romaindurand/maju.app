@@ -1,8 +1,61 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Card from './styled';
+import translate from '../translate'
 import Recaptcha from 'react-google-invisible-recaptcha';
-const FINAL_TITLE_INDEX = 19
+const FINAL_TITLE_INDEX = 19;
+
+const StyledPollForm = Card.extend`
+  text-align: center;
+  .submit-container {
+    text-align: left;
+  }
+  div.error {
+    float: left;
+    margin: 10px;
+    color: darkred;
+  }
+  button {
+    margin-left: 20px;
+    background-color: green;
+    border: 1px solid lightgray;
+    font-size: 20px;
+    padding: 5px 20px;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    cursor: pointer;
+    transition: background-color 400ms;
+    &.error {
+      float: left;
+      background-color: red;
+    }
+  }
+  input[type='text'] {
+    font-size: 22px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid lightgray;
+    width: calc(100% - 30px);
+    &:focus {
+      outline: none;
+      border: 2px solid green;
+    }
+  }
+  h2 a {
+    font-size: 25px;
+    font-style: normal;
+    color: green;
+    text-decoration: none;
+  }
+  ol {
+    input[type='text'] {
+      border: none;
+      &:focus {
+        border: none;
+      }
+    }
+  }
+`;
 class PollForm extends Component {
   constructor() {
     super()
@@ -99,19 +152,23 @@ class PollForm extends Component {
   }
 
   render() {
+    const t = translate(this.props.language)
     const optionInputList = this.state.options.map((option, index) => this.renderOption(index))
-    return (
-      <Card className="new-poll-form">
-        <form onSubmit={this.handleSubmit.bind(this)}>
-          <h2>Create your <a href="#faq" onClick={this.handleMajuClick.bind(this)}>{this.getMajuTitle(this.state.majuTitle)}</a> poll in seconds !</h2>
+    return <StyledPollForm>
+      <form onSubmit={this.handleSubmit.bind(this)}>
+        <h2>
+          {t.home_title.split('{maju}')[0]}
+          <a href="#faq" onClick={this.handleMajuClick.bind(this)}>{this.getMajuTitle(this.state.majuTitle)}</a>
+          {t.home_title.split('{maju}')[1]}
+        </h2>
         <input
           onChange={event => this.setState({ question: event.target.value })}
           autoFocus
           type="text"
-          placeholder="Type your question here…"
+          placeholder={t.home_question_placeholder}
           className="drop"
           autoComplete="off"/>
-        <h2>Add your poll options here</h2>
+        <h2>{t.home_options_title}</h2>
         <ol>{optionInputList}</ol>
         <div className="submit-container">
           <button className={this.state.error ? 'error' : ''}>Create poll</button>
@@ -127,8 +184,7 @@ class PollForm extends Component {
             : null
         }
       </form>
-      </Card>
-    );
+    </StyledPollForm>;
   }
   
   handleOptionClick(i) {
@@ -138,13 +194,14 @@ class PollForm extends Component {
     }
   }
   renderOption(i) {
+    const t = translate(this.props.language)
     return (
       <li key={i} className="drop">
         <input
           autoComplete="off"
           value={this.state.options[i]}
           type="text"
-          placeholder="Poll option…"
+          placeholder={t.home_option_placeholder}
           onChange={event => this.updateOption(i, event)}
           onFocus={event => this.handleOptionClick(i)}/>
       </li>
