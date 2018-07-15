@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import OptionResult from './OptionResult';
 import cookie from 'react-cookies';
 import Card from './styled';
+// import translate from '../translate';
 
 const StyledPollResult = Card.extend`
   padding-top: 15px;
@@ -29,6 +30,7 @@ class PollResult extends Component {
 
   
   render() {
+    // const t = translate(this.props.language);
     const winner = this.state.poll && this.state.poll.winner.join(', ')
     const resultTitle = <h2>Results <i>({+this.state.voteCount || 0} vote{this.state.voteCount !== 1 ? 's' : ''})</i></h2>
     return this.state.open ?
