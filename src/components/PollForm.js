@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import LanguageComponent from './LanguageComponent';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Card from './styled';
 import translate from '../translate'
@@ -56,10 +57,11 @@ const StyledPollForm = Card.extend`
     }
   }
 `;
-class PollForm extends Component {
+class PollForm extends LanguageComponent {
   constructor() {
     super()
     this.state = {
+      ...this.state,
       error: null,
       question: '',
       options: ['', '', ''],
@@ -152,7 +154,7 @@ class PollForm extends Component {
   }
 
   render() {
-    const t = translate(this.props.language)
+    const t = translate(this.state.language)
     const optionInputList = this.state.options.map((option, index) => this.renderOption(index))
     return <StyledPollForm>
       <form onSubmit={this.handleSubmit.bind(this)}>
@@ -194,7 +196,7 @@ class PollForm extends Component {
     }
   }
   renderOption(i) {
-    const t = translate(this.props.language)
+    const t = translate(this.state.language)
     return (
       <li key={i} className="drop">
         <input

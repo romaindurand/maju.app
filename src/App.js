@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
+import LanguageComponent from './components/LanguageComponent';
 import logo from './logo.png';
 import './App.css';
 import HomeView from './components/HomeView';
@@ -57,13 +58,12 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `
 
-class App extends Component {
+class App extends LanguageComponent {
   constructor({match}) {
     super()
-    if (!cookie.load('language')) cookie.save('language', 'en-US');
     this.state = {
+      ...this.state,
       languageAlert: false,
-      language: cookie.load('language'),
       languages: ['en-US', 'fr-FR']
     }
   }
@@ -74,7 +74,7 @@ class App extends Component {
         .map(language =>
           <Flag key={language} onClick={() => {
             cookie.save('language', language)
-            return this.setState({language})
+            window.dispatchEvent(new Event('LanguageChange'));
           }}>
             <img src={`${language}.svg`} alt={language}/>
           </Flag>
@@ -92,24 +92,13 @@ class App extends Component {
               {FlagList}
             </Header>
             <Content>
-              <Route
-                exact path="/"
-                render={() => <HomeView language={this.state.language} />}
-              />
-              <Route
-                path="/:pollId"
-                render={() => <PollView language={this.state.language} />}
-              />
+              <Route exact path="/" component={HomeView}/>
+              <Route path="/:pollId" component={PollView} />
             </Content>
           </Fragment>
         </BrowserRouter>
       </div>
     );
-  }
-
-  componentDidMount () {
-
-    // if (navigator.language !== cookie.load('language')) this.setState({ languageAlert: true })
   }
 }
 
