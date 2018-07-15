@@ -4,6 +4,7 @@ import logo from './logo.png';
 import './App.css';
 import HomeView from './components/HomeView';
 import PollView from './components/PollView';
+import UpdateModal from './components/UpdateModal';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import cookie from 'react-cookies';
@@ -92,6 +93,7 @@ class App extends LanguageComponent {
               {FlagList}
             </Header>
             <Content>
+              <UpdateModal />
               <Route exact path="/" component={HomeView}/>
               <Route path="/:pollId" component={PollView} />
             </Content>
