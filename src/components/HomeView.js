@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
+import LanguageComponent from './LanguageComponent';
 import PollForm from './PollForm';
 import Card from './styled';
 import locales from '../translate';
@@ -15,12 +16,12 @@ const Instructions = Card.extend`
   }
 `;
 
-class HomeView extends Component {
+class HomeView extends LanguageComponent {
   render() {
-    const t = locales(this.props.language)
+    const t = locales(this.state.language)
     return (
       <Fragment>
-        <PollForm language={this.props.language}/>
+        <PollForm language={this.state.language}/>
         <Instructions>
           <div>{t.home_instruction_create}</div>
           <div>{t.home_instruction_share}</div>
