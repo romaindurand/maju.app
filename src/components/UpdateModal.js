@@ -1,6 +1,7 @@
 import LanguageComponent from './LanguageComponent';
 import React from 'react';
 import styled from 'styled-components';
+import translate from '../translate';
 
 const StyledModal = styled.div`
   position: fixed;
@@ -33,9 +34,10 @@ class UpdateModal extends LanguageComponent {
     window.addEventListener('UpdateAvailable', () => this.setState({ visible: true }));
   }
   render() {
+    const t = translate(this.state.language)
     return this.state.visible ? (
       <StyledModal onClick={() => window.location.reload(true)}>
-        <h1> New version is available! Please reload the page </h1>
+        <h1>{t.update_modal}</h1>
       </StyledModal>
     ) : null;
   }

@@ -6,5 +6,6 @@ module.exports = {
   home_instruction_create: '1. Créez un sondage',
   home_instruction_share: '2. Partagez le lien',
   home_instruction_analyze: '3. Analysez les résultats',
-  home_faq_title: `Qu'est-ce que le jugement majoritaire ?`
+  home_faq_title: `Qu'est-ce que le jugement majoritaire ?`,
+  update_modal: 'Une nouvelle version est disponible ! Rafraîchissez cette page pour la découvrir'
 };
