@@ -6,5 +6,6 @@ module.exports = {
   home_instruction_create: '1. Create a poll',
   home_instruction_share: '2. Share your link',
   home_instruction_analyze: '3. Analyze poll results',
-  home_faq_title: 'What is majority judgement ?'
+  home_faq_title: 'What is majority judgement ?',
+  update_modal: 'New version is available! Please reload the page'
 };
