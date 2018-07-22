@@ -15,6 +15,7 @@
     "body-parser": "^1.18.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "fingerprintjs2": "^1.8.1",
     "maju": "^2.0.0",
     "mongodb": "^3.1.0-beta4",
     "node-fetch": "^2.1.2",
@@ -27,6 +28,7 @@
     "react-google-invisible-recaptcha": "^0.2.8",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4",
+    "request-ip": "^2.1.1",
     "styled-components": "^3.3.2",
     "tinygradient": "^0.4.0"
   }

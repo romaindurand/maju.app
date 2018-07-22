@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const maju = require('maju');
+const requestIp = require('request-ip');
 
 const apiPort = process.env.API_PORT || 5000;
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
@@ -17,6 +18,8 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
 function initApi (mongoClient) {
   const api = express();
   api.use(bodyParser.json());
+  api.use(requestIp.mw());
+
   api.get('/api/poll/:pollId', async (req, res) => {
     const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls');
     const poll = await polls.findOne({uid: req.params.pollId})
@@ -77,7 +80,9 @@ function initApi (mongoClient) {
     const votes = db.collection('votes');
     const response = await votes.insertOne({
       pollId: req.params.pollId,
-      values: req.body.vote
+      values: req.body.vote,
+      fingerprint: req.body.fingerprint,
+      ip: req.clientIp
     });
     res.json({message: 'ok'});
   });

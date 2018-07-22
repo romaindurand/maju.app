@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import LanguageComponent from './LanguageComponent';
 import { withRouter } from 'react-router-dom';
 import OptionResult from './OptionResult';
-import cookie from 'react-cookies';
+import voteAuth from '../lib/voteAuth';
 import Card from './styled';
 
 const StyledPollResult = Card.extend`
@@ -76,8 +76,7 @@ class PollResult extends LanguageComponent {
 
   async componentDidMount() {
     super.componentDidMount();
-    const voteCookie = cookie.load(this.state.pollId);
-    if(voteCookie) this.showResults()
+    if(voteAuth.hasVoted(this.state.pollId)) this.showResults();
   }
 }
 
