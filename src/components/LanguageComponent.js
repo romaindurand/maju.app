@@ -1,13 +1,12 @@
 import { Component } from 'react';
-import cookie from 'react-cookies';
-import translate from '../translate';
+import cookie from '../lib/cookies';
+import translate from '../lib/translate';
 
 class LanguageComponent extends Component {
   constructor() {
     super()
     this.boundHandler = this.handleLanguageChange.bind(this)
-    if (!cookie.load('language')) cookie.save('language', 'en-US');
-    const language = cookie.load('language');
+    const language = cookie.getLanguage();
     this.state = {
       language,
       t: translate(language)
@@ -15,7 +14,7 @@ class LanguageComponent extends Component {
   }
 
   handleLanguageChange() {
-    const language = cookie.load('language');
+    const language = cookie.getLanguage();
     this.setState({ language, t: translate(language) })
   }
 

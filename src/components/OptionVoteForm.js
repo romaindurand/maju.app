@@ -15,7 +15,7 @@ const Box = styled.div`
   border-radius: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: width 400ms ease-in-out, font-size 400ms ease-in-out, color 400ms ease-in-out;
+  transition: width 400ms ease-in-out, font-size 400ms ease-in-out, background-color 400ms ease-in-out;
   @media screen and (max-width: 340px) {
     width: 30px;
   }
@@ -74,7 +74,6 @@ class OptionVoteForm extends LanguageComponent {
             fontWeight: this.props.selectedValue === index ? 'bold' : 'normal',
             backgroundColor: this.props.selectedValue === index ? color.toHexString(): color.lighten(40).toHexString(),
             gridColumn: index + 1,
-            fontWeight: this.props.selectedValue === index ? 'bold': '',
             boxShadow: this.props.selectedValue === index ? `0 0 10px ${color.toHexString()}`: ''
           }}
           onClick={() => this.props.updateSelectedValue(this.state.name, index)}>
