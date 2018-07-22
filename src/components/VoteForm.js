@@ -3,7 +3,8 @@ import React, { Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import OptionVoteForm from './OptionVoteForm';
 import styled from 'styled-components';
-import cookie from 'react-cookies';
+import voteAuth from '../lib/voteAuth';
+import Fingerprint2 from 'fingerprintjs2';
 import Recaptcha from 'react-google-invisible-recaptcha';
 import Card from './styled';
 
@@ -53,7 +54,7 @@ class VoteForm extends LanguageComponent {
 
   async componentDidMount() {
     super.componentDidMount();
-    const hasVoted = cookie.load(this.state.pollId);
+    const hasVoted = voteAuth.hasVoted(this.state.pollId);
     this.setState({hasVoted});
 
     fetch(`/api/poll/${this.state.pollId}`)
@@ -69,10 +70,6 @@ class VoteForm extends LanguageComponent {
           loading: false
         });
         const selectedValues = poll.options.reduce((memo, option) => ({...memo, [option]: null}), {})
-        // {
-        //   memo[option] = null
-        //   return memo
-        // }
         this.setState({
           question: poll.question,
           selectedValues,
@@ -111,20 +108,21 @@ class VoteForm extends LanguageComponent {
   async postFormData () {
     const token = this.isProduction() ? this.recaptcha.getResponse() : null
     const pollId = this.props.match.params.pollId;
-    const expires = new Date()
-    expires.setDate(expires.getDate() + 360)
-    cookie.save(pollId, true, { path: '/', expires })
-    const response = await fetch(`/api/vote/${pollId}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        token,
-        vote: this.state.selectedValues
-      })
+    voteAuth.setVote(pollId);
+    new Fingerprint2().get(async fingerprint => {
+      const response = await fetch(`/api/vote/${pollId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          token,
+          vote: this.state.selectedValues,
+          fingerprint
+        })
+      });
+      // TODO : handle errors
+      const body = await response.json();
+      window.location.reload(true);
     });
-    // TODO : handle errors
-    const body = await response.json();
-    window.location.reload(true);
   }
   
   render() {

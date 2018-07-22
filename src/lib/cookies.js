@@ -19,7 +19,7 @@ export default {
     cookie.save(cookieName, data, { maxAge: 60 * 60 * 24 * 365 });
   },
 
-  hasVoteCookie(pollId) {
+  hasVoted(pollId) {
     const data = this.load();
     if (!data.polls) return false;
     return data.polls.includes(pollId)
@@ -36,7 +36,7 @@ export default {
     })
   },
 
-  setVoteCookie(pollId) {
+  setVote(pollId) {
     const data = this.load()
     data.polls.push(pollId)
     this.save(data);
