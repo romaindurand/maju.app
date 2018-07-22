@@ -2,7 +2,6 @@ import LanguageComponent from './LanguageComponent';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Card from './styled';
-import translate from '../translate'
 import Recaptcha from 'react-google-invisible-recaptcha';
 const FINAL_TITLE_INDEX = 19;
 
@@ -154,23 +153,22 @@ class PollForm extends LanguageComponent {
   }
 
   render() {
-    const t = translate(this.state.language)
     const optionInputList = this.state.options.map((option, index) => this.renderOption(index))
     return <StyledPollForm>
       <form onSubmit={this.handleSubmit.bind(this)}>
         <h2>
-          {t.home_title.split('{maju}')[0]}
+          {this.state.t.home_title.split('{maju}')[0]}
           <a href="#faq" onClick={this.handleMajuClick.bind(this)}>{this.getMajuTitle(this.state.majuTitle)}</a>
-          {t.home_title.split('{maju}')[1]}
+          {this.state.t.home_title.split('{maju}')[1]}
         </h2>
         <input
           onChange={event => this.setState({ question: event.target.value })}
           autoFocus
           type="text"
-          placeholder={t.home_question_placeholder}
+          placeholder={this.state.t.home_question_placeholder}
           className="drop"
           autoComplete="off"/>
-        <h2>{t.home_options_title}</h2>
+        <h2>{this.state.t.home_options_title}</h2>
         <ol>{optionInputList}</ol>
         <div className="submit-container">
           <button className={this.state.error ? 'error' : ''}>Create poll</button>
@@ -196,14 +194,13 @@ class PollForm extends LanguageComponent {
     }
   }
   renderOption(i) {
-    const t = translate(this.state.language)
     return (
       <li key={i} className="drop">
         <input
           autoComplete="off"
           value={this.state.options[i]}
           type="text"
-          placeholder={t.home_option_placeholder}
+          placeholder={this.state.t.home_option_placeholder}
           onChange={event => this.updateOption(i, event)}
           onFocus={event => this.handleOptionClick(i)}/>
       </li>

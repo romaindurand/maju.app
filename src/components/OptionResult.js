@@ -12,8 +12,8 @@ const StyledOptionResult = styled.div`
 const StyledRatio = styled.div`
   height: 30px;
   float: left;
-  font-size: '0.8em';
-  padding-top: 0;
+  font-size: 0.9em;
+  padding-top: 2px;
   cursor: pointer;
   box-sizing: border-box;
 `;

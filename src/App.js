@@ -7,7 +7,7 @@ import PollView from './components/PollView';
 import UpdateModal from './components/UpdateModal';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import cookie from 'react-cookies';
+import cookie from './lib/cookies';
 
 const Header = styled.header`
   top: 0px;
@@ -74,7 +74,7 @@ class App extends LanguageComponent {
         .filter(language => language !== this.state.language)
         .map(language =>
           <Flag key={language} onClick={() => {
-            cookie.save('language', language)
+            cookie.setLanguage(language)
             window.dispatchEvent(new Event('LanguageChange'));
           }}>
             <img src={`${language}.svg`} alt={language}/>
