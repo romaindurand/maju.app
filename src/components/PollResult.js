@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
+import LanguageComponent from './LanguageComponent';
 import { withRouter } from 'react-router-dom';
 import OptionResult from './OptionResult';
 import cookie from 'react-cookies';
@@ -14,12 +15,18 @@ const StyledPollResult = Card.extend`
     color: green;
     font-weight: bold;
   }
+  h2 i{
+    font-style: normal;
+    font-weight: lighter;
+    font-size: 0.8em;
+  }
 `;
 
-class PollResult extends Component {
+class PollResult extends LanguageComponent {
   constructor({match}) {
     super()
     this.state = {
+      ...this.state,
       open: false,
       loading: false,
       pollId: match.params.pollId,
@@ -32,14 +39,17 @@ class PollResult extends Component {
   render() {
     // const t = translate(this.props.language);
     const winner = this.state.poll && this.state.poll.winner.join(', ')
-    const resultTitle = <h2>Results <i>({+this.state.voteCount || 0} vote{this.state.voteCount !== 1 ? 's' : ''})</i></h2>
+    const resultTitle = <h2>{this.state.t.result_title} <i>({+this.state.voteCount || 0} vote{this.state.voteCount !== 1 ? 's' : ''})</i></h2>
     return this.state.open ?
       <StyledPollResult>
         {
-          this.state.loading ? 'Loading ...' :
+          this.state.loading ? this.state.t.loading :
             <Fragment>
               {this.state.error ? this.state.error : resultTitle}
-              {this.state.poll && this.state.poll.winner.length === 1 ? <h3>Winner : {winner}</h3> : <h3>Tie break : {winner}</h3>}
+              {
+                this.state.poll && this.state.poll.winner.length === 1 ?
+                  <h3>{this.state.t.result_winner} : {winner}</h3>
+                  : <h3>{this.state.t.result_tie} : {winner}</h3>}
             </Fragment>
         }
         {
@@ -53,7 +63,7 @@ class PollResult extends Component {
             })
         }
       </StyledPollResult>
-      : <StyledPollResult><a href='' onClick={this.showResults.bind(this)}>View results</a></StyledPollResult>
+      : <StyledPollResult><a href='' onClick={this.showResults.bind(this)}>{this.state.t.view_results}</a></StyledPollResult>
   }
 
   async showResults(event) {
@@ -67,6 +77,7 @@ class PollResult extends Component {
   }
 
   async componentDidMount() {
+    super.componentDidMount();
     const voteCookie = cookie.load(this.state.pollId);
     if(voteCookie) this.showResults()
   }

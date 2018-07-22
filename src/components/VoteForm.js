@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import LanguageComponent from './LanguageComponent';
+import React, { Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import OptionVoteForm from './OptionVoteForm';
 import styled from 'styled-components';
@@ -35,10 +36,11 @@ const VoteButton = styled.button`
   margin-top: 10px;
 `;
 
-class VoteForm extends Component {
+class VoteForm extends LanguageComponent {
   constructor({match}) {
     super()
     this.state = {
+      ...this.state,
       loading: true,
       pollId: match.params.pollId,
       selectedValues: {},
@@ -50,6 +52,7 @@ class VoteForm extends Component {
   }
 
   async componentDidMount() {
+    super.componentDidMount();
     const hasVoted = cookie.load(this.state.pollId);
     this.setState({hasVoted});
 
@@ -62,7 +65,7 @@ class VoteForm extends Component {
       .then(poll => {
         if (hasVoted) return this.setState({
           question: poll.question,
-          error: 'You already voted on this poll.',
+          error: 'has_voted',
           loading: false
         });
         const selectedValues = poll.options.reduce((memo, option) => ({...memo, [option]: null}), {})
@@ -136,11 +139,11 @@ class VoteForm extends Component {
     const question = (
       <div>
         <Question>{this.state.question}</Question>
-        <Instructions>{ this.state.canVote ? 'Please select a grade for each option.' : this.state.error }</Instructions>
+        <Instructions>{ this.state.canVote ? this.state.t.vote_instructions : this.state.t[this.state.error] }</Instructions>
       </div>)
     return (
       <StyledVoteForm>
-        <div>{this.state.loading ? 'Loading...' : question}</div>
+        <div>{this.state.loading ? this.state.t.loading : question}</div>
         {
           this.state.canVote ?
             <Fragment>
@@ -150,7 +153,7 @@ class VoteForm extends Component {
                   <VoteButton
                     className="drop"
                     onClick={this.handleVoteClick.bind(this)}>
-                    Vote !
+                    {this.state.t.vote_button}
                   </VoteButton> : null
               }
               {

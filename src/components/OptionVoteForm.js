@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import tinygradient from 'tinygradient';
 import styled from 'styled-components';
+import LanguageComponent from './LanguageComponent';
 
 const Box = styled.div`
+  color: black;
   height: 30px;
   width: 45px;
   cursor: pointer;
   margin: auto;
   border: 1px solid lightgray;
-  font-size: 10px;
   padding-top: 15px;
   border-radius: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: width 400ms ease-in-out, font-size 400ms ease-in-out, color 400ms ease-in-out;
   @media screen and (max-width: 340px) {
     width: 30px;
   }
@@ -37,6 +39,7 @@ const OptionName = styled.div`
   padding-left: 15px;
   width: auto;
   margin-bottom: 10px;
+  font-weight: bold;
 }
 `;
 const BoxesContainer = styled.div`
@@ -47,32 +50,35 @@ const BoxesContainer = styled.div`
   grid-template-columns: repeat(6 1fr);
 `;
 
-class OptionVoteForm extends Component {
+class OptionVoteForm extends LanguageComponent {
   constructor(props) {
     super()
     this.updateSelectedValue = props.updateSelectedValue
     this.state = {
+      ...this.state,
       name: props.name,
       selectedValue: props.selectedValue
     }
   }
 
   render() {
-    const gradient = tinygradient(['#ff0000', '#00ff00'])
+    const gradient = tinygradient(['#ff0000', '#33dd33']);
     const boxes = gradient.hsv(6).map((color, index) => {
       return (
         <Box
           key={index}
+          title={ this.state.t.maju_ranks[index].toString() }
           style={{
+            width: this.props.selectedValue === index ? '60px' : null,
+            fontSize: this.props.selectedValue === index ? '0.7em' : '0.6em',
+            fontWeight: this.props.selectedValue === index ? 'bold' : 'normal',
             backgroundColor: this.props.selectedValue === index ? color.toHexString(): color.lighten(40).toHexString(),
             gridColumn: index + 1,
-            color: this.props.selectedValue === index ? 'white' : 'black',
-            textShadow: this.props.selectedValue === index ? '0 0 5px black' : '',
             fontWeight: this.props.selectedValue === index ? 'bold': '',
             boxShadow: this.props.selectedValue === index ? `0 0 10px ${color.toHexString()}`: ''
           }}
           onClick={() => this.props.updateSelectedValue(this.state.name, index)}>
-          { ['Reject', 'Bad', 'Poor', 'Fair', 'Good', 'Excellent'][index].toString() }
+          { this.state.t.maju_ranks[index].toString() }
         </Box>
       )}
     )
