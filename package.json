@@ -5,12 +5,9 @@
   "proxy": "http://localhost:5000/",
   "scripts": {
     "server": "nodemon server/index.js",
-    "build-css": "less-watch-compiler --run-once --main-file=App.less src/less/ src/",
-    "watch-css": "npm run build-css && less-watch-compiler --main-file=App.less src/less/ src/",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p server watch-css start-js",
-    "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js",
+    "start": "npm-run-all -p server start-js",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "production": "NODE_ENV=production npm-run-all -s build server"
   },
@@ -18,7 +15,6 @@
     "body-parser": "^1.18.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "less-watch-compiler": "^1.11.3",
     "maju": "^2.0.0",
     "mongodb": "^3.1.0-beta4",
     "node-fetch": "^2.1.2",

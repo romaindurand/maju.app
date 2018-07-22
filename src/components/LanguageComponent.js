@@ -1,18 +1,22 @@
-import React, { Component, Fragment } from 'react';
+import { Component } from 'react';
 import cookie from 'react-cookies';
+import translate from '../translate';
 
 class LanguageComponent extends Component {
   constructor() {
     super()
     this.boundHandler = this.handleLanguageChange.bind(this)
     if (!cookie.load('language')) cookie.save('language', 'en-US');
+    const language = cookie.load('language');
     this.state = {
-      language: cookie.load('language')
-    }
+      language,
+      t: translate(language)
+    };
   }
 
   handleLanguageChange() {
-    this.setState({ language: cookie.load('language') })
+    const language = cookie.load('language');
+    this.setState({ language, t: translate(language) })
   }
 
   componentDidMount() {

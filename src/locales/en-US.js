@@ -1,4 +1,5 @@
 module.exports = {
+  loading: 'Loading…',
   home_title: 'Create your {maju} poll in seconds !',
   home_question_placeholder: 'Type your question here...',
   home_options_title: 'Add your poll options here',
@@ -7,5 +8,14 @@ module.exports = {
   home_instruction_share: '2. Share your link',
   home_instruction_analyze: '3. Analyze poll results',
   home_faq_title: 'What is majority judgement ?',
-  update_modal: 'New version is available! Please reload the page'
+  update_modal: 'New version is available! Please reload the page',
+  maju_ranks: ['Reject', 'Bad', 'Poor', 'Fair', 'Good', 'Excellent'],
+  view_results: 'View results',
+  result_details: [' of the votes gives ', ' the rank : '],
+  result_title: 'Ranking',
+  result_winner: 'Best option',
+  result_tie: 'Tie break',
+  has_voted: 'You already voted on this poll.',
+  vote_instructions: 'Please select a grade for each option.',
+  vote_button: 'Vote !',
 };
