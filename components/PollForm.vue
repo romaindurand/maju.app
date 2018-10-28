@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     onExpired: function () {
-      console.log('Expired')
+      // console.log('Expired')
     },
 
     handleOptionClick(i) {
@@ -91,9 +91,6 @@ export default {
     updatePreventReload() {
       const hasOptions = this.options.filter(option => option !== '').length !== 0
       const hasQuestion = this.question !== ''
-      console.log({
-        hasOptions, hasQuestion
-      })
       if (!hasOptions && !hasQuestion) {
         this.$store.commit('SET_PREVENT_RELOAD', false)
       } else {
@@ -133,11 +130,9 @@ export default {
         return this.notifyError('Give two different options or more.', 5000)
 
       if (this.isProduction) {
-        // this.recaptcha.execute()
         this.$refs.recaptcha.execute()
       } else {
-        this.$refs.recaptcha.execute()
-        // this.postFormData()
+        this.postFormData()
       }
     },
 
@@ -169,6 +164,7 @@ export default {
       if (response.status !== 200) {
         return this.notifyError(body.message, 5000)
       }
+      this.$store.commit('SET_PREVENT_RELOAD', false)
       this.$router.push({
         path: `/${body.uid}`
       })

@@ -105,7 +105,7 @@ export default {
     },
 
     onExpired: function () {
-      console.log('Expired')
+      // console.log('Expired')
     },
   },
   computed: {
