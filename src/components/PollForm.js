@@ -2,34 +2,52 @@ import LanguageComponent from './LanguageComponent';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Card from './styled';
+import Settings from './SettingsView';
 import Recaptcha from 'react-google-invisible-recaptcha';
+import styled from 'styled-components';
 const FINAL_TITLE_INDEX = 19;
 
 const StyledPollForm = Card.extend`
   text-align: center;
+  .hidden {
+    display: none;
+  }
   .submit-container {
     text-align: left;
+    button {
+      margin-left: 20px;
+      margin-top: 20px;
+      background-color: green;
+      border: 1px solid lightgray;
+      font-size: 20px;
+      padding: 5px 20px;
+      font-family: 'Open Sans', sans-serif;
+      color: white;
+      cursor: pointer;
+      transition: background-color 400ms;
+      &.error {
+        float: left;
+        background-color: red;
+      }
+    }
   }
   div.error {
     float: left;
-    margin: 10px;
+    margin: 25px 0 0 25px;
     color: darkred;
   }
-  button {
-    margin-left: 20px;
-    background-color: green;
-    border: 1px solid lightgray;
-    font-size: 20px;
-    padding: 5px 20px;
-    font-family: 'Open Sans', sans-serif;
-    color: white;
+  .more-options {
+    user-select: none;
+    text-align: left;
     cursor: pointer;
-    transition: background-color 400ms;
-    &.error {
-      float: left;
-      background-color: red;
+    &:hover {
+      font-weight: bold;
+    }
+    i {
+      margin: 5px;
     }
   }
+  
   input[type='text'] {
     font-size: 22px;
     border-radius: 10px;
@@ -42,6 +60,7 @@ const StyledPollForm = Card.extend`
     }
   }
   h2 a {
+    user-select: none;
     font-size: 25px;
     font-style: normal;
     color: green;
@@ -56,16 +75,23 @@ const StyledPollForm = Card.extend`
     }
   }
 `;
+
+const MoreOptions = styled.div`
+  
+`;
 class PollForm extends LanguageComponent {
   constructor() {
     super()
+    this.settings = React.createRef()
     this.state = {
       ...this.state,
       error: null,
       question: '',
       options: ['', '', ''],
       recaptchaSiteKey: process.env.REACT_APP_RECAPTCHA_SITEKEY,
-      majuTitle: 5
+      majuTitle: 5,
+      moreOptions: false,
+      endDate: null
     }
   }
 
@@ -81,6 +107,10 @@ class PollForm extends LanguageComponent {
       .filter(option => option !== '')
       .reduce((memo, option) =>
         memo.includes(option) ? memo : [...memo, option], [])
+  }
+
+  getSettings() {
+    return this.settings.current.getSettings()
   }
   
   async handleSubmit(event) {
@@ -125,12 +155,14 @@ class PollForm extends LanguageComponent {
   
   async postFormData () {
     const token = this.isProduction() ? this.recaptcha.getResponse() : null;
+    debugger
     const response = await fetch('/api/new', {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         question: this.state.question,
         options: this.getOptions(),
+        settings: this.getSettings(),
         token
       })
     });
@@ -170,9 +202,10 @@ class PollForm extends LanguageComponent {
           autoComplete="off"/>
         <h2>{this.state.t.home_options_title}</h2>
         <ol>{optionInputList}</ol>
+        <Settings ref={this.settings}/>
         <div className="submit-container">
-          <button className={this.state.error ? 'error' : ''}>Create poll</button>
-          {this.state.error ? <div className="error">{this.state.error}</div> : ''}
+          <button className={this.state.error ? 'error' : ''}>{this.state.t.create_poll_button}</button>
+          {this.state.error ? <div className="error">{this.state.error}</div> : null}
           <div style={{clear: 'both'}}></div>
         </div>
         {

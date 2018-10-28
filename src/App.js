@@ -27,6 +27,7 @@ const Header = styled.header`
     float: left;
   }
   h1 {
+    user-select: none;
     display: inline-block;
     font-size: 30px;
     margin-top: 7px;

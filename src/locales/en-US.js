@@ -4,6 +4,8 @@ module.exports = {
   home_question_placeholder: 'Type your question here...',
   home_options_title: 'Add your poll options here',
   home_option_placeholder: 'Poll option…',
+  more_options: 'Advanced options',
+  create_poll_button: 'Create poll',
   home_instruction_create: '1. Create a poll',
   home_instruction_share: '2. Share your link',
   home_instruction_analyze: '3. Analyze poll results',
