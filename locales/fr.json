@@ -1,0 +1,31 @@
+{
+  "loading": "Chargement…",
+  "confirm_reload": {
+    "en": "Changing language will reset your form inputs. Are you sure you want to continue ?"
+  },
+  "vote": {
+    "instructions": "Évaluez chaque option avant de voter"
+  },
+  "home": {
+    "title": "Créez votre sondage {maju} en quelques secondes !",
+    "question_placeholder": "Entrez votre question ici...",
+    "options_title": "Ajoutez vos options ici",
+    "option_placeholder": "Option…",
+    "instruction_create": "1. Créez un sondage",
+    "instruction_share": "2. Partagez le lien",
+    "instruction_analyze": "3. Analysez les résultats",
+    "faq_title": "Qu'est-ce que le jugement majoritaire ?"
+  },
+  "more_options": "Advanced options",
+  "create_poll_button": "Create poll",
+  "update_modal": "Une nouvelle version est disponible ! Rafraîchissez cette page pour la découvrir",
+  "maju_ranks": ["A Rejeter", "Mauvais", "Moyen", "Satifaisant", "Bon", "Excellent"],
+  "view_results": "Voir les résultats",
+  "result_details": [" des votes donnent à ", " le rang : "],
+  "result_title": "Classement",
+  "result_winner": "Meilleure option",
+  "result_tie": "Égalité",
+  "has_voted": "Vous avez déjà voté à ce sondage.",
+  "vote_instructions": "Choisissez un rang pour chaque option.",
+  "vote_button": "Voter !"
+}
