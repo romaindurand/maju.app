@@ -18,13 +18,13 @@ MongoClient.connect(mongoUrl, {
 })
 
 function initApi (mongoClient) {
-  const api = express()
-  api.use(bodyParser.json())
+  const api = express();
+  const port = process.env.PORT || 3000
+  api.use(bodyParser.json());
   api.use(requestIp.mw())
 
   api.use((req, res, next) => {
-    const allowedOrigin = process.env.NODE_ENV === 'production' ? 'https://maju.app:3000' : 'http://localhost:3000'
-    res.header('Access-Control-Allow-Origin', allowedOrigin)
+    res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
     next()
   })
@@ -39,10 +39,11 @@ function initApi (mongoClient) {
         message: `Poll ID '${req.params.pollId}' does not exist in database`
       })
     }
+    const hasPollEnded = poll.settings && poll.settings.endDate ? hasEnded(poll.settings.endDate) : false
     res.json({
       question: poll.question,
       options: poll.options,
-      hasEnded: hasEnded(poll.settings.endDate)
+      hasEnded: hasPollEnded
     })
   })
   api.get('/api/results/:pollId', async (req, res) => {
@@ -115,7 +116,7 @@ function initApi (mongoClient) {
       uid: req.params.pollId
     })
 
-    if (hasEnded(poll.settings.endDate)) {
+    if (poll.settings && poll.settings.endDate && hasEnded(poll.settings.endDate)) {
       return res.status(410).json({
         message: 'This poll does not accept votes anymore'
       })

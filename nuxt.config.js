@@ -26,7 +26,7 @@ module.exports = {
     middleware: 'i18n'
   },
   proxy: [
-    'http://localhost:5000/api'
+    process.env.NODE_ENV === 'production' ? 'https://maju.app:5000/api' : 'http://localhost:5000/api'
   ],
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css'
@@ -34,6 +34,7 @@ module.exports = {
   plugins: ['~/plugins/i18n.js', '~/plugins/fontawesome.js'],
   modules: ['@nuxtjs/proxy', '@nuxtjs/axios'],
   axios: {
+    proxy: true
     // proxyHeaders: false
   },
   /*

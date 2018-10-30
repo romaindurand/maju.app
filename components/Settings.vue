@@ -30,6 +30,7 @@
 <script>
 import Datepicker from 'vuejs-datepicker'
 import slide from '../lib/slide'
+import { fr, en } from '../node_modules/vuejs-datepicker/dist/locale'
 
 export default {
   components: {
@@ -68,8 +69,8 @@ export default {
   computed: {
     datepickerLanguage() {
       return {
-        fr: require('vuejs-datepicker/dist/locale/translations/fr').default,
-        en: require('vuejs-datepicker/dist/locale/translations/en').default
+        fr,
+        en
       }[this.$i18n.locale]
     },
     foldArrow() {

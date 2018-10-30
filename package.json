@@ -4,10 +4,9 @@
   "description": "A web app to create polls using the majority judgement voting system",
   "author": "@romaindurand <romaindurand89@gmail.com>",
   "private": true,
-  "proxy": "http://localhost:5000/",
   "scripts": {
     "dev": "run-p server:dev nuxt",
-    "production": "NODE_ENV=production run-s build server-start",
+    "production": "PORT=3001 NODE_ENV=production run-s build server-start",
     "server": "node ./server/index.js",
     "server:dev": "nodemon --watch server/* server/index.js",
     "nuxt": "nuxt",
