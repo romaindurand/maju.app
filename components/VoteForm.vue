@@ -1,7 +1,7 @@
 <template>
   <Card class="vote-form">
     <div class="question">{{ poll.question }}</div>
-    <div v-if="canVote" ref="optionsList" class="options-list">
+    <div v-if="canVote && !poll.hasEnded" ref="optionsList" class="options-list">
         <OptionVoteForm
           v-for="(option, index) in poll.options"
           :name="option"
@@ -23,17 +23,22 @@
         :sitekey="recaptchaSiteKey">
         </vue-recaptcha>
     </div>
-    <div v-if="!canVote">
+    <div v-if="!canVote && !poll.hasEnded">
       {{ $t('has_voted') }}
+    </div>
+    <div v-if="poll.hasEnded" class="has-ended">
+      {{ $t('has_ended') }}
     </div>
   </Card>
 </template>
 
 <script>
 import VueRecaptcha from 'vue-recaptcha'
-import Card from '../components/Card.vue'
-import OptionVoteForm from './OptionVoteForm.vue'
+import Card from '../components/Card'
+import OptionVoteForm from './OptionVoteForm'
 import voteAuth from '../lib/voteAuth'
+import slide from '../lib/slide'
+import { mapActions } from 'vuex'
 
 export default {
   components: { Card, OptionVoteForm, VueRecaptcha },
@@ -54,6 +59,7 @@ export default {
     this.canVote = !hasVoted
   },
   methods: {
+    ...mapActions(['notifyError']),
     updateSelectedValue (optionName, value) {
       this.selectedValues = Object.assign({}, this.selectedValues, { [optionName]: value })
     },
@@ -64,19 +70,6 @@ export default {
       } else {
         this.postFormData()
       }
-    },
-
-    slideUp(el, duration) {
-      return new Promise((res, rej) => {
-        this.$refs.optionsList.style.transition = `height ${duration}ms ease-in-out`
-        this.$refs.optionsList.style.height = this.$refs.optionsList.clientHeight +'px'
-        setTimeout(() => {
-          this.$refs.optionsList.style.height = '0px';
-        }, 1)
-        setTimeout(() => {
-          res()
-        }, duration)
-      })
     },
 
     async postFormData (token) {
@@ -93,10 +86,15 @@ export default {
         });
         const body = await response.json()
         if (response.status !== 200) {
-          return this.notifyError(body.message, 5000)
+          switch(response.status) {
+            case 410:
+              this.poll.hasEnded = true
+            break
+          }
+          return this.notifyError({ message: body.message, duration: 5000 })
         }
 
-        await this.slideUp(this.$refs.optionsList, 400)
+        await slide.up(this.$refs.optionsList, 400)
 
         this.canVote = false
         voteAuth.setVote(this.poll.id)
@@ -132,6 +130,12 @@ export default {
     font-size: 1.2em;
     margin-top: 20px;
     color: green;
+  }
+
+  .has-ended {
+    margin-top: 10px;
+    font-style: oblique;
+    font-weight: lighter;
   }
 
   .options-list {

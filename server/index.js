@@ -41,7 +41,8 @@ function initApi (mongoClient) {
     }
     res.json({
       question: poll.question,
-      options: poll.options
+      options: poll.options,
+      hasEnded: hasEnded(poll.settings.endDate)
     })
   })
   api.get('/api/results/:pollId', async (req, res) => {
@@ -92,7 +93,8 @@ function initApi (mongoClient) {
       question: req.body.question,
       options: req.body.options,
       uid: newUid,
-      votes: []
+      votes: [],
+      settings: req.body.settings
     })
     res.json({
       uid: newUid
@@ -112,6 +114,13 @@ function initApi (mongoClient) {
     const poll = await polls.findOne({
       uid: req.params.pollId
     })
+
+    if (hasEnded(poll.settings.endDate)) {
+      return res.status(410).json({
+        message: 'This poll does not accept votes anymore'
+      })
+    }
+
     if (!utils.stringArrayEqual(Object.keys(req.body.vote).sort(), poll.options.sort())) {
       return res.status(400).json({
         message: 'Given vote doesnt match available poll options.'
@@ -130,4 +139,8 @@ function initApi (mongoClient) {
     })
   })
   api.listen(apiPort, () => console.log(`API listening on port ${apiPort}`))
+}
+
+function hasEnded(endDate) {
+  return +new Date() > +new Date(endDate)
 }

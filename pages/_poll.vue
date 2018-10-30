@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import VoteForm from '../components/VoteForm.vue'
-import PollResult from '../components/PollResult.vue'
+import VoteForm from '../components/VoteForm'
+import PollResult from '../components/PollResult'
 import voteAuth from "../lib/voteAuth";
 
 export default {
@@ -27,7 +27,6 @@ export default {
     const pollId = app.context.route.params.poll
     const poll = await app.$axios.$get(`/api/poll/${pollId}`)
     const ratios = await app.$axios.$get(`/api/results/${pollId}`)
-
     return {
       poll: {
         ...poll,
