@@ -1,18 +1,8 @@
 <template>
   <div>
-    <VoteForm
-      :poll="poll"
-      :refreshResults="refreshResults"
-    />
-    <!-- <div>{{ poll }}</div>
-    <div>{{ results }}</div> -->
+    <VoteForm :poll="poll" :refreshResults="refreshResults"/>
     <PollResult :poll="ratios"/>
-    <div
-      v-if="!isProduction"
-      @click="resetVote()"
-    >
-      reset
-    </div>
+    <div v-if="!isProduction" @click="resetVote()">reset</div>
   </div>
 </template>
 
@@ -23,6 +13,14 @@ import voteAuth from "../lib/voteAuth";
 
 export default {
   components: { VoteForm, PollResult },
+  head () {
+    return {
+      title: `maju - ${this.poll.question}`,
+      meta: [
+        { name: 'description', content: 'Vote and view poll results !' }
+      ]
+    }
+  },
   async asyncData({ app }) {
     const pollId = app.context.route.params.poll
     const poll = await app.$axios.$get(`/api/poll/${pollId}`)

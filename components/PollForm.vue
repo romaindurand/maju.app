@@ -28,8 +28,14 @@
       </ol>
       <Settings />
       <div class="submit-container">
-        <button :class="error ? 'error' : ''">{{ $t('create_poll_button') }}</button>
-        <div v-if="error" className="error">{{ error }}</div>
+        <button
+          :class="{
+            error,
+          }"
+          :disabled="!!error || sendingPoll"
+        >
+          {{ $t('create_poll_button') }}
+        </button>
         <div style="clear: 'both'"></div>
       </div>
         <vue-recaptcha
@@ -46,7 +52,7 @@
 import Card from './Card'
 import VueRecaptcha from 'vue-recaptcha'
 import Settings from './Settings'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 const FINAL_TITLE_INDEX = 19
 
@@ -54,29 +60,33 @@ export default {
   components: {
     Card, VueRecaptcha, Settings
   },
+  props: {
+    scrollToFAQ: Function
+  },
   data() {
     return {
-      error: null,
       question: '',
       options: ['', '', ''],
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY,
       majuTitleStep: 5,
-      moreOptions: false
+      moreOptions: false,
+      sendingPoll: false
     }
   },
   computed: {
-    ...mapState(['settings']),
+    ...mapState(['settings', 'error']),
     isProduction() {
       return process.env.NODE_ENV === 'production'
     }
   },
   methods: {
+    ...mapActions(['notifyError']),
     onExpired: function () {
       // console.log('Expired')
     },
 
     handleOptionClick(i) {
-      this.error = null
+      this.$store.commit('SET_ERROR', null)
       if (i === this.options.length - 1) {
         this.options = this.options.slice().concat([''])
       }
@@ -115,21 +125,17 @@ export default {
           else window.clearInterval(this.majuInterval)
         }, 70)
       } else {
-        const faq = document.getElementById('faq')
-        if (typeof faq.scrollIntoView !== 'function') return;
-        event.preventDefault();
-        faq.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'nearest'
-        });
+        this.scrollToFAQ()
       }
     },
 
     handleSubmit(event) {
       event.preventDefault();
       if (this.getOptions().length < 2)
-        return this.notifyError('Give two different options or more.', 5000)
+        return this.notifyError({
+          message: 'Give two different options or more.',
+          duration: 5000
+        })
 
       if (this.isProduction) {
         this.$refs.recaptcha.execute()
@@ -146,6 +152,7 @@ export default {
     },
 
     async postFormData (token) {
+      this.sendingPoll = true
       const response = await fetch('/api/new', {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
@@ -188,15 +195,12 @@ export default {
       cursor: pointer;
       transition: background-color 400ms;
       &.error {
-        float: left;
         background-color: red;
       }
+      &:disabled {
+        cursor: not-allowed;
+      }
     }
-  }
-  div.error {
-    float: left;
-    margin: 25px 0 0 25px;
-    color: darkred;
   }
   .more-options {
     user-select: none;

@@ -9,6 +9,7 @@
           <span class="setting-title">{{ $t('settings.end_date') }}</span>
           <datepicker
             @selected="endDateSelected"
+            @opened="scrollToDatepicker"
             :monday-first="$i18n.locale !== 'en'"
             ref="endDatepicker"
             :language="datepickerLanguage"
@@ -48,6 +49,17 @@ export default {
     }
   },
   methods: {
+    scrollToDatepicker() {
+      this.$refs.endDatepicker.$el
+      const endDatepicker = this.$refs.endDatepicker.$el
+      if (typeof endDatepicker.scrollIntoView !== 'function') return;
+      event.preventDefault();
+      endDatepicker.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      })
+    },
     endDateSelected(selectedDate) {
       selectedDate.setHours(23, 59, 59)
       this.$store.commit('SET_SETTINGS', { endDate: selectedDate })

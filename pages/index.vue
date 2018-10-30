@@ -1,7 +1,7 @@
 <template>
   <div>
-    <PollForm />
-    <Card class="instructions">
+    <PollForm :scrollToFAQ="scrollToFAQ" />
+    <Card class="instructions" ref="instructions">
       <div>{{ $t('home.instruction_create') }}</div>
       <div>{{ $t('home.instruction_share') }}</div>
       <div>{{ $t('home.instruction_analyze') }}</div>
@@ -19,6 +19,26 @@ import PollForm from '../components/PollForm'
 export default {
   components: {
     Card, PollForm
+  },
+  methods: {
+    scrollToFAQ() {
+      const instructions = this.$refs.instructions.$el
+      if (typeof instructions.scrollIntoView !== 'function') return;
+      event.preventDefault();
+      instructions.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      })
+    }
+  },
+  head () {
+    return {
+      title: 'maju - Let\'s make better choices together !',
+      meta: [
+        { name: 'description', content: 'Create your majority judgment poll in seconds !' }
+      ]
+    }
   }
 }
 </script>
