@@ -78,6 +78,26 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@fortawesome/fontawesome-common-types@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.7.tgz#fe76803922db0eb4393675199c2e0c3bad52629c"
+
+"@fortawesome/fontawesome-svg-core@^1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.7.tgz#064aefa1c8e4b055fbc6de0b6fbd3ff5ecf564ea"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.7"
+
+"@fortawesome/free-solid-svg-icons@^5.4.2":
+  version "5.4.2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.4.2.tgz#185fdab8806d5726846719dd7f8a2756c7b4f7fe"
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.7"
+
+"@fortawesome/vue-fontawesome@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-0.1.1.tgz#f54cad4028213a011c6ecb10eaf2b99dbd4a8496"
+
 "@nuxtjs/axios@^5.3.3":
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/@nuxtjs/axios/-/axios-5.3.3.tgz#0b09604e4c5e4b3ef1b5baac507e34ee25a3f82d"
@@ -6602,6 +6622,10 @@ vue-meta@^1.4.3:
     lodash.isplainobject "^4.0.6"
     object-assign "^4.1.1"
 
+vue-no-ssr@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.0.0.tgz#169bdabfa2ca170c8979d94062d877a0479c3f10"
+
 vue-recaptcha@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/vue-recaptcha/-/vue-recaptcha-1.1.1.tgz#be38f4ffab500e7f4775f149a279bb962cf91f07"
@@ -6651,6 +6675,10 @@ vue-template-es2015-compiler@^1.6.0:
 vue@^2.5.17:
   version "2.5.17"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
+
+vuejs-datepicker@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/vuejs-datepicker/-/vuejs-datepicker-1.5.3.tgz#cf26082526151724ac31a3bb8e89da998e3876df"
 
 vuex@^3.0.1:
   version "3.0.1"

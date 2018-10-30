@@ -28,7 +28,10 @@ module.exports = {
   proxy: [
     'http://localhost:5000/api'
   ],
-  plugins: ['~/plugins/i18n.js'],
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css'
+  ],
+  plugins: ['~/plugins/i18n.js', '~/plugins/fontawesome.js'],
   modules: ['@nuxtjs/proxy', '@nuxtjs/axios'],
   axios: {
     // proxyHeaders: false

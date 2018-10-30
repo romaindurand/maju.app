@@ -15,6 +15,11 @@
         <img :src="`${el.name}.svg`" :alt="el.name"/>
       </div>
     </div>
+    <div class="error drop" v-if="error">
+      <div>
+        {{ error }}
+      </div>
+    </div>
   </header>
 </template>
 
@@ -22,7 +27,7 @@
 import { mapState } from 'vuex';
 export default {
   computed: {
-    ...mapState(['locale', 'locales', 'preventLanguageReload'])
+    ...mapState(['locale', 'locales', 'preventLanguageReload', 'error'])
   },
   methods: {
     switchLanguage (localeCode) {
@@ -48,7 +53,18 @@ header {
   box-shadow: 0 0 5px darkgray;
   border-bottom: 1px solid lightgray;
 
-
+  .error {
+    div {
+      margin: auto;
+      width : 300px;
+    }
+    width: 100%;
+    padding: 10px;
+    position: absolute;
+    font-size: 1.1em;
+    background-color: #faa;
+    color: darkred;
+  }
 
   div.flags {
     float: right;

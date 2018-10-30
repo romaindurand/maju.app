@@ -6,7 +6,7 @@ import '..\\node_modules\\@fortawesome\\fontawesome-svg-core\\styles.css'
 
 let layouts = {
 
-  "_default": () => import('./layouts/default.vue'  /* webpackChunkName: "layouts_default" */).then(m => m.default || m)
+  "_default": () => import('..\\layouts\\default.vue'  /* webpackChunkName: "layouts_default" */).then(m => m.default || m)
 
 }
 

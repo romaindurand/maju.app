@@ -26,7 +26,7 @@
             @focus="event => handleOptionClick(i)"/>
         </li>
       </ol>
-      <!-- <Settings ref={this.settings}/> -->
+      <Settings />
       <div class="submit-container">
         <button :class="error ? 'error' : ''">{{ $t('create_poll_button') }}</button>
         <div v-if="error" className="error">{{ error }}</div>
@@ -45,12 +45,14 @@
 <script>
 import Card from './Card'
 import VueRecaptcha from 'vue-recaptcha'
+import Settings from './Settings'
+import { mapState } from 'vuex'
 
 const FINAL_TITLE_INDEX = 19
 
 export default {
   components: {
-    Card, VueRecaptcha
+    Card, VueRecaptcha, Settings
   },
   data() {
     return {
@@ -59,11 +61,11 @@ export default {
       options: ['', '', ''],
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY,
       majuTitleStep: 5,
-      moreOptions: false,
-      endDate: null,
+      moreOptions: false
     }
   },
   computed: {
+    ...mapState(['settings']),
     isProduction() {
       return process.env.NODE_ENV === 'production'
     }
@@ -143,20 +145,14 @@ export default {
           memo.includes(option) ? memo : [...memo, option], [])
     },
 
-    getSettings() {
-      return {}
-      // return this.settings.current.getSettings()
-    },
-
     async postFormData (token) {
-      // const token = this.isProduction ? this.recaptcha.getResponse() : null;
       const response = await fetch('/api/new', {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           question: this.question,
           options: this.getOptions(),
-          settings: this.getSettings(),
+          settings: this.settings,
           token
         })
       });

@@ -18,8 +18,8 @@
   </Card>
 </template>
 <script>
-import OptionResult from './OptionResult.vue'
-import Card from './Card.vue'
+import OptionResult from './OptionResult'
+import Card from './Card'
 export default {
   props: ['poll'],
   components: {

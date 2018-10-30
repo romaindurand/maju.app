@@ -55,10 +55,11 @@ export default {
   props: ['rank', 'name', 'ratios'],
   computed: {
     tooltipLeft() {
-      return this.formatRatio(this.ratios.reduce((memo, ratio, index) => {
+      const left = this.ratios.reduce((memo, ratio, index) => {
         if (index < this.tooltipIndex) memo += ratio;
         return memo;
-      }, 0))
+      }, 0)
+      return this.formatRatio(left)
     }
   },
   methods: {

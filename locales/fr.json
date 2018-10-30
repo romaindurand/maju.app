@@ -16,8 +16,13 @@
     "instruction_analyze": "3. Analysez les résultats",
     "faq_title": "Qu'est-ce que le jugement majoritaire ?"
   },
-  "more_options": "Advanced options",
-  "create_poll_button": "Create poll",
+  "settings": {
+    "end_date": "Date de fin des votes",
+    "no_end_date": "Pas de date de fin"
+  },
+  "has_ended": "Ce sondage n'accepte plus de votes",
+  "more_options": "Réglages avancés",
+  "create_poll_button": "Créer le sondage",
   "update_modal": "Une nouvelle version est disponible ! Rafraîchissez cette page pour la découvrir",
   "maju_ranks": ["A Rejeter", "Mauvais", "Moyen", "Satifaisant", "Bon", "Excellent"],
   "view_results": "Voir les résultats",

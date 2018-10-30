@@ -16,7 +16,12 @@
     "instruction_analyze": "3. Analyze poll results",
     "faq_title": "What is majoity judgement ?"
   },
-  "more_options": "Advanced options",
+  "settings": {
+    "end_date": "End of votes",
+    "no_end_date": "No end date selected"
+  },
+  "has_ended": "This poll does not accept votes anymore",
+  "more_options": "Advanced settings",
   "create_poll_button": "Create poll",
   "update_modal": "New version is available! Please reload the page",
   "maju_ranks": ["Reject", "Bad", "Poor", "Fair", "Good", "Excellent"],

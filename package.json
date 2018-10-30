@@ -19,6 +19,9 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.7",
+    "@fortawesome/free-solid-svg-icons": "^5.4.2",
+    "@fortawesome/vue-fontawesome": "^0.1.1",
     "@nuxtjs/axios": "^5.3.3",
     "@nuxtjs/proxy": "^1.2.4",
     "dotenv": "^6.1.0",
@@ -35,8 +38,10 @@
     "request-ip": "^2.1.1",
     "tinygradient": "^0.4.1",
     "vue-i18n": "^8.1.0",
+    "vue-no-ssr": "^1.0.0",
     "vue-recaptcha": "^1.1.1",
-    "vue-style-loader": "^4.1.2"
+    "vue-style-loader": "^4.1.2",
+    "vuejs-datepicker": "^1.5.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

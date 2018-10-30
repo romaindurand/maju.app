@@ -3,6 +3,8 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+const _11f398fc = () => import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */).then(m => m.default || m)
+const _4d49954e = () => import('..\\pages\\_poll.vue' /* webpackChunkName: "pages__poll" */).then(m => m.default || m)
 
 
 
@@ -62,7 +64,16 @@ export function createRouter () {
     linkExactActiveClass: 'nuxt-link-exact-active',
     scrollBehavior,
     routes: [
-
+		{
+			path: "/",
+			component: _11f398fc,
+			name: "index"
+		},
+		{
+			path: "/:poll",
+			component: _4d49954e,
+			name: "poll"
+		}
     ],
     
     
