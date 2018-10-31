@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home">
     <PollForm :scrollToFAQ="scrollToFAQ" />
     <Card class="instructions" ref="instructions">
       <div>{{ $t('home.instruction_create') }}</div>
@@ -8,6 +8,7 @@
     </Card>
     <Card class="faq">
       <h2>{{ $t('home.faq_title') }}</h2>
+      <div v-html="$t('faq_html_content')"></div>
     </Card>
     <div class="languages-label"></div>
   </div>
@@ -43,16 +44,23 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.instructions {
-  display: flex;
-  justify-content: space-evenly;
-  div {
-    margin-right: 5px;
+<style lang="less">
+.home {
+  .instructions {
+    display: flex;
+    justify-content: space-evenly;
+    div {
+      margin-right: 5px;
+    }
   }
-}
-.faq {
-  margin-bottom: 1500px;
+  .faq {
+    margin-bottom: 100px;
+    
+    img {
+      width: 100%;
+      background-color: yellow;
+    }
+  }
 }
 </style>
 
