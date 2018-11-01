@@ -2,7 +2,7 @@
   <div>
     <VoteForm v-if="poll" :poll="poll" :refreshResults="refreshResults"/>
     <PollResult v-if="poll" :poll="ratios"/>
-    <Card class="not-found">
+    <Card v-if="!poll" class="not-found">
       <h1>{{ $t('404_title') }}</h1>
     </Card>
     <div v-if="!isProduction" @click="resetVote()">reset</div>
