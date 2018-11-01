@@ -1,4 +1,5 @@
 {
+  "404_title": "404 - Ce sondage n'existe pas",
   "loading": "Chargement…",
   "confirm_reload": {
     "en": "Changing language will reset your form inputs. Are you sure you want to continue ?"

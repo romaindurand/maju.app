@@ -12,7 +12,7 @@
         :class="{ active: (el.code === locale) }"
         @click="switchLanguage(el.code)"
       >
-        <img :src="`${el.name}.svg`" :alt="el.name"/>
+        <img :src="`/${el.name}.svg`" :alt="el.name"/>
       </div>
     </div>
     <div class="error drop" v-if="error">

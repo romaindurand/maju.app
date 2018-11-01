@@ -1,21 +1,25 @@
 <template>
   <div>
-    <VoteForm :poll="poll" :refreshResults="refreshResults"/>
-    <PollResult :poll="ratios"/>
+    <VoteForm v-if="poll" :poll="poll" :refreshResults="refreshResults"/>
+    <PollResult v-if="poll" :poll="ratios"/>
+    <Card class="not-found">
+      <h1>{{ $t('404_title') }}</h1>
+    </Card>
     <div v-if="!isProduction" @click="resetVote()">reset</div>
   </div>
 </template>
 
 <script>
+import Card from '../components/Card'
 import VoteForm from '../components/VoteForm'
 import PollResult from '../components/PollResult'
 import voteAuth from "../lib/voteAuth";
 
 export default {
-  components: { VoteForm, PollResult },
+  components: { VoteForm, PollResult, Card },
   head () {
     return {
-      title: `maju - ${this.poll.question}`,
+      title: `maju - ${(this.poll && this.poll.question) || "Let's make better choices together !"}`,
       meta: [
         { name: 'description', content: 'Vote and view poll results !' }
       ]
@@ -23,14 +27,21 @@ export default {
   },
   async asyncData({ app }) {
     const pollId = app.context.route.params.poll
-    const poll = await app.$axios.$get(`/api/poll/${pollId}`)
-    const ratios = await app.$axios.$get(`/api/results/${pollId}`)
-    return {
-      poll: {
-        ...poll,
-        id: pollId
-      },
-      ratios
+    try {
+      const poll = await app.$axios.$get(`/api/poll/${pollId}`)
+      const ratios = await app.$axios.$get(`/api/results/${pollId}`)
+      return {
+        poll: {
+          ...poll,
+          id: pollId
+        },
+        ratios
+      }
+    } catch (ex) {
+      return {
+        poll: null,
+        ratios: null
+      }
     }
   },
   methods: {
@@ -48,3 +59,8 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.not-found {
+  text-align: center;
+}
+</style>
