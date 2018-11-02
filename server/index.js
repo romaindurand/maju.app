@@ -1,5 +1,6 @@
 require('dotenv').config()
 const utils = require('./utils')
+const middlewares = require('./middlewares')
 const express = require('express')
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
@@ -22,9 +23,8 @@ MongoClient.connect(mongoUrl, {
 })
 
 function initApi (mongoClient) {
-  const api = express();
-  const port = process.env.PORT || 3000
-  api.use(bodyParser.json());
+  const api = express()
+  api.use(bodyParser.json())
   api.use(requestIp.mw())
 
   api.use((req, res, next) => {
@@ -33,16 +33,9 @@ function initApi (mongoClient) {
     next()
   })
 
+  api.use('/api/poll/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/poll/:pollId', async (req, res) => {
-    const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls')
-    const poll = await polls.findOne({
-      uid: req.params.pollId
-    })
-    if (!poll) {
-      return res.status(404).json({
-        message: `Poll ID '${req.params.pollId}' does not exist in database`
-      })
-    }
+    const poll = req.poll
     const hasPollEnded = poll.settings && poll.settings.endDate ? hasEnded(poll.settings.endDate) : false
     res.json({
       question: poll.question,
@@ -50,26 +43,14 @@ function initApi (mongoClient) {
       hasEnded: hasPollEnded
     })
   })
+
+  api.use('/api/results/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/results/:pollId', async (req, res) => {
     const votesCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('votes')
-    const pollsCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('polls')
-    const [votes, poll] = await Promise.all([
-      votesCollection.find({
-        pollId: req.params.pollId
-      }).toArray(),
-      pollsCollection.findOne({
-        uid: req.params.pollId
-      })
-    ])
-    if (!poll) {
-      return res.status(404).json({
-        message: `Poll ID '${req.params.pollId}' does not exist in database`
-      })
-    }
-    const majuPoll = maju(poll.options)
-    votes.forEach(vote => {
-      majuPoll.vote(vote.values)
-    })
+    const votes = await votesCollection.find({ pollId: req.params.pollId }).toArray()
+
+    const majuPoll = maju(req.poll.options)
+    votes.forEach(vote => majuPoll.vote(vote.values))
     res.json({
       ratios: majuPoll.getScoreRatio(),
       winner: majuPoll.getWinner(),
@@ -77,19 +58,14 @@ function initApi (mongoClient) {
       voteCount: majuPoll.getVotes().length
     })
   })
+
+  api.use('/api/new', middlewares.recaptcha)
   api.post('/api/new', async (req, res) => {
     if (!utils.isValidPoll(req.body)) {
       return res.status(400).json({
         message: `invalid.payload`,
         payload: req.body
       })
-    }
-    if (process.env.NODE_ENV === 'production') {
-      if (!await utils.isValidRecaptchaToken(req.body.token)) {
-        return res.status(401).json({
-          message: 'invalid.recaptcha.token'
-        })
-      }
     }
 
     const polls = mongoClient.db(process.env.MONGO_DATABASE).collection('polls')
@@ -98,27 +74,18 @@ function initApi (mongoClient) {
       question: req.body.question,
       options: req.body.options,
       uid: newUid,
-      votes: [],
       settings: req.body.settings
     })
     res.json({
       uid: newUid
     })
   })
-  api.post('/api/vote/:pollId', async (req, res) => {
-    if (process.env.NODE_ENV === 'production') {
-      if (!await utils.isValidRecaptchaToken(req.body.token)) {
-        return res.status(401).json({
-          message: 'invalid.recaptcha.token'
-        })
-      }
-    }
-    const db = mongoClient.db(process.env.MONGO_DATABASE)
 
-    const polls = db.collection('polls')
-    const poll = await polls.findOne({
-      uid: req.params.pollId
-    })
+  api.use('/api/vote/:pollId', middlewares.recaptcha)
+  api.use('/api/vote/:pollId', middlewares.pollExists(mongoClient))
+  api.post('/api/vote/:pollId', async (req, res) => {
+    const db = mongoClient.db(process.env.MONGO_DATABASE)
+    const poll = req.poll
 
     if (poll.settings && poll.settings.endDate && hasEnded(poll.settings.endDate)) {
       return res.status(410).json({
@@ -134,6 +101,7 @@ function initApi (mongoClient) {
 
     const votes = db.collection('votes')
     const response = await votes.insertOne({
+      date: new Date(),
       pollId: req.params.pollId,
       values: req.body.vote,
       fingerprint: req.body.fingerprint,
@@ -146,18 +114,15 @@ function initApi (mongoClient) {
 
   let loginQueue = []
   let adminTokens = []
-  api.post('/api/login', (req, res) => {
+  api.use('/api/login', middlewares.recaptcha)
+  api.post('/api/login', async (req, res) => {
     // rate limiting
     const clientIp = req.clientIp
-    if (loginQueue.includes(clientIp)) return res.status(429).json({ message: 'rate.limited'})
+    if (loginQueue.includes(clientIp)) return res.status(429).json({ message: 'rate.limited' })
     loginQueue.push(clientIp)
     setTimeout(() => {
       loginQueue = loginQueue.filter(ip => ip !== clientIp)
     }, LOGIN_RATE_LIMIT)
-
-    // recaptcha validation
-    const isRecaptchaValid = await utils.isValidRecaptchaToken(req.body.token)
-    if (!isRecaptchaValid) return res.status(401).json({ message: 'invalid.recaptcha.token' })
 
     // password validation
     if (req.body.password !== process.env.ADMIN_PASSWORD) {
@@ -178,6 +143,6 @@ function initApi (mongoClient) {
   api.listen(apiPort, () => console.log(`API listening on port ${apiPort}`))
 }
 
-function hasEnded(endDate) {
+function hasEnded (endDate) {
   return +new Date() > +new Date(endDate)
 }

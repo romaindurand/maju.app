@@ -14,6 +14,7 @@ import Card from '../components/Card'
 import VoteForm from '../components/VoteForm'
 import PollResult from '../components/PollResult'
 import voteAuth from "../lib/voteAuth";
+import { mapState } from 'vuex';
 
 export default {
   components: { VoteForm, PollResult, Card },
@@ -53,9 +54,7 @@ export default {
     }
   },
   computed: {
-    isProduction() {
-      return process.env.NODE_ENV === 'production'
-    }
+    ...mapState(['isProduction'])
   }
 }
 </script>

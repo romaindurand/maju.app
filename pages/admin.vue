@@ -1,10 +1,12 @@
 <template>
   <div>
-    <Card class="login">
+    <Card class="login" v-if="!authToken">
       <h1>Administration Panel</h1>
       <div>Admin password</div>
-      <input type="password" v-model="password">
-      <button @click="() => {$refs.recaptcha.execute()}">Log in</button>
+      <form @submit.prevent="handlePasswordSubmit">
+        <input type="password" v-model="password">
+        <button>Log in</button>
+      </form>
       <vue-recaptcha
         ref="recaptcha"
         @verify="postFormData"
@@ -13,23 +15,36 @@
         :sitekey="recaptchaSiteKey">
       </vue-recaptcha>
     </Card>
-    <Card class="admin">logged in</Card>
+    <Card class="admin" v-if="authToken">logged in</Card>
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import VueRecaptcha from 'vue-recaptcha'
 import Card from '../components/Card'
+import cookie from '../lib/cookies'
+
 export default {
   components: { Card, VueRecaptcha },
   data() {
     return {
+      authToken: cookie.getAuthToken(),
       password: '',
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY
     }
   },
+  computed: {
+      ...mapState(['isProduction']),
+  },
   methods: {
     ...mapActions(['notifyError']),
+    handlePasswordSubmit() {
+      if (this.isProduction) {
+        debugger
+        return this.$refs.recaptcha.execute()
+      }
+      this.postFormData()
+    },
     async postFormData (token) {
       const response = await fetch(`/api/login`, {
         method: 'POST',
@@ -43,8 +58,9 @@ export default {
       if (response.status !== 200) {
         return this.notifyError({ message: body.message, duration: 5000 })
       }
-      debugger
-      console.log(body.authToken)
+      cookie.setAuth(body.token)
+      this.authToken = body.token
+
     },
     onExpired: function () {
       // console.log('Expired')

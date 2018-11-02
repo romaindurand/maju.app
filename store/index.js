@@ -1,4 +1,5 @@
 export const state = () => ({
+  isProduction: process.env.NODE_ENV === 'production',
   preventLanguageReload: false,
   locales: [
     {
