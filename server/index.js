@@ -5,6 +5,10 @@ const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const maju = require('maju')
 const requestIp = require('request-ip')
+const uid = require('randomstring')
+
+const ADMIN_TOKEN_TIMEOUT = 1000 * 60 * 60 // 1h
+const LOGIN_RATE_LIMIT = 10 * 1000 // 10s
 
 const apiPort = process.env.API_PORT || 5000
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
@@ -138,6 +142,38 @@ function initApi (mongoClient) {
     res.json({
       message: 'ok'
     })
+  })
+
+  let loginQueue = []
+  let adminTokens = []
+  api.post('/api/login', (req, res) => {
+    // rate limiting
+    const clientIp = req.clientIp
+    if (loginQueue.includes(clientIp)) return res.status(429).json({ message: 'rate.limited'})
+    loginQueue.push(clientIp)
+    setTimeout(() => {
+      loginQueue = loginQueue.filter(ip => ip !== clientIp)
+    }, LOGIN_RATE_LIMIT)
+
+    // recaptcha validation
+    const isRecaptchaValid = await utils.isValidRecaptchaToken(req.body.token)
+    if (!isRecaptchaValid) return res.status(401).json({ message: 'invalid.recaptcha.token' })
+
+    // password validation
+    if (req.body.password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ message: 'invalid.password' })
+    }
+
+    // deliver access token
+    const token = uid.generate({
+      length: 20,
+      charset: 'alphanumeric'
+    })
+    adminTokens.push(token)
+    setTimeout(() => {
+      adminTokens = adminTokens.filter(adminToken => adminToken !== token)
+    }, ADMIN_TOKEN_TIMEOUT) // remove token after 1h
+    res.json({ token })
   })
   api.listen(apiPort, () => console.log(`API listening on port ${apiPort}`))
 }
