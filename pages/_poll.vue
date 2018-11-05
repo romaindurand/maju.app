@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     resetVote() {
-      voteAuth.reset(this.poll.id)
+      voteAuth(this.$cookies).reset(this.poll.id)
     },
     async refreshResults() {
       this.ratios = await this.$axios.$get(`/api/results/${this.poll.id}`)

@@ -58,7 +58,7 @@ export default {
     ...mapState(['isProduction'])
   },
   mounted() {
-    const hasVoted = voteAuth.hasVoted(this.$props.poll.id)
+    const hasVoted = voteAuth(this.$cookies).hasVoted(this.$props.poll.id)
     this.canVote = !hasVoted
   },
   methods: {
@@ -100,7 +100,7 @@ export default {
         await slide.up(this.$refs.optionsList, 400)
 
         this.canVote = false
-        voteAuth.setVote(this.poll.id)
+        voteAuth(this.$cookies).setVote(this.poll.id)
         this.refreshResults()
       })
     },

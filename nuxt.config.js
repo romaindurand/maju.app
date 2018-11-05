@@ -32,7 +32,7 @@ module.exports = {
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   plugins: ['~/plugins/i18n.js', '~/plugins/fontawesome.js'],
-  modules: ['@nuxtjs/proxy', '@nuxtjs/axios'],
+  modules: ['@nuxtjs/proxy', '@nuxtjs/axios', 'cookie-universal-nuxt'],
   axios: {
     proxy: true
     // proxyHeaders: false

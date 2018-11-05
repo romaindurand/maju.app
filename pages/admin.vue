@@ -22,25 +22,28 @@
 import { mapActions, mapState } from 'vuex'
 import VueRecaptcha from 'vue-recaptcha'
 import Card from '../components/Card'
-import cookie from '../lib/cookies'
+import cookies from '../lib/cookies'
 
 export default {
   components: { Card, VueRecaptcha },
+  async asyncData({ app }) {
+    return {
+      authToken: cookies(app.$cookies).getAuthToken()
+    }
+  },
   data() {
     return {
-      authToken: cookie.getAuthToken(),
       password: '',
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY
     }
   },
   computed: {
-      ...mapState(['isProduction']),
+    ...mapState(['isProduction']),
   },
   methods: {
     ...mapActions(['notifyError']),
     handlePasswordSubmit() {
       if (this.isProduction) {
-        debugger
         return this.$refs.recaptcha.execute()
       }
       this.postFormData()
@@ -58,7 +61,7 @@ export default {
       if (response.status !== 200) {
         return this.notifyError({ message: body.message, duration: 5000 })
       }
-      cookie.setAuth(body.token)
+      cookies(this.$cookies).setAuth(body.token)
       this.authToken = body.token
 
     },
