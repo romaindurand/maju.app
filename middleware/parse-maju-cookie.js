@@ -1,4 +1,4 @@
-const cookieName = process.env.COOKIE_NAME
+const cookieName = 'maju'
 module.exports =  function (req, res, next) {
   if (!req.cookies) {
     req.cookieData = null
