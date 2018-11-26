@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-      ...mapState(['settings', 'error', 'isProduction'])
+    ...mapState(['settings', 'error', 'isProduction'])
   },
   methods: {
     ...mapActions(['notifyError']),

@@ -23,6 +23,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@nuxtjs/axios": "^5.3.3",
     "@nuxtjs/proxy": "^1.2.4",
+    "cookie-parser": "^1.4.3",
     "cookie-universal-nuxt": "^2.0.5",
     "dotenv": "^6.1.0",
     "fingerprintjs2": "^1.8.5",

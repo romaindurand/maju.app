@@ -41,7 +41,8 @@ module.exports = {
   ** Build configuration
   */
   env: {
-    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY
+    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY,
+    COOKIE_NAME: process.env.COOKIE_NAME
   },
   build: {
     vendor: ['vue-i18n'],
