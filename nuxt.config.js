@@ -32,7 +32,7 @@ module.exports = {
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   plugins: ['~/plugins/i18n.js', '~/plugins/fontawesome.js'],
-  modules: ['@nuxtjs/proxy', '@nuxtjs/axios'],
+  modules: ['@nuxtjs/proxy', '@nuxtjs/axios', 'cookie-universal-nuxt'],
   axios: {
     proxy: true
     // proxyHeaders: false
@@ -41,7 +41,8 @@ module.exports = {
   ** Build configuration
   */
   env: {
-    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY
+    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY,
+    COOKIE_NAME: process.env.COOKIE_NAME
   },
   build: {
     vendor: ['vue-i18n'],

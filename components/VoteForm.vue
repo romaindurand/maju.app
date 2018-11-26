@@ -38,7 +38,7 @@ import Card from '../components/Card'
 import OptionVoteForm from './OptionVoteForm'
 import voteAuth from '../lib/voteAuth'
 import slide from '../lib/slide'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components: { Card, OptionVoteForm, VueRecaptcha },
@@ -54,8 +54,11 @@ export default {
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY
     }
   },
+  computed: {
+    ...mapState(['isProduction'])
+  },
   mounted() {
-    const hasVoted = voteAuth.hasVoted(this.$props.poll.id)
+    const hasVoted = voteAuth(this.$cookies).hasVoted(this.$props.poll.id)
     this.canVote = !hasVoted
   },
   methods: {
@@ -97,7 +100,7 @@ export default {
         await slide.up(this.$refs.optionsList, 400)
 
         this.canVote = false
-        voteAuth.setVote(this.poll.id)
+        voteAuth(this.$cookies).setVote(this.poll.id)
         this.refreshResults()
       })
     },
@@ -107,9 +110,6 @@ export default {
     },
   },
   computed: {
-    isProduction() {
-      return process.env.NODE_ENV === 'production'
-    },
     isVoteValid () {
       return Object.values(this.selectedValues).every(value => value !== null)
     }

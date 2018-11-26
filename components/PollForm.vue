@@ -74,10 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['settings', 'error']),
-    isProduction() {
-      return process.env.NODE_ENV === 'production'
-    }
+    ...mapState(['settings', 'error', 'isProduction'])
   },
   methods: {
     ...mapActions(['notifyError']),

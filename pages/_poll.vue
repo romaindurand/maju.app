@@ -14,6 +14,7 @@ import Card from '../components/Card'
 import VoteForm from '../components/VoteForm'
 import PollResult from '../components/PollResult'
 import voteAuth from "../lib/voteAuth";
+import { mapState } from 'vuex';
 
 export default {
   components: { VoteForm, PollResult, Card },
@@ -46,16 +47,14 @@ export default {
   },
   methods: {
     resetVote() {
-      voteAuth.reset(this.poll.id)
+      voteAuth(this.$cookies).reset(this.poll.id)
     },
     async refreshResults() {
       this.ratios = await this.$axios.$get(`/api/results/${this.poll.id}`)
     }
   },
   computed: {
-    isProduction() {
-      return process.env.NODE_ENV === 'production'
-    }
+    ...mapState(['isProduction'])
   }
 }
 </script>
