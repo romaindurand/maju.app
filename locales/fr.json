@@ -19,7 +19,8 @@
   },
   "settings": {
     "end_date": "Date de fin des votes",
-    "no_end_date": "Pas de date de fin"
+    "no_end_date": "aucune",
+    "select_end_date": "Sélectionnez une date de fin"
   },
   "has_ended": "Ce sondage n'accepte plus de votes",
   "more_options": "Réglages avancés",

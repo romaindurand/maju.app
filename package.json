@@ -25,6 +25,7 @@
     "@nuxtjs/proxy": "^1.2.4",
     "cookie-parser": "^1.4.3",
     "cookie-universal-nuxt": "^2.0.5",
+    "date-fns": "^2.0.0-alpha.25",
     "dotenv": "^6.1.0",
     "fingerprintjs2": "^1.8.5",
     "less": "^3.8.1",
@@ -41,13 +42,13 @@
     "vue-no-ssr": "^1.0.0",
     "vue-recaptcha": "^1.1.1",
     "vue-style-loader": "^4.1.2",
-    "vuejs-datepicker": "^1.5.3"
+    "vuejs-datepicker": "1.5.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
     "eslint": "^4.15.0",
     "eslint-friendly-formatter": "^3.0.0",
-    "eslint-loader": "^1.7.1",
+    "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^4.0.0",
     "nodemon": "^1.18.4"
   }

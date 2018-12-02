@@ -19,7 +19,8 @@
   },
   "settings": {
     "end_date": "End of votes",
-    "no_end_date": "No end date selected"
+    "no_end_date": "No end date selected",
+    "select_end_date": "Select an end date"
   },
   "has_ended": "This poll does not accept votes anymore",
   "more_options": "Advanced settings",
