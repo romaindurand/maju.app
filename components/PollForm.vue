@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['settings', 'error', 'isProduction'])
+    ...mapState(['settings', 'error'])
   },
   methods: {
     ...mapActions(['notifyError']),
@@ -134,7 +134,7 @@ export default {
           duration: 5000
         })
 
-      if (this.isProduction) {
+      if (process.env.isProduction) {
         this.$refs.recaptcha.execute()
       } else {
         this.postFormData()

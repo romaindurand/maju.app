@@ -45,6 +45,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      isProduction: process.env.isProduction
+    }
+  },
   methods: {
     resetVote() {
       voteAuth(this.$cookies).reset(this.poll.id)
@@ -53,9 +58,6 @@ export default {
       this.ratios = await this.$axios.$get(`/api/results/${this.poll.id}`)
     }
   },
-  computed: {
-    ...mapState(['isProduction'])
-  }
 }
 </script>
 <style lang="less" scoped>

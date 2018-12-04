@@ -9,7 +9,9 @@ export default function ({ isHMR, app, store, route, params, req, error, redirec
 
       // check if the locale cookie is set
       if (req.headers.cookie) {
-        const cookies = req.headers.cookie.split('; ').map(stringCookie => stringCookie.split('='))
+        const cookies = req.headers.cookie
+          ? req.headers.cookie.split('; ').map(stringCookie => stringCookie.split('='))
+          : []
         const cookie = cookies.find(cookie => cookie[0] === 'locale')
 
         if (cookie) {

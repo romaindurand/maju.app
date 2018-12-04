@@ -29,14 +29,11 @@ export default {
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY,
     }
   },
-  computed: {
-    ...mapState(['isProduction']),
-  },
   props: ['onLoggedIn'],
   methods: {
     ...mapActions(['notifyError']),
     handlePasswordSubmit() {
-      if (this.isProduction) return this.$refs.recaptcha.execute()
+      if (process.env.isProduction) return this.$refs.recaptcha.execute()
       this.postFormData()
     },
     async postFormData (token) {

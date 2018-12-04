@@ -54,9 +54,6 @@ export default {
       recaptchaSiteKey: process.env.RECAPTCHA_SITEKEY
     }
   },
-  computed: {
-    ...mapState(['isProduction'])
-  },
   mounted() {
     const hasVoted = voteAuth(this.$cookies).hasVoted(this.$props.poll.id)
     this.canVote = !hasVoted
@@ -68,7 +65,7 @@ export default {
     },
 
     handleVoteClick () {
-      if (this.isProduction) {
+      if (process.env.isProduction) {
         this.$refs.recaptcha.execute()
       } else {
         this.postFormData()

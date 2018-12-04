@@ -44,7 +44,8 @@ module.exports = {
   ** Build configuration
   */
   env: {
-    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY
+    RECAPTCHA_SITEKEY: process.env.RECAPTCHA_SITEKEY,
+    isProduction: process.env.NODE_ENV === 'production'
   },
   build: {
     vendor: ['vue-i18n'],
