@@ -4,14 +4,16 @@
     <div class="content">
       <nuxt/>
     </div>
+    <wip />
   </div>
 </template>
 
 <script>
+import wip from '../components/wip'
 import MajuHeader from '../components/MajuHeader';
 export default {
   components: {
-    MajuHeader
+    MajuHeader, wip
   }
 }
 </script>
