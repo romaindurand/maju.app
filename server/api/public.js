@@ -46,7 +46,7 @@ module.exports = ({api, mongoClient}) => {
       options: req.body.options,
       uid: newUid,
       settings: req.body.settings
-    })
+    }, { checkKeys: false })
     res.json({
       uid: newUid
     })
@@ -77,7 +77,7 @@ module.exports = ({api, mongoClient}) => {
       values: req.body.vote,
       fingerprint: req.body.fingerprint,
       ip: req.clientIp
-    })
+    }, { checkKeys: false })
     res.json({
       message: 'ok'
     })

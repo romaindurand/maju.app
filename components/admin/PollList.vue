@@ -19,6 +19,7 @@
       <div class="header">
         <div class="vote-count">{{ poll.voteCount }} 🗳️</div>
         <div class="question"><span>{{ poll.question }}</span></div>
+        <div class="vote-count">{{ poll.date }}</div>
         <nuxt-link class="poll-id" :to="`/${poll.uid}`" target="_blank">
           &lt;{{ poll.uid }}&gt;
         </nuxt-link>
@@ -46,7 +47,7 @@ export default {
       filter: '',
     }
   },
-  props: ['polls', 'fetchPolls'],
+  props: ['polls', 'fetchData'],
   computed: {
     filteredPolls() {
       if (!this.polls) return []
@@ -67,7 +68,7 @@ export default {
       const confirm = window.confirm(`Are you sure you want to delete this poll '${poll.question}' and its ${poll.voteCount} votes ?`)
       if (!confirm) return
       const deleteResponse = await this.$axios.delete(`/api/admin/poll/${poll.uid}`)
-      this.fetchPolls()
+      this.fetchData()
     }
   }
 }

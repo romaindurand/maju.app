@@ -50,13 +50,15 @@ export default {
     increment(event) {
       const delta = this.max - this.min
       const stepValue = event.ctrlKey ? this.ctrlStep : this.step
-      this.value = this.value + stepValue > this.max ? this.value + stepValue - delta - 1 : this.value + stepValue
+      const value = this.value + stepValue > this.max ? this.value + stepValue - delta - 1 : this.value + stepValue
+      this.value = Math.round(value * 100) / 100
       this.$emit('changed', this.value)
     },
     decrement(event) {
       const delta = this.max - this.min
       const stepValue = event.ctrlKey ? this.ctrlStep : this.step
-      this.value = this.value - stepValue < this.min ? this.value - stepValue + delta + 1 : this.value - stepValue
+      const value = this.value - stepValue < this.min ? this.value - stepValue + delta + 1 : this.value - stepValue
+      this.value = Math.round(value * 100) / 100
       this.$emit('changed', this.value)
     }
   }

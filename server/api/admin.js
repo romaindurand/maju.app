@@ -7,6 +7,8 @@ const LOGIN_RATE_LIMIT = 10 * 1000 // 10s
 module.exports = ({api, mongoClient, logEvent}) => {
   let loginQueue = []
   let adminTokens = []
+  const db = mongoClient.db(process.env.MONGO_DATABASE)
+
   api.use('/api/login', middlewares.recaptcha(mongoClient))
   api.post('/api/login', async (req, res) => {
     // rate limiting
@@ -48,21 +50,17 @@ module.exports = ({api, mongoClient, logEvent}) => {
   api.use('/api/admin/polls', middlewares.parseCookie)
   api.use('/api/admin/polls', middlewares.authToken(adminTokens, mongoClient))
   api.get('/api/admin/polls', async (req, res) => {
-    const db = mongoClient.db(process.env.MONGO_DATABASE)
     const pollsCollection = db.collection('polls')
     const votesCollection = db.collection('votes')
     const polls = await pollsCollection.find({}).toArray()
     const voteCounts = await Promise.all(polls.map(poll => votesCollection.countDocuments({ pollId: poll.uid })))
     const pollsWithCounts = polls.map((poll, index) => ({...poll, voteCount: voteCounts[index]}))
-    res.json({
-      polls: pollsWithCounts
-    })
+    res.json(pollsWithCounts)
   })
 
   api.use('/api/admin/poll/:pollId', middlewares.parseCookie)
   api.use('/api/admin/poll/:pollId', middlewares.authToken(adminTokens, mongoClient))
   api.delete('/api/admin/poll/:pollId', async (req, res) => {
-    const db = mongoClient.db(process.env.MONGO_DATABASE)
     const pollsCollection = db.collection('polls')
     const votesCollection = db.collection('votes')
     const pollId = req.params.pollId
@@ -72,5 +70,13 @@ module.exports = ({api, mongoClient, logEvent}) => {
       deletePollRes,
       deleteVotesRes
     })
+  })
+
+  api.use('/api/admin/logs', middlewares.parseCookie)
+  api.use('/api/admin/logs', middlewares.authToken(adminTokens, mongoClient))
+  api.get('/api/admin/logs', async (req, res) => {
+    const logsCollection = db.collection('logs')
+    const logs = await logsCollection.find({}).toArray()
+    res.json(logs)
   })
 }
