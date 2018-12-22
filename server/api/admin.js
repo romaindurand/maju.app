@@ -79,4 +79,19 @@ module.exports = ({api, mongoClient, logEvent}) => {
     const logs = await logsCollection.find({}).toArray()
     res.json(logs)
   })
+
+  api.use('/api/admin/poll/:pollId', middlewares.parseCookie)
+  api.use('/api/admin/poll/:pollId', middlewares.authToken(adminTokens, mongoClient))
+  api.get('/api/admin/poll/:pollId', async (req, res) => {
+    const pollId = req.params.pollId
+    const [poll, votes] = await Promise.all([
+      db.collection('polls').find({ uid: pollId }).toArray(),
+      db.collection('votes').find({ pollId }).toArray()
+    ])
+    res.json({
+      poll,
+      votes: votes.map(vote => ({
+        ...vote.values
+      }))})
+  })
 }
