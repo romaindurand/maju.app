@@ -1,7 +1,7 @@
 <template>
   <div>
     <VoteForm v-if="poll" :poll="poll" :refreshResults="refreshResults"/>
-    <PollResult v-if="poll" :poll="ratios"/>
+    <PollResult v-if="poll" :poll="ratios" :resultsVisible="resultsVisible"/>
     <Card v-if="!poll" class="not-found">
       <h1>{{ $t('404_title') }}</h1>
     </Card>
@@ -41,13 +41,14 @@ export default {
     } catch (ex) {
       return {
         poll: null,
-        ratios: null
+        ratios: null,
       }
     }
   },
   data() {
     return {
-      isProduction: process.env.isProduction
+      isProduction: process.env.isProduction,
+      resultsVisible: false
     }
   },
   methods: {
@@ -56,6 +57,7 @@ export default {
     },
     async refreshResults() {
       this.ratios = await this.$axios.$get(`/api/results/${this.poll.id}`)
+      this.resultsVisible = true
     }
   },
 }

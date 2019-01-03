@@ -109,9 +109,9 @@ export default {
 
     getMajuTitle (index) {
       const majority = 'majority '
-      const judgement = 'judgement'
+      const judgment = 'judgment'
       return majority.substr(0, Math.floor(index / 2))
-        + judgement.substr(0, Math.floor((index - 1) / 2))
+        + judgment.substr(0, Math.floor((index - 1) / 2))
     },
 
     handleMajuClick (event) {

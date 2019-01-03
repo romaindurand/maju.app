@@ -6,7 +6,6 @@ const MongoClient = require('mongodb').MongoClient
 const requestIp = require('request-ip')
 const logs = require('./logs')
 const publicApi = require('./api/public')
-const adminApi = require('./api/admin')
 
 const apiPort = process.env.API_PORT || 5000
 const mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
@@ -36,6 +35,5 @@ function initApi (mongoClient) {
   })
 
   publicApi({api, mongoClient, logEvent})
-  adminApi({api, mongoClient, logEvent})
   api.listen(apiPort, () => console.log(`API listening on port ${apiPort}`))
 }

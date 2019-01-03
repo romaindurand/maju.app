@@ -33,6 +33,7 @@
   "result_winner": "Meilleure option",
   "result_tie": "Égalité",
   "has_voted": "Vous avez déjà voté à ce sondage.",
+  "show_results": "Voir les résultats",
   "vote_instructions": "Choisissez un rang pour chaque option.",
   "vote_button": "Voter !",
   "wip": "Cette application est toujours en construction, d'avance d\u00E9sol\u00E9 pour les bugs \u00E9ventuels. N'h\u00E9sitez pas \u00E0 me contacter pour me signaler un probl\u00E8me ou faire une remarque. Sur twitter <a href=\"https:\/\/twitter.com\/romaindurand\">@romaindurand<\/a> ou via <a href=\"https:\/\/github.com\/romaindurand\/maju.app\/\">la page github du projet<\/a>",

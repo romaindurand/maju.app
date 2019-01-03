@@ -1,7 +1,7 @@
 {
   "name": "maju.app",
   "version": "1.0.0",
-  "description": "A web app to create polls using the majority judgement voting system",
+  "description": "A web app to create polls using the majority judgment voting system",
   "author": "@romaindurand <romaindurand89@gmail.com>",
   "private": true,
   "scripts": {

@@ -16,12 +16,14 @@ module.exports = ({api, mongoClient}) => {
 
   api.use('/api/results/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/results/:pollId', async (req, res) => {
+    const pollId = req.params.pollId
     const votesCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('votes')
-    const votes = await votesCollection.find({ pollId: req.params.pollId }).toArray()
+    const votes = await votesCollection.find({ pollId }).toArray()
 
     const majuPoll = maju(req.poll.options)
     votes.forEach(vote => majuPoll.vote(vote.values))
     res.json({
+      id: pollId,
       ratios: majuPoll.getScoreRatio(),
       winner: majuPoll.getWinner(),
       sortedOptions: majuPoll.getSortedOptions().options,

@@ -15,7 +15,7 @@
     "instruction_create": "1. Create a poll",
     "instruction_share": "2. Share your link",
     "instruction_analyze": "3. Analyze poll results",
-    "faq_title": "What is majoity judgement ?"
+    "faq_title": "What is majoity judgment ?"
   },
   "settings": {
     "end_date": "End of votes",
@@ -33,6 +33,7 @@
   "result_winner": "Best option",
   "result_tie": "Tie break",
   "has_voted": "You already voted on this poll.",
+  "show_results": "Show results",
   "vote_instructions": "Please select a grade for each option.",
   "vote_button": "Vote !",
   "wip": "This app is under construction you may encouter bugs. Feel free to report them to me. On twitter <a href=\"https:\/\/twitter.com\/romaindurand\">@romaindurand<\/a> or on <a href=\"https:\/\/github.com\/romaindurand\/maju.app\/\">the project github page<\/a>",
