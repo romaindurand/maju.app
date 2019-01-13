@@ -6,16 +6,27 @@ module.exports = ({api, mongoClient}) => {
   api.use('/api/poll/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/poll/:pollId', async (req, res) => {
     const poll = req.poll
-    const hasPollEnded = poll.settings && poll.settings.endDate ? hasEnded(poll.settings.endDate) : false
-    res.json({
+    const response = {
       question: poll.question,
       options: poll.options,
-      hasEnded: hasPollEnded
-    })
+    }
+    if (poll.settings && poll.settings.endDate) {
+      response.hasEnded = hasEnded(poll.settings.endDate)
+      response.endDate = poll.settings.endDate
+    }
+    res.json(response)
   })
 
   api.use('/api/results/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/results/:pollId', async (req, res) => {
+    const { settings } = req.poll
+    if (settings.hideResults && !hasEnded(settings.endDate)) {
+      return res.json({
+        resultsHidden: true,
+        hasEnded: settings.endDate && hasEnded(settings.endDate),
+        endDate: settings.endDate
+      })
+    }
     const pollId = req.params.pollId
     const votesCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('votes')
     const votes = await votesCollection.find({ pollId }).toArray()
@@ -27,7 +38,8 @@ module.exports = ({api, mongoClient}) => {
       ratios: majuPoll.getScoreRatio(),
       winner: majuPoll.getWinner(),
       sortedOptions: majuPoll.getSortedOptions().options,
-      voteCount: majuPoll.getVotes().length
+      voteCount: majuPoll.getVotes().length,
+      hasEnded: hasEnded(settings.endDate)
     })
   })
 

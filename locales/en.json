@@ -20,9 +20,11 @@
   "settings": {
     "end_date": "End of votes",
     "no_end_date": "No end date selected",
-    "select_end_date": "Select an end date"
+    "select_end_date": "Select an end date",
+    "results_visible_date": "Hide results until the poll ends"
   },
   "has_ended": "This poll does not accept votes anymore",
+  "poll_ends_in": "This poll ends in",
   "more_options": "Advanced settings",
   "create_poll_button": "Create poll",
   "update_modal": "New version is available! Please reload the page",
@@ -32,6 +34,7 @@
   "result_title": "Ranking",
   "result_winner": "Best option",
   "result_tie": "Tie break",
+  "results_hidden": "Results available in ",
   "has_voted": "You already voted on this poll.",
   "show_results": "Show results",
   "vote_instructions": "Please select a grade for each option.",

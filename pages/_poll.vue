@@ -1,7 +1,14 @@
 <template>
   <div>
-    <VoteForm v-if="poll" :poll="poll" :refreshResults="refreshResults"/>
-    <PollResult v-if="poll" :poll="ratios" :resultsVisible="resultsVisible"/>
+    <VoteForm
+      v-if="poll"
+      :poll="poll"
+      :refreshResults="refreshResults"/>
+    <PollResult
+      v-if="poll && results" :results="results"
+      :resultsVisible="resultsVisible"
+      :refreshResults="refreshResults"
+      :endDate="poll.settings && poll.settings.endDate"/>
     <Card v-if="!poll" class="not-found">
       <h1>{{ $t('404_title') }}</h1>
     </Card>
@@ -30,18 +37,18 @@ export default {
     const pollId = app.context.route.params.poll
     try {
       const poll = await app.$axios.$get(`/api/poll/${pollId}`)
-      const ratios = await app.$axios.$get(`/api/results/${pollId}`)
+      const results = await app.$axios.$get(`/api/results/${pollId}`)
       return {
         poll: {
           ...poll,
           id: pollId
         },
-        ratios
+        results
       }
     } catch (ex) {
       return {
         poll: null,
-        ratios: null,
+        results: null,
       }
     }
   },
@@ -56,7 +63,13 @@ export default {
       voteAuth(this.$cookies).reset(this.poll.id)
     },
     async refreshResults() {
-      this.ratios = await this.$axios.$get(`/api/results/${this.poll.id}`)
+      const pollId = this.poll.id
+      this.results = await this.$axios.$get(`/api/results/${pollId}`)
+      const poll = await this.$axios.$get(`/api/poll/${pollId}`)
+      this.poll = {
+        ...this.poll,
+        ...poll
+      }
       this.resultsVisible = true
     }
   },

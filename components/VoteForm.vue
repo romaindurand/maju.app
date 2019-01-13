@@ -1,14 +1,21 @@
 <template>
   <Card class="vote-form">
-    <div class="question">{{ poll.question }}</div>
+    <div v-if="poll.question" class="question">{{ poll.question }}</div>
+    <no-ssr v-if="!poll.hasEnded && canVote">
+      <span class="end">{{ $t('poll_ends_in') }}</span>
+      <Countdown
+        :end="poll.endDate"
+        @finished="refreshResults"
+        :i18n="$t('countdown')"/>
+    </no-ssr>
     <div v-if="canVote && !poll.hasEnded" ref="optionsList" class="options-list">
-        <OptionVoteForm
-          v-for="(option, index) in poll.options"
-          :name="option"
-          :selectedValue="selectedValues[option]"
-          :key="index"
-          :updateSelectedValue="updateSelectedValue"
-        />
+      <OptionVoteForm
+        v-for="(option, index) in poll.options"
+        :name="option"
+        :selectedValue="selectedValues[option]"
+        :key="index"
+        :updateSelectedValue="updateSelectedValue"
+      />
       <div v-if="!isVoteValid" class="instructions">{{ $t('vote.instructions') }}</div>
       <button class="vote-button drop"
         v-if="isVoteValid"
@@ -26,13 +33,15 @@
     <div v-if="!canVote && !poll.hasEnded">
       {{ $t('has_voted') }}
     </div>
-    <div v-if="poll.hasEnded" class="has-ended">
+    <div v-if="poll.hasEnded" class="end">
       {{ $t('has_ended') }}
     </div>
   </Card>
 </template>
 
 <script>
+import Countdown from 'vuejs-countdown'
+import NoSsr from 'vue-no-ssr'
 import VueRecaptcha from 'vue-recaptcha'
 import Card from '../components/Card'
 import OptionVoteForm from './OptionVoteForm'
@@ -41,7 +50,7 @@ import slide from '../lib/slide'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  components: { Card, OptionVoteForm, VueRecaptcha },
+  components: { Card, OptionVoteForm, VueRecaptcha, Countdown, NoSsr },
   props: {
     poll: Object,
     refreshResults: Function
@@ -121,6 +130,7 @@ export default {
   .question {
     font-size: 1.5em;
     font-weight: bold;
+    margin-bottom: 10px;
   }
 
   .instructions {
@@ -129,7 +139,7 @@ export default {
     color: green;
   }
 
-  .has-ended {
+  .end {
     margin-top: 10px;
     font-style: oblique;
     font-weight: lighter;

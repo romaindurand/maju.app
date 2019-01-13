@@ -40,6 +40,14 @@
             />
           </div>
         </div>
+        <div v-if="endDate" class="setting-item">
+          <label class="results-visible-date">
+            <input
+              type="checkbox"
+              v-model="hideResults"
+              @change="hideResultsChanged"> {{ $t('settings.results_visible_date') }}
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -63,6 +71,7 @@ export default {
       endDate: null,
       open: false,
       endTime: [23, 55, 59],
+      hideResults: true,
       disabledFn: {
         customPredictor(date) {
           // disable dates before current date
@@ -93,9 +102,14 @@ export default {
     },
 
     resetEndDate () {
+      this.$store.commit('SET_PREVENT_RELOAD', false)
       this.$refs.endDatepicker.selectedDate = null
       this.endDate = null
-      this.$store.commit('SET_SETTINGS', { endDate: null })
+      this.$store.commit('SET_SETTINGS', {
+        endDate: null,
+        hideResults: true
+      })
+      this.hideResults = true
     },
     endHourChanged (value) {
       this.endTime[0] = value
@@ -106,8 +120,12 @@ export default {
       this.updateEndDate(this.endDate)
     },
     updateEndDate (date) {
+      this.$store.commit('SET_PREVENT_RELOAD', true)
       this.endDate = new Date(date.setHours(...this.endTime))
       this.$store.commit('SET_SETTINGS', { endDate: this.endDate })
+    },
+    hideResultsChanged () {
+      this.$store.commit('SET_SETTINGS', { hideResults: this.hideResults })
     }
   },
   computed: {
@@ -140,6 +158,13 @@ export default {
 
   .end-time {
     display: inline-block;
+  }
+
+  .results-visible-date {
+    cursor: pointer;
+    input {
+      zoom: 1.5;
+    }
   }
 
   .settings-container {
