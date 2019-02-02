@@ -130,7 +130,7 @@ export default {
       event.preventDefault();
       if (this.getOptions().length < 2)
         return this.notifyError({
-          message: 'Give two different options or more.',
+          message: this.$t('errors.minimum_option_count'),
           duration: 5000
         })
 

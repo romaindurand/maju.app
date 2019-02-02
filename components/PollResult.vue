@@ -19,7 +19,7 @@
         </h3>
         <h2>
           {{ $t('result_title') }}
-          <i>
+          <i v-if="results.voteCount !== null">
             ({{ +results.voteCount || 0 }} vote{{ results.voteCount !== 1 ? 's' : '' }})
           </i>
         </h2>

@@ -56,7 +56,8 @@ header {
   .error {
     div {
       margin: auto;
-      width : 300px;
+      text-align: center;
+      width : 380px;
     }
     width: 100%;
     padding: 10px;

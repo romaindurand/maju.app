@@ -4,6 +4,9 @@
   "confirm_reload": {
     "en": "Changing language will reset your form inputs. Are you sure you want to continue ?"
   },
+  "errors": {
+    "minimum_option_count": "Il faut au minimum deux options à comparer."
+  },
   "vote": {
     "instructions": "Évaluez chaque option avant de voter"
   },
@@ -21,7 +24,9 @@
     "end_date": "Date de fin des votes",
     "no_end_date": "aucune",
     "select_end_date": "Sélectionnez une date de fin",
-    "results_visible_date": "Cacher les résultats avant la fin du sondage"
+    "results_visible_date": "Cacher les résultats avant la fin du sondage",
+    "hide_vote_count": "Cacher le nombre total de votes",
+    "reset": "réinitialiser"
   },
   "has_ended": "Ce sondage n'accepte plus de votes",
   "poll_ends_in": "Fin des votes dans",

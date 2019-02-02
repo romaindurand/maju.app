@@ -4,6 +4,9 @@
   "confirm_reload": {
     "fr": "Changer la langue effacera le formulaire en cours. Êtes-vous sûr·e de vouloir continuer ?"
   },
+  "errors": {
+    "minimum_option_count": "Give two different options or more."
+  },
   "vote": {
     "instructions": "Give each option a ranking before you can vote"
   },
@@ -21,7 +24,9 @@
     "end_date": "End of votes",
     "no_end_date": "No end date selected",
     "select_end_date": "Select an end date",
-    "results_visible_date": "Hide results until the poll ends"
+    "results_visible_date": "Hide results until the poll ends",
+    "hide_vote_count": "Hide total vote count",
+    "reset": "reset"
   },
   "has_ended": "This poll does not accept votes anymore",
   "poll_ends_in": "This poll ends in",

@@ -664,25 +664,25 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
 
-"@fortawesome/fontawesome-common-types@^0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.8.tgz#8cacd1efd1aa956e1ef173f0abcf2ce1b7a0c66f"
+"@fortawesome/fontawesome-common-types@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.12.tgz#42baa71f97ca06faeb0b6718fa5ed20c5eefdf07"
 
 "@fortawesome/fontawesome-svg-core@^1.2.7":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.8.tgz#b802b7f3d5b9d9d92ae92c18e865df468dcdf561"
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.12.tgz#9732617b1e484435f6946645d7f9ad248f12c437"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.8"
+    "@fortawesome/fontawesome-common-types" "^0.2.12"
 
 "@fortawesome/free-solid-svg-icons@^5.4.2":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.5.0.tgz#4d815df4bba076f209eb409bc56d9d830367a7c0"
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.6.3.tgz#1d7f6669ccd6a1ea673699e41f7e32c81401a260"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.8"
+    "@fortawesome/fontawesome-common-types" "^0.2.12"
 
 "@fortawesome/vue-fontawesome@^0.1.1":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-0.1.2.tgz#f993d7788bd6f031a1a20ff8f608ed0f36c83185"
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-0.1.5.tgz#ea70a4d4ad0d6d617048a5b2a2ff33e21fe47d61"
 
 "@nuxt/babel-preset-app@2.3.4":
   version "2.3.4"
@@ -2018,16 +2018,17 @@ cookie-signature@1.0.6:
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
 
 cookie-universal-nuxt@^2.0.5:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/cookie-universal-nuxt/-/cookie-universal-nuxt-2.0.11.tgz#f7f2ea1d63a497b24d5e630cee4e999475e777f4"
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/cookie-universal-nuxt/-/cookie-universal-nuxt-2.0.14.tgz#6fdf8e928eadd7611c04a57614fe2e29b60eb971"
   dependencies:
     "@types/cookie" "^0.3.1"
-    cookie-universal "^2.0.11"
+    cookie-universal "^2.0.14"
 
-cookie-universal@^2.0.11:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/cookie-universal/-/cookie-universal-2.0.11.tgz#525f6324b6698a713b46be77a3440daff68e4a6a"
+cookie-universal@^2.0.14:
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/cookie-universal/-/cookie-universal-2.0.14.tgz#1b4f27cffccfc2e47703fa235c1f67f931213041"
   dependencies:
+    "@types/cookie" "^0.3.1"
     cookie "^0.3.1"
 
 cookie@0.3.1, cookie@^0.3.1:
@@ -2336,8 +2337,8 @@ dashdash@^1.12.0:
     assert-plus "^1.0.0"
 
 date-fns@^2.0.0-alpha.25:
-  version "2.0.0-alpha.25"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.25.tgz#651a5d1f59a01af6cf0371e39b2ae29df5d521ee"
+  version "2.0.0-alpha.27"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.27.tgz#5ecd4204ef0e7064264039570f6e8afbc014481c"
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -2529,8 +2530,8 @@ dot-prop@^4.1.0, dot-prop@^4.1.1:
     is-obj "^1.0.0"
 
 dotenv@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.1.0.tgz#9853b6ca98292acb7dec67a95018fa40bccff42c"
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -4312,9 +4313,9 @@ moment@^2.10.2:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
-mongodb-core@3.1.9:
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.9.tgz#c31ee407bf932b0149eaed775c17ee09974e4ca3"
+mongodb-core@3.1.11:
+  version "3.1.11"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.11.tgz#b253038dbb4d7329f3d1c2ee5400bb0c9221fde5"
   dependencies:
     bson "^1.1.0"
     require_optional "^1.0.1"
@@ -4323,10 +4324,10 @@ mongodb-core@3.1.9:
     saslprep "^1.0.0"
 
 mongodb@^3.1.8:
-  version "3.1.10"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.10.tgz#45ad9b74ea376f4122d0881b75e5489b9e504ed7"
+  version "3.1.13"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.13.tgz#f8cdcbb36ad7a08b570bd1271c8525753f75f9f4"
   dependencies:
-    mongodb-core "3.1.9"
+    mongodb-core "3.1.11"
     safe-buffer "^5.1.2"
 
 move-concurrently@^1.0.1:
@@ -4460,19 +4461,19 @@ node-releases@^1.0.1:
     semver "^5.3.0"
 
 nodemon@^1.18.4:
-  version "1.18.7"
-  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-1.18.7.tgz#716b66bf3e89ac4fcfb38a9e61887a03fc82efbb"
+  version "1.18.9"
+  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-1.18.9.tgz#90b467efd3b3c81b9453380aeb2a2cba535d0ead"
   dependencies:
     chokidar "^2.0.4"
     debug "^3.1.0"
     ignore-by-default "^1.0.1"
     minimatch "^3.0.4"
-    pstree.remy "^1.1.2"
+    pstree.remy "^1.1.6"
     semver "^5.5.0"
     supports-color "^5.2.0"
     touch "^3.1.0"
     undefsafe "^2.0.2"
-    update-notifier "^2.3.0"
+    update-notifier "^2.5.0"
 
 nopt@^4.0.1:
   version "4.0.1"
@@ -5539,9 +5540,9 @@ psl@^1.1.24:
   version "1.1.29"
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.29.tgz#60f580d360170bb722a797cc704411e6da850c67"
 
-pstree.remy@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/pstree.remy/-/pstree.remy-1.1.2.tgz#4448bbeb4b2af1fed242afc8dc7416a6f504951a"
+pstree.remy@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/pstree.remy/-/pstree.remy-1.1.6.tgz#73a55aad9e2d95814927131fbf4dc1b62d259f47"
 
 public-encrypt@^4.0.0:
   version "4.0.2"
@@ -6502,8 +6503,8 @@ tinycolor2@^1.0.0:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
 
 tinygradient@^0.4.1:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/tinygradient/-/tinygradient-0.4.2.tgz#772411d1e7091c5c45edebf8263d8545213a1b5a"
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/tinygradient/-/tinygradient-0.4.3.tgz#0a8dfde56f8865deec4c435a51bd5b0c0dec59fa"
   dependencies:
     "@types/tinycolor2" "^1.4.0"
     tinycolor2 "^1.0.0"
@@ -6698,7 +6699,7 @@ upath@^1.0.5, upath@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
 
-update-notifier@^2.3.0:
+update-notifier@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/update-notifier/-/update-notifier-2.5.0.tgz#d0744593e13f161e406acb1d9408b72cad08aff6"
   dependencies:
@@ -6847,8 +6848,8 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.1.tgz#b2d3d95402a811602380783ea4f566eb875569a2"
 
 vue-i18n@^8.1.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.4.0.tgz#bc3437ff8f5f389c57235ced602e9d7bfd87995c"
+  version "8.7.0"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.7.0.tgz#846269ad9d9c40c77479a540398d4024356fa4e1"
 
 vue-loader@^15.4.2:
   version "15.4.2"
@@ -6868,7 +6869,11 @@ vue-meta@^1.5.6:
     lodash.isplainobject "^4.0.6"
     object-assign "^4.1.1"
 
-vue-no-ssr@^1.0.0, vue-no-ssr@^1.1.0:
+vue-no-ssr@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.1.1.tgz#875f3be6fb0ae41568a837f3ac1a80eaa137b998"
+
+vue-no-ssr@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.1.0.tgz#b323807112f676324d9d7cfde85d7831ced11dd9"
 

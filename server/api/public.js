@@ -38,7 +38,7 @@ module.exports = ({api, mongoClient}) => {
       ratios: majuPoll.getScoreRatio(),
       winner: majuPoll.getWinner(),
       sortedOptions: majuPoll.getSortedOptions().options,
-      voteCount: majuPoll.getVotes().length,
+      voteCount: settings.hideVoteCount ? null : majuPoll.getVotes().length,
       hasEnded: hasEnded(settings.endDate)
     })
   })

@@ -1,7 +1,8 @@
 <template>
   <div class="settings">
     <div class="settings-header" @click="toggle">
-      <span class="fold-arrow"><font-awesome-icon :icon="foldArrow"/></span>{{ $t('more_options') }}
+      <i class="fold-arrow"><font-awesome-icon :icon="foldArrow"/></i>
+      <span>{{ $t('more_options') }}</span>
     </div>
     <div v-show="open" ref="settingsContainer">
       <div class="settings-container">
@@ -19,33 +20,32 @@
               format="dd MMMM yyyy"
               class="datepicker"
             />
-            <div v-if="endDate" class="end-time">
-              <time-input
-                :start-value="endTime[0]"
-                :max="23"
-                :ctrl-step="10"
-                @changed="endHourChanged"
-              />:
-              <time-input
-                :start-value="endTime[1]"
-                :max="59"
-                :step="5"
-                :ctrl-step="1"
-                @changed="endMinuteChanged"/>
-            </div>
-            <font-awesome-icon
-              icon="times-circle"
+          </div>
+          <div v-if="endDate" class="end-time">
+            <input type="time" @change="endTimeChanged" v-model="endTime" step="1" required/>
+          </div>
+          <div>
+            <span
+              v-if="endDate"
               class="reset"
               @click="resetEndDate"
-            />
+            >{{ $t('settings.reset') }}</span>
           </div>
         </div>
         <div v-if="endDate" class="setting-item">
-          <label class="results-visible-date">
+          <label class="checkbox-label">
             <input
               type="checkbox"
               v-model="hideResults"
               @change="hideResultsChanged"> {{ $t('settings.results_visible_date') }}
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              v-model="hideVoteCount"
+              @change="hideVoteCountChanged"> {{ $t('settings.hide_vote_count') }}
           </label>
         </div>
       </div>
@@ -54,7 +54,6 @@
 </template>
 <script>
 import Datepicker from 'vuejs-datepicker'
-import TimeInput from './TimeInput'
 import slide from '../lib/slide'
 import { fr, en } from '../node_modules/vuejs-datepicker/dist/locale'
 import { formatRelative } from 'date-fns'
@@ -63,15 +62,15 @@ import dateFnsEn from 'date-fns/locale/en-US'
 
 export default {
   components: {
-    Datepicker,
-    TimeInput
+    Datepicker
   },
   data() {
     return {
       endDate: null,
       open: false,
-      endTime: [23, 55, 59],
+      endTime: '23:59:59',
       hideResults: true,
+      hideVoteCount: false,
       disabledFn: {
         customPredictor(date) {
           // disable dates before current date
@@ -105,27 +104,27 @@ export default {
       this.$store.commit('SET_PREVENT_RELOAD', false)
       this.$refs.endDatepicker.selectedDate = null
       this.endDate = null
+      this.endTime = '23:59:59'
       this.$store.commit('SET_SETTINGS', {
         endDate: null,
         hideResults: true
       })
       this.hideResults = true
     },
-    endHourChanged (value) {
-      this.endTime[0] = value
-      this.updateEndDate(this.endDate)
-    },
-    endMinuteChanged (value) {
-      this.endTime[1] = value
+    endTimeChanged (event) {
       this.updateEndDate(this.endDate)
     },
     updateEndDate (date) {
       this.$store.commit('SET_PREVENT_RELOAD', true)
-      this.endDate = new Date(date.setHours(...this.endTime))
+      const endTime = this.endTime.split(':')
+      this.endDate = new Date(date.setHours(endTime[0], endTime[1], endTime[2]))
       this.$store.commit('SET_SETTINGS', { endDate: this.endDate })
     },
     hideResultsChanged () {
       this.$store.commit('SET_SETTINGS', { hideResults: this.hideResults })
+    },
+    hideVoteCountChanged () {
+      this.$store.commit('SET_SETTINGS', { hideVoteCount: this.hideVoteCount })
     }
   },
   computed: {
@@ -151,21 +150,7 @@ export default {
 .settings {
   text-align: left;
 
-  .end-date {
-    display: flex;
-    justify-content: space-evenly;
-  }
 
-  .end-time {
-    display: inline-block;
-  }
-
-  .results-visible-date {
-    cursor: pointer;
-    input {
-      zoom: 1.5;
-    }
-  }
 
   .settings-container {
     margin: 10px 20px;
@@ -173,8 +158,8 @@ export default {
     .setting-item {
       border: 1px solid lightgrey;
       border-radius: 5px;
-      padding: 20px;
-      margin-bottom: 10px;
+      padding: 10px 20px;
+      margin-bottom: 5px;
 
       .datepicker {
         input {
@@ -182,18 +167,39 @@ export default {
         }
         display: inline-block;
         margin-right: 10px;
+        margin-top: 5px;
       }
 
       .setting-title {
         font-size: 1.1em;
         display: block;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+      }
+
+      .end-time, .end-date {
+        display: inline-block;
+        margin-bottom: 10px;
+        span {
+          display: inline-block;
+          width: 55px;
+        }
+      }
+
+      .checkbox-label {
+        cursor: pointer;
+        input {
+          zoom: 1.5;
+          vertical-align: middle;
+        }
       }
 
       .reset {
         cursor: pointer;
+        border: 1px solid rgb(116, 0, 0);
+        border-radius: 3px;
+        padding: 3px 6px;
 
-        &:hover {
+        &:active {
           color: red;
         }
       }
@@ -204,10 +210,22 @@ export default {
   .settings-header {
     cursor: pointer;
     user-select: none;
+    margin-left: -9px;
+    transition: all 400ms ease-in-out;
+
+    span {
+      margin-left: -5px;
+    }
 
     .fold-arrow {
+      display: inline-block;
+      width: 20px;
       font-size: 1.2em;
       margin: 5px;
+    }
+
+    &:hover {
+      letter-spacing: 0.5px;
     }
   }
 
