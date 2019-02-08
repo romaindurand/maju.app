@@ -34,7 +34,11 @@ module.exports = {
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  plugins: ['~/plugins/i18n.js', '~/plugins/fontawesome.js'],
+  plugins: [
+    '~/plugins/i18n',
+    '~/plugins/fontawesome',
+    // '~/plugins/vue-js-toggle-button'
+  ],
   modules: ['@nuxtjs/proxy', '@nuxtjs/axios', 'cookie-universal-nuxt'],
   axios: {
     proxy: true

@@ -4,6 +4,7 @@
       {{ $t('results_hidden') }}
       <no-ssr>
         <Countdown
+          v-if="results.endDate"
           :end="results.endDate"
           @finished="refreshResults"
           :i18n="$t('countdown')"/>

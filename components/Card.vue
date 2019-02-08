@@ -1,8 +1,18 @@
 <template>
-  <div class="card">
+  <div class="card" @click="clickHandler">
     <slot></slot>
   </div>
 </template>
+<script>
+export default {
+  methods: {
+    clickHandler() {
+      this.$emit('click')
+    }
+  }
+}
+</script>
+
 <style lang="less">
 .card {
   box-shadow: 0 0 5px darkgray;

@@ -9,6 +9,7 @@ module.exports = ({api, mongoClient}) => {
     const response = {
       question: poll.question,
       options: poll.options,
+      settings: poll.settings
     }
     if (poll.settings && poll.settings.endDate) {
       response.hasEnded = hasEnded(poll.settings.endDate)
@@ -66,8 +67,8 @@ module.exports = ({api, mongoClient}) => {
     })
   })
 
-  api.use('/api/vote/:pollId', middlewares.recaptcha(mongoClient))
   api.use('/api/vote/:pollId', middlewares.pollExists(mongoClient))
+  api.use('/api/vote/:pollId', middlewares.recaptcha(mongoClient))
   api.post('/api/vote/:pollId', async (req, res) => {
     const db = mongoClient.db(process.env.MONGO_DATABASE)
     const poll = req.poll

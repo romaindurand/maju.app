@@ -21,31 +21,51 @@
               class="datepicker"
             />
           </div>
-          <div v-if="endDate" class="end-time">
+          <div v-if="settings.endDate" class="end-time">
             <input type="time" @change="endTimeChanged" v-model="endTime" step="1" required/>
           </div>
           <div>
             <span
-              v-if="endDate"
+              v-if="settings.endDate"
               class="reset"
               @click="resetEndDate"
             >{{ $t('settings.reset') }}</span>
           </div>
         </div>
-        <div v-if="endDate" class="setting-item">
+        <div v-if="settings.endDate" class="setting-item">
           <label class="checkbox-label">
-            <input
-              type="checkbox"
-              v-model="hideResults"
-              @change="hideResultsChanged"> {{ $t('settings.results_visible_date') }}
+            <div>
+              <toggle-button
+              class="jelly"
+              @change="hideResultsChanged"
+              :value="settings.hideResults"
+              :sync="true"
+              :labels="{checked: 'On', unchecked: 'Off'}"/>
+            </div> {{ $t('settings.results_visible_date') }}
           </label>
         </div>
         <div class="setting-item">
           <label class="checkbox-label">
-            <input
-              type="checkbox"
-              v-model="hideVoteCount"
-              @change="hideVoteCountChanged"> {{ $t('settings.hide_vote_count') }}
+            <div>
+              <toggle-button
+                class="jelly"
+                @change="hideVoteCountChanged"
+                :value="settings.hideVoteCount"
+                :sync="true"
+                :labels="{checked: 'On', unchecked: 'Off'}"/>
+            </div> {{ $t('settings.hide_vote_count') }}
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <div>
+              <toggle-button
+                class="jelly"
+                @change="testModeChanged"
+                :value="settings.testMode"
+                :sync="true"
+                :labels="{checked: 'On', unchecked: 'Off'}"/>
+            </div> {{ $t('settings.test_mode') }}
           </label>
         </div>
       </div>
@@ -54,23 +74,23 @@
 </template>
 <script>
 import Datepicker from 'vuejs-datepicker'
+import ToggleButton from './ToggleButton'
 import slide from '../lib/slide'
 import { fr, en } from '../node_modules/vuejs-datepicker/dist/locale'
 import { formatRelative } from 'date-fns'
 import dateFnsFr from 'date-fns/locale/fr'
 import dateFnsEn from 'date-fns/locale/en-US'
+import { mapState } from 'vuex';
 
 export default {
   components: {
-    Datepicker
+    Datepicker,
+    ToggleButton
   },
   data() {
     return {
-      endDate: null,
       open: false,
       endTime: '23:59:59',
-      hideResults: true,
-      hideVoteCount: false,
       disabledFn: {
         customPredictor(date) {
           // disable dates before current date
@@ -101,33 +121,38 @@ export default {
     },
 
     resetEndDate () {
-      this.$store.commit('SET_PREVENT_RELOAD', false)
       this.$refs.endDatepicker.selectedDate = null
-      this.endDate = null
       this.endTime = '23:59:59'
       this.$store.commit('SET_SETTINGS', {
         endDate: null,
-        hideResults: true
+        hideResults: false
       })
-      this.hideResults = true
     },
     endTimeChanged (event) {
-      this.updateEndDate(this.endDate)
+      this.updateEndDate(this.settings.endDate)
     },
     updateEndDate (date) {
       this.$store.commit('SET_PREVENT_RELOAD', true)
       const endTime = this.endTime.split(':')
-      this.endDate = new Date(date.setHours(endTime[0], endTime[1], endTime[2]))
-      this.$store.commit('SET_SETTINGS', { endDate: this.endDate })
+      const newDate = new Date(date.setHours(endTime[0], endTime[1], endTime[2]))
+      const shouldActivateHideResults = this.settings.endDate ? this.settings.hideResults : true
+      this.$store.commit('SET_SETTINGS', {
+        endDate: newDate,
+        hideResults: shouldActivateHideResults
+      })
     },
-    hideResultsChanged () {
-      this.$store.commit('SET_SETTINGS', { hideResults: this.hideResults })
+    hideResultsChanged (event) {
+      this.$store.commit('SET_SETTINGS', { hideResults: event.value })
     },
-    hideVoteCountChanged () {
-      this.$store.commit('SET_SETTINGS', { hideVoteCount: this.hideVoteCount })
+    hideVoteCountChanged (event) {
+      this.$store.commit('SET_SETTINGS', { hideVoteCount: event.value })
+    },
+    testModeChanged (event) {
+      this.$store.commit('SET_SETTINGS', { testMode: event.value })
     }
   },
   computed: {
+    ...mapState(['settings']),
     datepickerLanguage() {
       return { fr, en }[this.$i18n.locale]
     },
@@ -135,12 +160,12 @@ export default {
       return this.open ? 'chevron-down' : 'chevron-right'
     },
     formatedEndDate() {
-      if (!this.endDate) return this.$t('settings.no_end_date')
+      if (!this.settings.endDate) return this.$t('settings.no_end_date')
       const locale = {
         fr: dateFnsFr,
         en: dateFnsEn
       }[this.$i18n.locale]
-      return formatRelative(this.endDate, new Date(), { locale })
+      return formatRelative(this.settings.endDate, new Date(), { locale })
     }
   }
 }
@@ -186,20 +211,22 @@ export default {
       }
 
       .checkbox-label {
+        display: flex;
         cursor: pointer;
-        input {
-          zoom: 1.5;
-          vertical-align: middle;
+        user-select: none;
+        label {
+          margin-right: 10px;
         }
       }
 
       .reset {
+        font-size: 0.8em;
         cursor: pointer;
         border: 1px solid rgb(116, 0, 0);
         border-radius: 3px;
-        padding: 3px 6px;
+        padding: 2px 8px;
 
-        &:active {
+        &:active, &:hover {
           color: red;
         }
       }

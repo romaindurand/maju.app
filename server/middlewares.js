@@ -4,6 +4,8 @@ const logs = require('./logs')
 module.exports = {
   recaptcha: (mongoClient) => async (req, res, next) => {
     if (process.env.NODE_ENV !== 'production') return next()
+    if (req.poll && req.poll.settings.testMode) return next()
+
     const isRecaptchaValid = await utils.isValidRecaptchaToken(req.body.token)
     if (isRecaptchaValid) return next()
     logs(mongoClient).logEvent('invalid.recaptcha.token', { ip: req.clientIp, token: req.body.token })

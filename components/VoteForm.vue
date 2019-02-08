@@ -1,7 +1,7 @@
 <template>
   <Card class="vote-form">
     <div v-if="poll.question" class="question">{{ poll.question }}</div>
-    <no-ssr v-if="!poll.hasEnded && canVote">
+    <no-ssr v-if="poll.endDate && !poll.hasEnded && canVote">
       <span class="end">{{ $t('poll_ends_in') }}</span>
       <Countdown
         :end="poll.endDate"
@@ -31,7 +31,15 @@
         </vue-recaptcha>
     </div>
     <div v-if="!canVote && !poll.hasEnded">
-      {{ $t('has_voted') }}
+      <div v-if="poll.settings.testMode" @click="reloadPage">
+        <div>{{ $t('has_voted_test_mode')[0] }}</div>
+        <div class="test-refresh">
+          {{ $t('has_voted_test_mode')[1] }}
+        </div>
+      </div>
+      <div v-else>
+        {{ $t('has_voted') }}
+      </div>
     </div>
     <div v-if="poll.hasEnded" class="end">
       {{ $t('has_ended') }}
@@ -74,7 +82,7 @@ export default {
     },
 
     handleVoteClick () {
-      if (process.env.isProduction) {
+      if (process.env.isProduction && !this.poll.settings.testMode) {
         this.$refs.recaptcha.execute()
       } else {
         this.postFormData()
@@ -106,10 +114,13 @@ export default {
         await slide.up(this.$refs.optionsList, 400)
 
         this.canVote = false
-        voteAuth(this.$cookies).setVote(this.poll.id)
         this.refreshResults()
+        if (this.poll.settings.testMode) return;
+        voteAuth(this.$cookies).setVote(this.poll.id)
       })
     },
+
+    reloadPage: () => window.location.reload(),
 
     onExpired: function () {
       // console.log('Expired')
@@ -136,6 +147,12 @@ export default {
   .instructions {
     font-size: 1.2em;
     margin-top: 20px;
+    color: green;
+  }
+
+  .test-refresh {
+    cursor: pointer;
+    font-weight: bolder;
     color: green;
   }
 

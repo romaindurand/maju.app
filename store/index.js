@@ -12,7 +12,12 @@ export const state = () => ({
     }
   ],
   locale: 'en',
-  settings: {},
+  settings: {
+    endDate: null,
+    hideResults: false,
+    hideVoteCount: false,
+    testMode: false,
+  },
   error: null
 })
 
@@ -22,6 +27,11 @@ export const actions = {
     window.setTimeout(() => {
       commit('SET_ERROR', null)
     }, duration)
+  },
+  toggleTestMode({ commit, state }) {
+    commit('SET_SETTINGS', {
+      testMode: !state.settings.testMode
+    })
   }
 }
 

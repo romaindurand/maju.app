@@ -26,7 +26,8 @@
     "select_end_date": "Select an end date",
     "results_visible_date": "Hide results until the poll ends",
     "hide_vote_count": "Hide total vote count",
-    "reset": "reset"
+    "reset": "reset",
+    "test_mode": "Allow multiple votes per device"
   },
   "has_ended": "This poll does not accept votes anymore",
   "poll_ends_in": "This poll ends in",
@@ -41,6 +42,9 @@
   "result_tie": "Tie break",
   "results_hidden": "Results available in ",
   "has_voted": "You already voted on this poll.",
+  "has_voted_test_mode": ["This poll as no vote limitation !", "Refresh this page to vote again."],
+  "test_maju": "You want to test majority judgment ? Activate 'Test mode' to allow multiple votes !",
+  "test_maju_title": "Test mode",
   "show_results": "Show results",
   "vote_instructions": "Please select a grade for each option.",
   "vote_button": "Vote !",

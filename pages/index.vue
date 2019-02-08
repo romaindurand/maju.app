@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <PollForm :scrollToFAQ="scrollToFAQ" />
+    <TestMode />
     <Card class="instructions" ref="instructions">
       <div>{{ $t('home.instruction_create') }}</div>
       <div>{{ $t('home.instruction_share') }}</div>
@@ -17,16 +18,21 @@
 <script>
 import Card from '../components/Card'
 import PollForm from '../components/PollForm'
+import TestMode from '../components/TestMode'
+import NoSsr from 'vue-no-ssr'
+import { mapActions, mapState } from 'vuex'
+
 export default {
   components: {
-    Card, PollForm
+    Card, PollForm, TestMode
   },
   methods: {
+    ...mapActions(['toggleTestMode']),
     scrollToFAQ() {
       const instructions = this.$refs.instructions.$el
       if (typeof instructions.scrollIntoView !== 'function') return;
       event.preventDefault();
-      instructions.scrollIntoView({ 
+      instructions.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
         inline: 'nearest'
@@ -55,7 +61,7 @@ export default {
   }
   .faq {
     margin-bottom: 100px;
-    
+
     img {
       width: 100%;
       background-color: yellow;

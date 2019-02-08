@@ -26,7 +26,8 @@
     "select_end_date": "Sélectionnez une date de fin",
     "results_visible_date": "Cacher les résultats avant la fin du sondage",
     "hide_vote_count": "Cacher le nombre total de votes",
-    "reset": "réinitialiser"
+    "reset": "réinitialiser",
+    "test_mode": "Autoriser plusieurs votes par appareil"
   },
   "has_ended": "Ce sondage n'accepte plus de votes",
   "poll_ends_in": "Fin des votes dans",
@@ -41,6 +42,9 @@
   "result_tie": "Égalité",
   "results_hidden": "Les résultats seront disponibles dans ",
   "has_voted": "Vous avez déjà voté à ce sondage.",
+  "has_voted_test_mode": ["Ce sondage n'a pas de limites de votes !", "Actualisez la page pour voter à nouveau."],
+  "test_maju": "Vous voulez tester le jugement majoritaire ? Activez le 'Mode test' pour pouvoir voter plusieurs fois !",
+  "test_maju_title": "Mode test",
   "show_results": "Voir les résultats",
   "vote_instructions": "Choisissez un rang pour chaque option.",
   "vote_button": "Voter !",
