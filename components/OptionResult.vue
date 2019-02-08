@@ -41,15 +41,14 @@
 </template>
 
 <script>
-import tinygradient from 'tinygradient'
-
+import gradientColors from '../lib/gradientColors'
 export default {
   data() {
     return {
       tooltipIndex: null,
       ranks: this.$t('maju_ranks'),
       tooltipVisible: false,
-      colors: tinygradient(['#ff0000', '#33dd33']).hsv(6).map(color => color.toHexString())
+      colors: gradientColors
     }
   },
   props: ['rank', 'name', 'ratios'],

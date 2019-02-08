@@ -11,9 +11,9 @@
           width: selectedValue === index ? '60px' : null,
           fontSize: selectedValue === index ? '0.7em' : '0.6em',
           fontWeight: selectedValue === index ? 'bold' : 'normal',
-          backgroundColor: selectedValue === index ? color.toHexString(): color.clone().lighten(40).toHexString(),
+          backgroundColor: selectedValue === index ? color : lightenColor(color),
           gridColumn: index + 1,
-          boxShadow: selectedValue === index ? `0 0 10px ${color.toHexString()}`: ''
+          boxShadow: selectedValue === index ? `0 0 10px ${color}`: ''
         }"
         @click="() => updateSelectedValue(name, index)">
         {{ $t('maju_ranks')[index].toString() }}
@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import tinygradient from 'tinygradient'
+import gradientColors from '../lib/gradientColors'
+import tinycolor from 'tinycolor2'
 
 export default {
   props: {
@@ -33,7 +34,12 @@ export default {
   },
   data() {
     return {
-      colors: tinygradient(['#ff0000', '#33dd33']).hsv(6)
+      colors: gradientColors
+    }
+  },
+  methods: {
+    lightenColor(color) {
+      return tinycolor(color).lighten(40).toString()
     }
   }
 }
