@@ -49,6 +49,11 @@ export default {
         { name: 'twitter:description', content: 'The best way to create polls that really reflects people opinions.' },
         { name: 'twitter:image', content: 'https://maju.app/logo.png' },
         { name: 'twitter:site', content: '@maju_app'},
+        //facebook
+        { property: 'og:url', content: 'https://maju.app' },
+        { property: 'og:title', content: 'Create your majority judgment poll in seconds !' },
+        { property: 'og:description', content: 'The best way to create polls that really reflects people opinions.' },
+        { property: 'og:image', content: 'https://maju.app/logo.png' },
       ]
     }
   }

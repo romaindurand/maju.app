@@ -30,12 +30,17 @@ export default {
       title: `maju - ${(this.poll && this.poll.question) || "Let's make better choices together !"}`,
       meta: [
         { name: 'description', content: 'Vote and view poll results !' },
+        //twitter
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
-        // todo: make description dynamic depending on end date
-        { name: 'twitter:description', content: 'Vote and view poll results !' },
+        { name: 'twitter:description', content: 'Vote and view poll results !' },// todo: dynamic depending on end date
         { name: 'twitter:image', content: 'https://maju.app/logo.png' },
         { name: 'twitter:site', content: '@maju_app'},
+        //facebook
+        { property: 'og:url', content: `https://maju.app/${this.poll.id}` },
+        { property: 'og:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
+        { property: 'og:description', content: 'Vote and view poll results !' },
+        { property: 'og:image', content: 'https://maju.app/logo.png' },
       ]
     }
   },
