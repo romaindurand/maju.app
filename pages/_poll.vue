@@ -29,7 +29,13 @@ export default {
     return {
       title: `maju - ${(this.poll && this.poll.question) || "Let's make better choices together !"}`,
       meta: [
-        { name: 'description', content: 'Vote and view poll results !' }
+        { name: 'description', content: 'Vote and view poll results !' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
+        // todo: make description dynamic depending on end date
+        { name: 'twitter:description', content: 'Vote and view poll results !' },
+        { name: 'twitter:image', content: 'https://maju.app/logo.png' },
+        { name: 'twitter:site', content: '@maju_app'},
       ]
     }
   },

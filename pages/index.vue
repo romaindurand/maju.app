@@ -43,7 +43,12 @@ export default {
     return {
       title: 'maju - Let\'s make better choices together !',
       meta: [
-        { name: 'description', content: 'Create your majority judgment poll in seconds !' }
+        { name: 'description', content: 'Create your majority judgment poll in seconds !' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: 'Create your majority judgment poll in seconds !' },
+        { name: 'twitter:description', content: 'The best way to create polls that really reflects people opinions.' },
+        { name: 'twitter:image', content: 'https://maju.app/logo.png' },
+        { name: 'twitter:site', content: '@maju_app'},
       ]
     }
   }
