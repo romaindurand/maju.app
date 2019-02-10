@@ -34,7 +34,7 @@
   "more_options": "Réglages avancés",
   "create_poll_button": "Créer le sondage",
   "update_modal": "Une nouvelle version est disponible ! Rafraîchissez cette page pour la découvrir",
-  "maju_ranks": ["A Rejeter", "Mauvais", "Moyen", "Satifaisant", "Bon", "Excellent"],
+  "maju_ranks": ["A Rejeter", "Insuffisant", "Passable", "Assez bien", "Bien", "Très bien"],
   "view_results": "Voir les résultats",
   "result_details": [" des votes donnent à ", " le rang : "],
   "result_title": "Classement",

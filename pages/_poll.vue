@@ -37,7 +37,7 @@ export default {
         { name: 'twitter:image', content: 'https://maju.app/logo.png' },
         { name: 'twitter:site', content: '@maju_app'},
         //facebook
-        { property: 'og:url', content: `https://maju.app/${this.poll.id}` },
+        { property: 'og:url', content: this.poll ? `https://maju.app/${this.poll.id}` : 'https://maju.app' },
         { property: 'og:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
         { property: 'og:description', content: 'Vote and view poll results !' },
         { property: 'og:image', content: 'https://maju.app/logo.png' },

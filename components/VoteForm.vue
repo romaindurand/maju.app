@@ -17,7 +17,7 @@
         :updateSelectedValue="updateSelectedValue"
       />
       <div v-if="!isVoteValid" class="instructions">{{ $t('vote.instructions') }}</div>
-      <button class="vote-button drop"
+      <button class="vote-button jelly"
         v-if="isVoteValid"
         @click="handleVoteClick">
         {{ $t('vote_button') }}

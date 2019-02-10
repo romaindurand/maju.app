@@ -2,29 +2,22 @@
   <div class="option-vote-form" :key="name">
     <div class="option-name">{{ name }}</div>
     <div class="boxes-container">
-      <div
-        class="box"
+      <VoteBox
         v-for="(color, index) in colors"
         :key="index"
-        :title="$t('maju_ranks')[index].toString()"
-        :style="{
-          width: selectedValue === index ? '60px' : null,
-          fontSize: selectedValue === index ? '0.7em' : '0.6em',
-          fontWeight: selectedValue === index ? 'bold' : 'normal',
-          backgroundColor: selectedValue === index ? color : lightenColor(color),
-          gridColumn: index + 1,
-          boxShadow: selectedValue === index ? `0 0 10px ${color}`: ''
-        }"
-        @click="() => updateSelectedValue(name, index)">
-        {{ $t('maju_ranks')[index].toString() }}
-      </div>
+        @click="updateSelectedValue"
+        :isSelected="selectedValue === index"
+        :color="color"
+        :index="index"
+        :name="name"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import gradientColors from '../lib/gradientColors'
-import tinycolor from 'tinycolor2'
+import VoteBox from './VoteBox.vue'
 
 export default {
   props: {
@@ -32,14 +25,12 @@ export default {
     selectedValue: Number,
     updateSelectedValue: Function
   },
+  components: {
+    VoteBox,
+  },
   data() {
     return {
       colors: gradientColors
-    }
-  },
-  methods: {
-    lightenColor(color) {
-      return tinycolor(color).lighten(40).toString()
     }
   }
 }
@@ -72,22 +63,6 @@ export default {
     overflow: hidden;
     grid-auto-rows: minmax(50px, auto);
     grid-template-columns: repeat(6 1fr);
-  }
-}
-.box {
-  color: black;
-  height: 30px;
-  width: 45px;
-  cursor: pointer;
-  margin: auto;
-  border: 1px solid lightgray;
-  padding-top: 15px;
-  border-radius: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: width 400ms ease-in-out, font-size 400ms ease-in-out, background-color 400ms ease-in-out;
-  @media screen and (max-width: 340px) {
-    width: 30px;
   }
 }
 </style>
