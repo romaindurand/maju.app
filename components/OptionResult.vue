@@ -9,7 +9,7 @@
         class="tooltip"
         :style="{
           left: tooltipLeft,
-          backgroundColor: colors[tooltipIndex],
+          backgroundColor: lightenColor(colors[tooltipIndex]),
           width: formatRatio(ratios[tooltipIndex], 6),
           opacity: tooltipVisible ? 1 : 0,
           pointerEvents: tooltipVisible ? 'all' : 'none'
@@ -29,11 +29,11 @@
           // display: ratio > 0 ? 'block' : 'none',
           backgroundColor: colors[index],
           border: ratio ? `2px outset ${colors[index]}` : 'none',
-          width: `${ratio*100}%`
+          width: `${(ratio*100).toFixed(3)}%`
         }"
         @click="() => clickHandler(index)"
       >
-        {{ ratio ? formatRatio(ratio) : '' }}
+        {{ ratio && ratio > 0.07 ? formatRatio(ratio) : '' }}
       </div>
     </div>
     <div style="clear: both"></div>
@@ -42,6 +42,7 @@
 
 <script>
 import gradientColors from '../lib/gradientColors'
+import tinycolor from 'tinycolor2'
 export default {
   data() {
     return {
@@ -58,7 +59,7 @@ export default {
         if (index < this.tooltipIndex) memo += ratio;
         return memo;
       }, 0)
-      return this.formatRatio(left)
+      return this.formatRatio(Math.min(left, 0.7))
     }
   },
   methods: {
@@ -68,6 +69,10 @@ export default {
     clickHandler(index) {
       this.tooltipIndex = index === null ? this.tooltipIndex : index
       this.tooltipVisible = index === null ? false : true
+    },
+    lightenColor(color) {
+      const myColor = tinycolor(color).lighten(10).toString()
+      return myColor
     }
   }
 }
@@ -98,10 +103,13 @@ export default {
     margin-top: 10px;
     width: 100%;
     height: 30px;
+    white-space: nowrap;
 
     .ratio {
+      white-space: normal;
       height: 30px;
-      float: left;
+      display: inline-block;
+      vertical-align: bottom;
       font-size: 0.9em;
       padding-top: 2px;
       cursor: pointer;
@@ -110,11 +118,14 @@ export default {
     }
 
     .tooltip {
+      white-space: normal;
       box-sizing: border-box;
       position: absolute;
       cursor: pointer;
       border-radius: 5px;
       padding: 10px;
+      // top: -50%;
+      transform: translateY(-33%);
       z-index: 10;
       box-shadow: 0 0 10px black;
       min-width: 200px;
