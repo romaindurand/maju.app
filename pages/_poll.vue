@@ -49,6 +49,7 @@ export default {
     try {
       const poll = await app.$axios.$get(`/api/poll/${pollId}`)
       const results = await app.$axios.$get(`/api/results/${pollId}`)
+      console.log({poll, results})
       return {
         poll: {
           ...poll,

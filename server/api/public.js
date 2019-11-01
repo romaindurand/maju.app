@@ -9,7 +9,7 @@ module.exports = ({api, mongoClient}) => {
     const response = {
       question: poll.question,
       options: poll.options,
-      settings: poll.settings
+      settings: poll.settings || {}
     }
     if (poll.settings && poll.settings.endDate) {
       response.hasEnded = hasEnded(poll.settings.endDate)
@@ -20,7 +20,7 @@ module.exports = ({api, mongoClient}) => {
 
   api.use('/api/results/:pollId', middlewares.pollExists(mongoClient))
   api.get('/api/results/:pollId', async (req, res) => {
-    const { settings } = req.poll
+    const settings = req.poll.settings || {}
     if (settings.hideResults && !hasEnded(settings.endDate)) {
       return res.json({
         resultsHidden: true,
@@ -29,7 +29,7 @@ module.exports = ({api, mongoClient}) => {
       })
     }
     const pollId = req.params.pollId
-    const votesCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('votes')
+    const votesCollection = mongoClient.db(process.env.MONGO_DATABASE).collection('votes_new')
     const votes = await votesCollection.find({ pollId }).toArray()
 
     const majuPoll = maju(req.poll.options)
@@ -79,14 +79,14 @@ module.exports = ({api, mongoClient}) => {
       })
     }
 
-    if (!utils.stringArrayEqual(Object.keys(req.body.vote).sort(), poll.options.sort())) {
+    if (req.body.vote.length !== poll.options.length) {
       return res.status(400).json({
-        message: 'Given vote doesnt match available poll options.'
+        message: 'Given vote doesnt match poll options count.'
       })
     }
 
-    const votes = db.collection('votes')
-    const response = await votes.insertOne({
+    const votes = db.collection('votes_new')
+    await votes.insertOne({
       date: new Date(),
       pollId: req.params.pollId,
       values: req.body.vote,

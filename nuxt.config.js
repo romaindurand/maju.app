@@ -57,6 +57,9 @@ module.exports = {
     ** Run ESLint on save
     */
     extend (config, { isDev, isClient }) {
+      if (isDev) {
+        config.devtool = isClient ? 'source-map' : 'inline-source-map'
+      }
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
