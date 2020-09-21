@@ -17,7 +17,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "yarn run snyk-protect"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.7",
@@ -52,7 +52,7 @@
     "vue-style-loader": "^4.1.2",
     "vuejs-countdown": "https://github.com/romaindurand/vuejs-countdown",
     "vuejs-datepicker": "1.5.3",
-    "snyk": "^1.161.1"
+    "snyk": "^1.398.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
