@@ -41,7 +41,7 @@
     "nuxt": "^2.12.0",
     "randomstring": "^1.1.5",
     "request-ip": "^2.1.1",
-    "sass": "^1.16.1",
+    "sass": "^1.22.1",
     "sass-loader": "^7.1.0",
     "tinycolor2": "^1.4.1",
     "vue-chartjs": "^3.4.0",
