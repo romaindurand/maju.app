@@ -1,14 +1,13 @@
 <template>
   <div>
-    <VoteForm
-      v-if="poll"
-      :poll="poll"
-      :refreshResults="refreshResults"/>
+    <VoteForm v-if="poll" :poll="poll" :refreshResults="refreshResults" />
     <PollResult
-      v-if="poll && results" :results="results"
+      v-if="poll && results"
+      :results="results"
       :resultsVisible="resultsVisible"
       :refreshResults="refreshResults"
-      :endDate="poll.settings && poll.settings.endDate"/>
+      :endDate="poll.settings && poll.settings.endDate"
+    />
     <Card v-if="!poll" class="not-found">
       <h1>{{ $t('404_title') }}</h1>
     </Card>
@@ -20,28 +19,49 @@
 import Card from '../components/Card'
 import VoteForm from '../components/VoteForm'
 import PollResult from '../components/PollResult'
-import voteAuth from "../lib/voteAuth";
-import { mapState } from 'vuex';
+import voteAuth from '../lib/voteAuth'
+import { mapState } from 'vuex'
 
 export default {
   components: { VoteForm, PollResult, Card },
-  head () {
+  head() {
     return {
-      title: `maju - ${(this.poll && this.poll.question) || "Let's make better choices together !"}`,
+      title: `maju - ${(this.poll && this.poll.question) ||
+        "Let's make better choices together !"}`,
       meta: [
         { name: 'description', content: 'Vote and view poll results !' },
         //twitter
         { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
-        { name: 'twitter:description', content: 'Vote and view poll results !' },// todo: dynamic depending on end date
+        {
+          name: 'twitter:title',
+          content:
+            this.poll && this.poll.question
+              ? this.poll.question
+              : 'Click to see all available options !',
+        },
+        {
+          name: 'twitter:description',
+          content: 'Vote and view poll results !',
+        }, // todo: dynamic depending on end date
         { name: 'twitter:image', content: 'https://maju.app/logo.png' },
-        { name: 'twitter:site', content: '@maju_app'},
+        { name: 'twitter:site', content: '@maju_app' },
         //facebook
-        { property: 'og:url', content: this.poll ? `https://maju.app/${this.poll.id}` : 'https://maju.app' },
-        { property: 'og:title', content: this.poll && this.poll.question ? this.poll.question : 'Click to see all available options !' },
+        {
+          property: 'og:url',
+          content: this.poll
+            ? `https://maju.app/${this.poll.id}`
+            : 'https://maju.app',
+        },
+        {
+          property: 'og:title',
+          content:
+            this.poll && this.poll.question
+              ? this.poll.question
+              : 'Click to see all available options !',
+        },
         { property: 'og:description', content: 'Vote and view poll results !' },
         { property: 'og:image', content: 'https://maju.app/logo.png' },
-      ]
+      ],
     }
   },
   async asyncData({ app }) {
@@ -49,13 +69,12 @@ export default {
     try {
       const poll = await app.$axios.$get(`/api/poll/${pollId}`)
       const results = await app.$axios.$get(`/api/results/${pollId}`)
-      console.log({poll, results})
       return {
         poll: {
           ...poll,
-          id: pollId
+          id: pollId,
         },
-        results
+        results,
       }
     } catch (ex) {
       return {
@@ -67,7 +86,7 @@ export default {
   data() {
     return {
       isProduction: process.env.isProduction,
-      resultsVisible: false
+      resultsVisible: false,
     }
   },
   methods: {
@@ -80,10 +99,10 @@ export default {
       const poll = await this.$axios.$get(`/api/poll/${pollId}`)
       this.poll = {
         ...this.poll,
-        ...poll
+        ...poll,
       }
       this.resultsVisible = true
-    }
+    },
   },
 }
 </script>

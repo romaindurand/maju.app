@@ -7,29 +7,28 @@
         @change="toggleTestMode"
         :value="settings.testMode"
         :sync="true"
-        :labels="{checked: 'On', unchecked: 'Off'}"/>
+        :labels="{ checked: 'On', unchecked: 'Off' }"
+      />
     </div>
     <div>{{ $t('test_maju') }}</div>
   </Card>
 </template>
 <script>
 import Card from '../components/Card'
-import NoSsr from 'vue-no-ssr'
 import ToggleButton from './ToggleButton'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
     Card,
-    NoSsr,
-    ToggleButton
+    ToggleButton,
   },
   computed: {
-    ...mapState(['settings'])
+    ...mapState(['settings']),
   },
   methods: {
-    ...mapActions(['toggleTestMode'])
-  }
+    ...mapActions(['toggleTestMode']),
+  },
 }
 </script>
 <style lang="less" scoped>
