@@ -82,6 +82,7 @@ export default {
         fr: dateFnsFr,
         en: dateFnsEn,
       }[this.$i18n.locale]
+      if (!this.$props.results.endDate) return ''
       return formatDistanceToNow(new Date(this.$props.results.endDate), {
         locale,
         includeSeconds: true,

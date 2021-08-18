@@ -149,7 +149,7 @@ export default {
       this.$store.commit('SET_PREVENT_RELOAD', true)
       const endTime = this.endTime.split(':')
       const newDate = new Date(
-        date.setHours(endTime[0], endTime[1], endTime[2])
+        date.setHours(endTime[0] || 0, endTime[1] || 0, endTime[2] || 0)
       )
       const shouldActivateHideResults = this.settings.endDate
         ? this.settings.hideResults
