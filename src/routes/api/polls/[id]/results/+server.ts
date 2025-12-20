@@ -45,18 +45,20 @@ export const GET: RequestHandler = async ({ params }) => {
 		});
 
 		// Calculate results using maju
-		const mj = createPoll(candidates);
+		const mj = createPoll(candidates, {
+			GRADING_LEVELS: grades.length
+		});
 		mj.addVotes(ballots);
 		const results = mj.getResults();
 
 		// Format results
-		const ranking = results.map((option) => ({
-			rank: option.rank,
-			name: option.name,
-			medianGrade: option.medianGrade,
-			medianGradeLabel: grades[option.medianGrade],
-			score: option.score
-		}));
+		const ranking = results
+			.map((option) => ({
+				rank: option.rank,
+				name: option.name,
+				medianGrade: option.medianGrade,
+				medianGradeLabel: grades[option.medianGrade],
+			}))
 
 		// Create a map for easy lookup
 		const candidateResults = candidates.map((name) => {
@@ -66,7 +68,6 @@ export const GET: RequestHandler = async ({ params }) => {
 				medianGrade: result?.medianGrade ?? null,
 				medianGradeLabel: result?.medianGradeLabel ?? null,
 				rank: result?.rank ?? null,
-				score: result?.score ?? null
 			};
 		});
 

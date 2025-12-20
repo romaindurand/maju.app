@@ -1,4 +1,6 @@
 <script lang="ts">
+	import tinygradient from 'tinygradient';
+
 	interface Props {
 		results: {
 			pollId: string;
@@ -20,23 +22,17 @@
 
 	// Get color for grade
 	function getGradeColor(gradeIndex: number): string {
-		const colors = [
-			'#10b981', // Excellent
-			'#34d399',
-			'#fbbf24', // Bien
-			'#fb923c',
-			'#f97316', // Passable
-			'#ef4444',
-			'#dc2626' // À rejeter
-		];
+		let gradient = tinygradient(['#880000', '#88FF88']);
+		let tinycolors = gradient.hsv(results.grades.length, false);
+		let colors = tinycolors.map((t: any) => t.toHexString());
 		return colors[gradeIndex] || '#6b7280';
 	}
 
 	// Get medal emoji for top 3
 	function getMedal(rank: number): string {
-		if (rank === 1) return '🥇';
-		if (rank === 2) return '🥈';
-		if (rank === 3) return '🥉';
+		if (rank === 0) return '🥇';
+		if (rank === 1) return '🥈';
+		if (rank === 2) return '🥉';
 		return '';
 	}
 </script>
@@ -66,10 +62,10 @@
 				{#each results.ranking as candidate}
 					<div class="candidate-result" style="--rank: {candidate.rank}">
 						<div class="rank-badge">
-							{#if candidate.rank <= 3}
+							{#if candidate.rank <= 2}
 								<span class="medal">{getMedal(candidate.rank)}</span>
 							{:else}
-								<span class="rank-number">{candidate.rank}</span>
+								<span class="rank-number">{candidate.rank + 1}</span>
 							{/if}
 						</div>
 						<div class="candidate-info">

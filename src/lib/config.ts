@@ -1,13 +1,12 @@
 // Configuration for the majority judgment polling application
 
 export const DEFAULT_GRADES = [
-	'Excellent',
-	'Très bien',
-	'Bien',
-	'Assez bien',
-	'Passable',
+	'À rejeter',
 	'Insuffisant',
-	'À rejeter'
+	'Passable',
+	'Assez bien',
+	'Bien',
+	'Très bien'
 ] as const;
 
 export type Grade = (typeof DEFAULT_GRADES)[number];

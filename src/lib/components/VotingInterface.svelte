@@ -85,13 +85,13 @@
 	// Get color for grade (gradient from green to red)
 	function getGradeColor(index: number): string {
 		const colors = [
-			'#10b981', // Excellent - green
-			'#34d399',
-			'#fbbf24', // Bien - yellow
-			'#fb923c',
-			'#f97316', // Passable - orange
+			'#dc2626', // À rejeter - red
 			'#ef4444',
-			'#dc2626' // À rejeter - red
+			'#f97316', // Passable - orange
+			'#fb923c',
+			'#fbbf24', // Bien - yellow
+			'#34d399',
+			'#10b981' // Excellent - green
 		];
 		return colors[index] || '#6b7280';
 	}
