@@ -18,19 +18,11 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 	let success = $state(false);
-	let alreadyVoted = $state(false);
-	$effect(() => {
-		alreadyVoted = hasVotedLocally(poll.id);
-	});
+	let alreadyVoted = $derived(hasVotedLocally(poll.id));
 
-	// Initialize ballot with null selections
-	$effect(() => {
-		const initialBallot: Record<string, number> = {};
-		poll.options.forEach((option) => {
-			initialBallot[option] = -1; // -1 means not selected yet
-		});
-		ballot = initialBallot;
-	});
+	// Initialize ballot with null selections (single init)
+	// svelte-ignore state_referenced_locally
+		ballot = Object.fromEntries(poll.options.map((option) => [option, -1])) as Record<string, number>;
 
 	function selectGrade(option: string, gradeIndex: number) {
 		ballot[option] = gradeIndex;
@@ -100,40 +92,43 @@
 	}
 </script>
 
-<div class="voting-interface">
+<div class="max-w-3xl mx-auto">
 	{#if alreadyVoted && success}
-		<div class="success-message">
-			<div class="success-icon">✓</div>
-			<h3>Vote enregistré !</h3>
-			<p>Redirection vers les résultats...</p>
+		<div class="text-center p-12">
+			<div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl">✓</div>
+			<h3 class="text-2xl font-bold text-gray-800 mb-2">Vote enregistré !</h3>
+			<p class="text-gray-600">Redirection vers les résultats...</p>
 		</div>
 	{:else if alreadyVoted}
-		<div class="already-voted">
-			<p>Vous avez déjà voté pour ce sondage.</p>
-			<a href="/poll/{poll.id}/results" class="btn-results">Voir les résultats</a>
+		<div class="text-center p-12">
+			<p class="text-xl text-gray-500 mb-6">Vous avez déjà voté pour ce sondage.</p>
+			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
 		</div>
 	{:else}
-		<div class="poll-header">
-			<h2>{poll.title}</h2>
+		<div class="mb-8">
+			<h2 class="text-3xl font-bold mb-3 text-gray-800">{poll.title}</h2>
 			{#if poll.description}
-				<p class="description">{poll.description}</p>
+				<p class="text-lg text-gray-500 mb-4">{poll.description}</p>
 			{/if}
-			<p class="instructions">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
+			<p class="text-sm text-gray-600 italic">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
 		</div>
 
-		<form onsubmit={handleSubmit}>
-			<div class="options">
-				{#each poll.options as option}
-					<div class="option-card">
-						<h3 class="option-name">{option}</h3>
-						<div class="grades">
-							{#each poll.grades as grade, gradeIndex}
+		<form onsubmit={handleSubmit} class="space-y-6">
+			<div class="flex flex-col gap-6 mb-8">
+				{#each poll.options as option (option)}
+					<div class="bg-white border-2 border-gray-200 rounded-xl p-6 transition" class:border-blue-500={ballot[option] >= 0}>
+						<h3 class="text-xl font-semibold mb-4 text-gray-800">{option}</h3>
+						<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+							{#each poll.grades as grade, gradeIndex (gradeIndex)}
 								<button
 									type="button"
-									class="grade-button"
-									class:selected={ballot[option] === gradeIndex}
-									style="--grade-color: {getGradeColor(gradeIndex)}"
 									onclick={() => selectGrade(option, gradeIndex)}
+									class="px-3 py-2 border-2 rounded-lg bg-white text-gray-700 text-sm font-medium transition text-center hover:-translate-y-0.5"
+									style="
+										border-color: {ballot[option] === gradeIndex ? getGradeColor(gradeIndex) : ''};
+										background-color: {ballot[option] === gradeIndex ? getGradeColor(gradeIndex) : ''};
+										color: {ballot[option] === gradeIndex ? '#fff' : ''};
+									"
 								>
 									{grade}
 								</button>
@@ -144,195 +139,18 @@
 			</div>
 
 			{#if error}
-				<div class="error">{error}</div>
+				<div class="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-center">{error}</div>
 			{/if}
 
-			<button type="submit" class="btn-submit" disabled={isSubmitting || !isComplete()}>
+			<button
+				type="submit"
+				class="w-full px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+				disabled={isSubmitting || !isComplete()}
+			>
 				{isSubmitting ? 'Envoi...' : 'Soumettre mon vote'}
 			</button>
 		</form>
 	{/if}
 </div>
 
-<style>
-	.voting-interface {
-		max-width: 800px;
-		margin: 0 auto;
-	}
-
-	.poll-header {
-		margin-bottom: 2rem;
-	}
-
-	h2 {
-		font-size: 2rem;
-		font-weight: 700;
-		margin-bottom: 0.75rem;
-		color: #1f2937;
-	}
-
-	.description {
-		font-size: 1.125rem;
-		color: #6b7280;
-		margin-bottom: 1rem;
-	}
-
-	.instructions {
-		font-size: 0.95rem;
-		color: #4b5563;
-		font-style: italic;
-	}
-
-	.options {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		margin-bottom: 2rem;
-	}
-
-	.option-card {
-		background: white;
-		border: 2px solid #e5e7eb;
-		border-radius: 0.75rem;
-		padding: 1.5rem;
-		transition: border-color 0.2s;
-	}
-
-	.option-card:has(.grade-button.selected) {
-		border-color: #3b82f6;
-	}
-
-	.option-name {
-		font-size: 1.25rem;
-		font-weight: 600;
-		margin-bottom: 1rem;
-		color: #1f2937;
-	}
-
-	.grades {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-		gap: 0.5rem;
-	}
-
-	.grade-button {
-		padding: 0.75rem 0.5rem;
-		border: 2px solid #e5e7eb;
-		border-radius: 0.5rem;
-		background: white;
-		color: #374151;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s;
-		text-align: center;
-	}
-
-	.grade-button:hover {
-		border-color: var(--grade-color);
-		transform: translateY(-2px);
-	}
-
-	.grade-button.selected {
-		background: var(--grade-color);
-		border-color: var(--grade-color);
-		color: white;
-		font-weight: 600;
-		transform: scale(1.05);
-	}
-
-	.btn-submit {
-		width: 100%;
-		padding: 1rem 1.5rem;
-		background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-		color: white;
-		border: none;
-		border-radius: 0.5rem;
-		font-size: 1.125rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.2s;
-	}
-
-	.btn-submit:hover:not(:disabled) {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-	}
-
-	.btn-submit:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.error {
-		padding: 0.75rem;
-		background: #fef2f2;
-		border: 1px solid #fecaca;
-		border-radius: 0.375rem;
-		color: #dc2626;
-		margin-bottom: 1rem;
-		text-align: center;
-	}
-
-	.success-message {
-		text-align: center;
-		padding: 3rem 2rem;
-	}
-
-	.success-icon {
-		width: 80px;
-		height: 80px;
-		margin: 0 auto 1.5rem;
-		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-		color: white;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 3rem;
-		animation: scaleIn 0.5s ease-out;
-	}
-
-	@keyframes scaleIn {
-		from {
-			transform: scale(0);
-		}
-		to {
-			transform: scale(1);
-		}
-	}
-
-	.success-message h3 {
-		font-size: 1.75rem;
-		font-weight: 700;
-		color: #1f2937;
-		margin-bottom: 0.5rem;
-	}
-
-	.already-voted {
-		text-align: center;
-		padding: 3rem 2rem;
-	}
-
-	.already-voted p {
-		font-size: 1.25rem;
-		color: #6b7280;
-		margin-bottom: 1.5rem;
-	}
-
-	.btn-results {
-		display: inline-block;
-		padding: 0.875rem 1.5rem;
-		background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-		color: white;
-		text-decoration: none;
-		border-radius: 0.5rem;
-		font-weight: 600;
-		transition: all 0.2s;
-	}
-
-	.btn-results:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-	}
-</style>
+<!-- Styles supprimés au profit des utilitaires Tailwind -->

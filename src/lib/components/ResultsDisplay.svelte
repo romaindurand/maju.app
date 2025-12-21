@@ -37,47 +37,40 @@
 	}
 </script>
 
-<div class="results-display">
-	<div class="results-header">
-		<h2>{results.title}</h2>
+<div class="max-w-4xl mx-auto">
+	<div class="text-center mb-12">
+		<h2 class="text-4xl font-bold mb-3 text-gray-800">{results.title}</h2>
 		{#if results.description}
-			<p class="description">{results.description}</p>
+			<p class="text-lg text-gray-500 mb-4">{results.description}</p>
 		{/if}
-		<p class="vote-count">
-			{results.totalVotes} vote{results.totalVotes > 1 ? 's' : ''} enregistré{results.totalVotes > 1
-				? 's'
-				: ''}
+		<p class="text-base text-blue-500 font-semibold">
+			{results.totalVotes} vote{results.totalVotes > 1 ? 's' : ''} enregistré{results.totalVotes > 1 ? 's' : ''}
 		</p>
 	</div>
 
 	{#if results.totalVotes === 0}
-		<div class="no-votes">
-			<p>Aucun vote pour le moment.</p>
-			<a href="/poll/{results.pollId}" class="btn-vote">Soyez le premier à voter !</a>
+		<div class="text-center p-12 bg-gray-50 rounded-xl mb-8">
+			<p class="text-xl text-gray-500 mb-6">Aucun vote pour le moment.</p>
+			<a href="/poll/{results.pollId}" class="inline-block px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Soyez le premier à voter !</a>
 		</div>
 	{:else}
-		<div class="ranking">
-			<h3>Classement par jugement majoritaire</h3>
-				<div class="ranking-list">
-					{#each results.ranking as option}
-						<div class="option-result" style="--rank: {option.rank}">
-						<div class="rank-badge">
-								{#if option.rank <= 2}
-									<span class="medal">{getMedal(option.rank)}</span>
+		<div class="mb-12">
+			<h3 class="text-2xl font-bold mb-6 text-gray-800">Classement par jugement majoritaire</h3>
+			<div class="flex flex-col gap-4">
+				{#each results.ranking as option (option.name)}
+					<div class="flex items-center gap-6 p-6 bg-white border-2 border-gray-200 rounded-xl transition hover:border-blue-500 hover:translate-x-1 hover:shadow-md">
+						<div class="flex-shrink-0 w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-tr from-gray-100 to-gray-200 text-2xl">
+							{#if option.rank <= 2}
+								<span>{getMedal(option.rank)}</span>
 							{:else}
-									<span class="rank-number">{option.rank + 1}</span>
+								<span class="text-xl font-bold text-gray-700">{option.rank + 1}</span>
 							{/if}
 						</div>
-							<div class="option-info">
-								<h4>{option.name}</h4>
-							<div class="median-grade">
-								<span
-									class="grade-badge"
-										style="background-color: {getGradeColor(option.medianGrade)}"
-								>
-										{option.medianGradeLabel}
-								</span>
-								<span class="grade-label">Mention majoritaire</span>
+						<div class="flex-1">
+							<h4 class="text-xl font-semibold mb-2 text-gray-800">{option.name}</h4>
+							<div class="flex items-center gap-3">
+								<span class="px-2 py-1 rounded-md text-white font-semibold text-sm" style="background-color: {getGradeColor(option.medianGrade)}">{option.medianGradeLabel}</span>
+								<span class="text-sm text-gray-500">Mention majoritaire</span>
 							</div>
 						</div>
 					</div>
@@ -85,12 +78,12 @@
 			</div>
 		</div>
 
-		<div class="grade-legend">
-			<h4>Échelle d'évaluation</h4>
-			<div class="legend-items">
-				{#each results.grades as grade, index}
-					<div class="legend-item">
-						<span class="legend-color" style="background-color: {getGradeColor(index)}"></span>
+		<div class="bg-gray-50 p-6 rounded-xl mb-8">
+			<h4 class="text-lg font-semibold mb-4 text-gray-800">Échelle d'évaluation</h4>
+			<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+				{#each results.grades as grade, index (index)}
+					<div class="flex items-center gap-2">
+						<span class="w-6 h-6 rounded" style="background-color: {getGradeColor(index)}"></span>
 						<span>{grade}</span>
 					</div>
 				{/each}
@@ -98,231 +91,10 @@
 		</div>
 	{/if}
 
-	<div class="actions">
-		<a href="/poll/{results.pollId}" class="btn-secondary">Retour au sondage</a>
-		<a href="/" class="btn-secondary">Créer un nouveau sondage</a>
+	<div class="flex gap-4 justify-center flex-wrap">
+		<a href="/poll/{results.pollId}" class="inline-block px-4 py-3 bg-white text-blue-500 border-2 border-blue-500 rounded-lg font-semibold transition hover:bg-blue-500 hover:text-white hover:-translate-y-0.5">Retour au sondage</a>
+		<a href="/" class="inline-block px-4 py-3 bg-white text-blue-500 border-2 border-blue-500 rounded-lg font-semibold transition hover:bg-blue-500 hover:text-white hover:-translate-y-0.5">Créer un nouveau sondage</a>
 	</div>
 </div>
 
-<style>
-	.results-display {
-		max-width: 900px;
-		margin: 0 auto;
-	}
-
-	.results-header {
-		text-align: center;
-		margin-bottom: 3rem;
-	}
-
-	h2 {
-		font-size: 2.25rem;
-		font-weight: 700;
-		margin-bottom: 0.75rem;
-		color: #1f2937;
-	}
-
-	.description {
-		font-size: 1.125rem;
-		color: #6b7280;
-		margin-bottom: 1rem;
-	}
-
-	.vote-count {
-		font-size: 1rem;
-		color: #3b82f6;
-		font-weight: 600;
-	}
-
-	.no-votes {
-		text-align: center;
-		padding: 3rem 2rem;
-		background: #f9fafb;
-		border-radius: 0.75rem;
-		margin-bottom: 2rem;
-	}
-
-	.no-votes p {
-		font-size: 1.25rem;
-		color: #6b7280;
-		margin-bottom: 1.5rem;
-	}
-
-	.btn-vote {
-		display: inline-block;
-		padding: 0.875rem 1.5rem;
-		background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-		color: white;
-		text-decoration: none;
-		border-radius: 0.5rem;
-		font-weight: 600;
-		transition: all 0.2s;
-	}
-
-	.btn-vote:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-	}
-
-	.ranking {
-		margin-bottom: 3rem;
-	}
-
-	.ranking h3 {
-		font-size: 1.5rem;
-		font-weight: 700;
-		margin-bottom: 1.5rem;
-		color: #1f2937;
-	}
-
-	.ranking-list {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.option-result {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		padding: 1.5rem;
-		background: white;
-		border: 2px solid #e5e7eb;
-		border-radius: 0.75rem;
-		transition: all 0.3s;
-		animation: slideIn 0.5s ease-out calc(var(--rank) * 0.1s) both;
-	}
-
-	@keyframes slideIn {
-		from {
-			opacity: 0;
-			transform: translateX(-20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	.option-result:hover {
-		border-color: #3b82f6;
-		transform: translateX(5px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	}
-
-	.rank-badge {
-		flex-shrink: 0;
-		width: 60px;
-		height: 60px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-		border-radius: 50%;
-		font-size: 2rem;
-	}
-
-	.option-result:nth-child(1) .rank-badge {
-		background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-	}
-
-	.option-result:nth-child(2) .rank-badge {
-		background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
-	}
-
-	.option-result:nth-child(3) .rank-badge {
-		background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
-	}
-
-	.rank-number {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: #374151;
-	}
-
-	.option-info {
-		flex: 1;
-	}
-
-	.option-info h4 {
-		font-size: 1.25rem;
-		font-weight: 600;
-		margin-bottom: 0.5rem;
-		color: #1f2937;
-	}
-
-	.median-grade {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.grade-badge {
-		padding: 0.375rem 0.875rem;
-		border-radius: 0.375rem;
-		color: white;
-		font-weight: 600;
-		font-size: 0.875rem;
-	}
-
-	.grade-label {
-		font-size: 0.875rem;
-		color: #6b7280;
-	}
-
-	.grade-legend {
-		background: #f9fafb;
-		padding: 1.5rem;
-		border-radius: 0.75rem;
-		margin-bottom: 2rem;
-	}
-
-	.grade-legend h4 {
-		font-size: 1.125rem;
-		font-weight: 600;
-		margin-bottom: 1rem;
-		color: #1f2937;
-	}
-
-	.legend-items {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-		gap: 0.75rem;
-	}
-
-	.legend-item {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.legend-color {
-		width: 24px;
-		height: 24px;
-		border-radius: 0.25rem;
-	}
-
-	.actions {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-
-	.btn-secondary {
-		padding: 0.75rem 1.5rem;
-		background: white;
-		color: #3b82f6;
-		text-decoration: none;
-		border: 2px solid #3b82f6;
-		border-radius: 0.5rem;
-		font-weight: 600;
-		transition: all 0.2s;
-	}
-
-	.btn-secondary:hover {
-		background: #3b82f6;
-		color: white;
-		transform: translateY(-2px);
-	}
-</style>
+<!-- Styles supprimés au profit des utilitaires Tailwind -->

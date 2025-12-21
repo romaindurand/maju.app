@@ -90,47 +90,50 @@
 	}
 </script>
 
-<div class="poll-creator">
-	<h2>Créer un nouveau sondage</h2>
+<div class="max-w-xl mx-auto">
+	<h2 class="text-3xl font-bold mb-6 text-gray-800">Créer un nouveau sondage</h2>
 
-	<form onsubmit={handleSubmit}>
-		<div class="form-group">
-			<label for="title">Titre du sondage *</label>
+	<form onsubmit={handleSubmit} class="space-y-6">
+		<div>
+			<label for="title" class="block font-semibold mb-2 text-gray-700">Titre du sondage *</label>
 			<input
 				id="title"
 				type="text"
 				bind:value={title}
 				placeholder="Ex: Meilleur langage de programmation"
 				required
+				class="w-full p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500"
 			/>
 		</div>
 
-		<div class="form-group">
-			<label for="description">Description (optionnel)</label>
+		<div>
+			<label for="description" class="block font-semibold mb-2 text-gray-700">Description (optionnel)</label>
 			<textarea
 				id="description"
 				bind:value={description}
 				placeholder="Décrivez votre sondage..."
 				rows="3"
+				class="w-full p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500"
 			></textarea>
 		</div>
 
-		<fieldset class="form-group">
-			<legend>Options *</legend>
-			<div class="options-list">
+		<fieldset>
+			<legend class="mb-2 font-semibold text-gray-700">Options *</legend>
+			<div class="flex flex-col gap-3 mb-3">
 				{#each options as option, index (index)}
-					<div class="option-input">
+					<div class="flex items-center gap-2">
 						<input
 							type="text"
 							bind:value={options[index]}
 							{@attach setOptionRef(index)}
 							placeholder={`Option ${index + 1}`}
 							required
+							class="flex-1 p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500"
 						/>
 						{#if options.length > 2}
 							<button
 								type="button"
-								class="btn-remove"
+								class="p-2 bg-red-500 text-white rounded-md cursor-pointer text-xl leading-none hover:bg-red-600"
 								onclick={() => removeOption(index)}
 								aria-label="Supprimer"
 							>
@@ -140,139 +143,25 @@
 					</div>
 				{/each}
 			</div>
-			<button type="button" class="btn-add" onclick={addOption}> + Ajouter une option </button>
+			<button
+				type="button"
+				class="px-4 py-2 bg-gray-100 text-gray-700 border-2 border-dashed border-gray-300 rounded-md cursor-pointer font-medium hover:bg-gray-200 hover:border-gray-400"
+				onclick={addOption}
+			>
+				+ Ajouter une option
+			</button>
 		</fieldset>
 
 		{#if error}
-			<div class="error">{error}</div>
+			<div class="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 mb-4">{error}</div>
 		{/if}
 
-		<button type="submit" class="btn-primary" disabled={isSubmitting}>
+		<button
+			type="submit"
+			class="w-full px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+			disabled={isSubmitting}
+		>
 			{isSubmitting ? 'Création...' : 'Créer le sondage'}
 		</button>
 	</form>
 </div>
-
-<style>
-	.poll-creator {
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	h2 {
-		font-size: 1.75rem;
-		font-weight: 700;
-		margin-bottom: 1.5rem;
-		color: #1f2937;
-	}
-
-	.form-group {
-		margin-bottom: 1.5rem;
-	}
-
-	label {
-		display: block;
-		font-weight: 600;
-		margin-bottom: 0.5rem;
-		color: #374151;
-	}
-
-	input[type='text'],
-	textarea {
-		width: 100%;
-		padding: 0.75rem;
-		border: 2px solid #e5e7eb;
-		border-radius: 0.5rem;
-		font-size: 1rem;
-		transition: border-color 0.2s;
-	}
-
-	input[type='text']:focus,
-	textarea:focus {
-		outline: none;
-		border-color: #3b82f6;
-	}
-
-	.options-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		margin-bottom: 0.75rem;
-	}
-
-	.option-input {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-	}
-
-	.option-input input {
-		flex: 1;
-	}
-
-	.btn-remove {
-		padding: 0.5rem 0.75rem;
-		background: #ef4444;
-		color: white;
-		border: none;
-		border-radius: 0.375rem;
-		cursor: pointer;
-		font-size: 1.25rem;
-		line-height: 1;
-		transition: background-color 0.2s;
-	}
-
-	.btn-remove:hover {
-		background: #dc2626;
-	}
-
-	.btn-add {
-		padding: 0.5rem 1rem;
-		background: #f3f4f6;
-		color: #374151;
-		border: 2px dashed #d1d5db;
-		border-radius: 0.375rem;
-		cursor: pointer;
-		font-weight: 500;
-		transition: all 0.2s;
-	}
-
-	.btn-add:hover {
-		background: #e5e7eb;
-		border-color: #9ca3af;
-	}
-
-	.btn-primary {
-		width: 100%;
-		padding: 0.875rem 1.5rem;
-		background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-		color: white;
-		border: none;
-		border-radius: 0.5rem;
-		font-size: 1.125rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition:
-			transform 0.2s,
-			box-shadow 0.2s;
-	}
-
-	.btn-primary:hover:not(:disabled) {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-	}
-
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.error {
-		padding: 0.75rem;
-		background: #fef2f2;
-		border: 1px solid #fecaca;
-		border-radius: 0.375rem;
-		color: #dc2626;
-		margin-bottom: 1rem;
-	}
-</style>
