@@ -58,24 +58,24 @@
 	{:else}
 		<div class="ranking">
 			<h3>Classement par jugement majoritaire</h3>
-			<div class="ranking-list">
-				{#each results.ranking as candidate}
-					<div class="candidate-result" style="--rank: {candidate.rank}">
+				<div class="ranking-list">
+					{#each results.ranking as option}
+						<div class="option-result" style="--rank: {option.rank}">
 						<div class="rank-badge">
-							{#if candidate.rank <= 2}
-								<span class="medal">{getMedal(candidate.rank)}</span>
+								{#if option.rank <= 2}
+									<span class="medal">{getMedal(option.rank)}</span>
 							{:else}
-								<span class="rank-number">{candidate.rank + 1}</span>
+									<span class="rank-number">{option.rank + 1}</span>
 							{/if}
 						</div>
-						<div class="candidate-info">
-							<h4>{candidate.name}</h4>
+							<div class="option-info">
+								<h4>{option.name}</h4>
 							<div class="median-grade">
 								<span
 									class="grade-badge"
-									style="background-color: {getGradeColor(candidate.medianGrade)}"
+										style="background-color: {getGradeColor(option.medianGrade)}"
 								>
-									{candidate.medianGradeLabel}
+										{option.medianGradeLabel}
 								</span>
 								<span class="grade-label">Mention majoritaire</span>
 							</div>
@@ -181,7 +181,7 @@
 		gap: 1rem;
 	}
 
-	.candidate-result {
+	.option-result {
 		display: flex;
 		align-items: center;
 		gap: 1.5rem;
@@ -204,7 +204,7 @@
 		}
 	}
 
-	.candidate-result:hover {
+	.option-result:hover {
 		border-color: #3b82f6;
 		transform: translateX(5px);
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -222,15 +222,15 @@
 		font-size: 2rem;
 	}
 
-	.candidate-result:nth-child(1) .rank-badge {
+	.option-result:nth-child(1) .rank-badge {
 		background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
 	}
 
-	.candidate-result:nth-child(2) .rank-badge {
+	.option-result:nth-child(2) .rank-badge {
 		background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
 	}
 
-	.candidate-result:nth-child(3) .rank-badge {
+	.option-result:nth-child(3) .rank-badge {
 		background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
 	}
 
@@ -240,11 +240,11 @@
 		color: #374151;
 	}
 
-	.candidate-info {
+	.option-info {
 		flex: 1;
 	}
 
-	.candidate-info h4 {
+	.option-info h4 {
 		font-size: 1.25rem;
 		font-weight: 600;
 		margin-bottom: 0.5rem;

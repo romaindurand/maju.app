@@ -13,8 +13,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Title is required' }, { status: 400 });
 		}
 
-		if (!data.candidates || !Array.isArray(data.candidates) || data.candidates.length < 2) {
-			return json({ error: 'At least 2 candidates are required' }, { status: 400 });
+		    if (!data.options || !Array.isArray(data.options) || data.options.length < 2) {
+			    return json({ error: 'At least 2 options are required' }, { status: 400 });
 		}
 
 		// Use default grades if not provided
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			data: {
 				title: data.title.trim(),
 				description: data.description?.trim() || null,
-				candidates: JSON.stringify(data.candidates.map((c: string) => c.trim())),
+				options: JSON.stringify(data.options.map((c: string) => c.trim())),
 				grades: JSON.stringify(grades)
 			}
 		});
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			id: poll.id,
 			title: poll.title,
 			description: poll.description,
-			candidates: JSON.parse(poll.candidates),
+			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			createdAt: poll.createdAt
 		});
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async () => {
 				id: poll.id,
 				title: poll.title,
 				description: poll.description,
-				candidateCount: JSON.parse(poll.candidates).length,
+				optionCount: JSON.parse(poll.options).length,
 				createdAt: poll.createdAt
 			}))
 		);

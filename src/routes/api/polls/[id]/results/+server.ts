@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			return json({ error: 'Poll not found' }, { status: 404 });
 		}
 
-		const candidates = JSON.parse(poll.candidates) as string[];
+		const options = JSON.parse((poll as unknown as { options: string }).options) as string[];
 		const grades = JSON.parse(poll.grades) as string[];
 
 		// If no votes yet, return empty results
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				pollId: poll.id,
 				title: poll.title,
 				totalVotes: 0,
-				candidates: candidates.map((name) => ({
+				options: options.map((name) => ({
 					name,
 					medianGrade: null,
 					medianGradeLabel: null,
@@ -38,14 +38,14 @@ export const GET: RequestHandler = async ({ params }) => {
 		}
 
 		// Convert votes to maju format
-		// maju expects: array of ballots, where each ballot an object mapping candidate names to grade indices
+		// maju expects: array of ballots, where each ballot is an object mapping option names to grade indices
 		const ballots: Record<string, number>[] = poll.votes.map((vote) => {
 			const ballot = JSON.parse(vote.ballot) as Record<string, number>;
 			return ballot;
 		});
 
 		// Calculate results using maju
-		const mj = createPoll(candidates, {
+		const mj = createPoll(options, {
 			GRADING_LEVELS: grades.length
 		});
 		mj.addVotes(ballots);
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			}))
 
 		// Create a map for easy lookup
-		const candidateResults = candidates.map((name) => {
+		const optionResults = options.map((name) => {
 			const result = ranking.find((r) => r.name === name);
 			return {
 				name,
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			title: poll.title,
 			description: poll.description,
 			totalVotes: poll.votes.length,
-			candidates: candidateResults,
+			options: optionResults,
 			ranking,
 			grades
 		});

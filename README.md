@@ -24,7 +24,7 @@ L'application sera accessible sur `http://localhost:5173`
 
 ## 📋 Fonctionnalités
 
-- ✅ Création de sondages avec candidats personnalisés
+- ✅ Création de sondages avec options personnalisées
 - ✅ Vote par jugement majoritaire avec échelle de 7 mentions
 - ✅ Prévention des votes multiples (fingerprinting + localStorage + cookies)
 - ✅ Calcul automatique des résultats avec le package `maju`
@@ -33,7 +33,7 @@ L'application sera accessible sur `http://localhost:5173`
 
 ## 🗳️ Le Jugement Majoritaire
 
-Le jugement majoritaire est un système de vote où chaque votant évalue tous les candidats sur une échelle de mentions :
+Le jugement majoritaire est un système de vote où chaque votant évalue toutes les options sur une échelle de mentions :
 
 1. **Excellent**
 2. **Très bien**
@@ -104,7 +104,7 @@ export const DEFAULT_GRADES = [
 ## 📝 Utilisation
 
 1. **Créer un sondage** : Accédez à la page d'accueil et remplissez le formulaire
-2. **Voter** : Partagez le lien du sondage et évaluez chaque candidat
+2. **Voter** : Partagez le lien du sondage et évaluez chaque option
 3. **Voir les résultats** : Consultez le classement calculé par jugement majoritaire
 
 ## 🔒 Sécurité des votes

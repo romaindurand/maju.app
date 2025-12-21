@@ -7,7 +7,7 @@
 			id: string;
 			title: string;
 			description: string | null;
-			candidates: string[];
+			options: string[];
 			grades: string[];
 		};
 	}
@@ -18,23 +18,26 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 	let success = $state(false);
-	let alreadyVoted = $state(hasVotedLocally(poll.id));
+	let alreadyVoted = $state(false);
+	$effect(() => {
+		alreadyVoted = hasVotedLocally(poll.id);
+	});
 
 	// Initialize ballot with null selections
 	$effect(() => {
 		const initialBallot: Record<string, number> = {};
-		poll.candidates.forEach((candidate) => {
-			initialBallot[candidate] = -1; // -1 means not selected yet
+		poll.options.forEach((option) => {
+			initialBallot[option] = -1; // -1 means not selected yet
 		});
 		ballot = initialBallot;
 	});
 
-	function selectGrade(candidate: string, gradeIndex: number) {
-		ballot[candidate] = gradeIndex;
+	function selectGrade(option: string, gradeIndex: number) {
+		ballot[option] = gradeIndex;
 	}
 
 	function isComplete(): boolean {
-		return poll.candidates.every((candidate) => ballot[candidate] >= 0);
+		return poll.options.every((option) => ballot[option] >= 0);
 	}
 
 	async function handleSubmit(e: Event) {
@@ -42,7 +45,7 @@
 		error = '';
 
 		if (!isComplete()) {
-			error = 'Veuillez évaluer tous les candidats';
+			error = 'Veuillez évaluer toutes les options';
 			return;
 		}
 
@@ -115,22 +118,22 @@
 			{#if poll.description}
 				<p class="description">{poll.description}</p>
 			{/if}
-			<p class="instructions">Évaluez chaque candidat selon l'échelle du jugement majoritaire :</p>
+			<p class="instructions">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
 		</div>
 
 		<form onsubmit={handleSubmit}>
-			<div class="candidates">
-				{#each poll.candidates as candidate}
-					<div class="candidate-card">
-						<h3 class="candidate-name">{candidate}</h3>
+			<div class="options">
+				{#each poll.options as option}
+					<div class="option-card">
+						<h3 class="option-name">{option}</h3>
 						<div class="grades">
 							{#each poll.grades as grade, gradeIndex}
 								<button
 									type="button"
 									class="grade-button"
-									class:selected={ballot[candidate] === gradeIndex}
+									class:selected={ballot[option] === gradeIndex}
 									style="--grade-color: {getGradeColor(gradeIndex)}"
-									onclick={() => selectGrade(candidate, gradeIndex)}
+									onclick={() => selectGrade(option, gradeIndex)}
 								>
 									{grade}
 								</button>
@@ -180,14 +183,14 @@
 		font-style: italic;
 	}
 
-	.candidates {
+	.options {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 		margin-bottom: 2rem;
 	}
 
-	.candidate-card {
+	.option-card {
 		background: white;
 		border: 2px solid #e5e7eb;
 		border-radius: 0.75rem;
@@ -195,11 +198,11 @@
 		transition: border-color 0.2s;
 	}
 
-	.candidate-card:has(.grade-button.selected) {
+	.option-card:has(.grade-button.selected) {
 		border-color: #3b82f6;
 	}
 
-	.candidate-name {
+	.option-name {
 		font-size: 1.25rem;
 		font-weight: 600;
 		margin-bottom: 1rem;

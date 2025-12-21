@@ -4,17 +4,17 @@
 
 	let title = $state('');
 	let description = $state('');
-	let candidates = $state(['', '']);
+	let options = $state(['', '']);
 	let isSubmitting = $state(false);
 	let error = $state('');
 
-	function addCandidate() {
-		candidates = [...candidates, ''];
+	function addOption() {
+		options = [...options, ''];
 	}
 
-	function removeCandidate(index: number) {
-		if (candidates.length > 2) {
-			candidates = candidates.filter((_, i) => i !== index);
+	function removeOption(index: number) {
+		if (options.length > 2) {
+			options = options.filter((_, i) => i !== index);
 		}
 	}
 
@@ -28,9 +28,9 @@
 			return;
 		}
 
-		const validCandidates = candidates.filter((c) => c.trim());
-		if (validCandidates.length < 2) {
-			error = 'Au moins 2 candidats sont requis';
+		const validOptions = options.filter((c) => c.trim());
+		if (validOptions.length < 2) {
+			error = 'Au moins 2 options sont requises';
 			return;
 		}
 
@@ -43,7 +43,7 @@
 				body: JSON.stringify({
 					title: title.trim(),
 					description: description.trim() || null,
-					candidates: validCandidates,
+					options: validOptions,
 					grades: DEFAULT_GRADES
 				})
 			});
@@ -88,22 +88,22 @@
 			></textarea>
 		</div>
 
-		<div class="form-group">
-			<label>Candidats *</label>
-			<div class="candidates-list">
-				{#each candidates as candidate, index}
-					<div class="candidate-input">
+		<fieldset class="form-group">
+			<legend>Options *</legend>
+			<div class="options-list">
+				{#each options as option, index}
+					<div class="option-input">
 						<input
 							type="text"
-							bind:value={candidates[index]}
-							placeholder={`Candidat ${index + 1}`}
+							bind:value={options[index]}
+							placeholder={`Option ${index + 1}`}
 							required
 						/>
-						{#if candidates.length > 2}
+						{#if options.length > 2}
 							<button
 								type="button"
 								class="btn-remove"
-								onclick={() => removeCandidate(index)}
+								onclick={() => removeOption(index)}
 								aria-label="Supprimer"
 							>
 								✕
@@ -112,8 +112,8 @@
 					</div>
 				{/each}
 			</div>
-			<button type="button" class="btn-add" onclick={addCandidate}> + Ajouter un candidat </button>
-		</div>
+			<button type="button" class="btn-add" onclick={addOption}> + Ajouter une option </button>
+		</fieldset>
 
 		{#if error}
 			<div class="error">{error}</div>
@@ -165,20 +165,20 @@
 		border-color: #3b82f6;
 	}
 
-	.candidates-list {
+	.options-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 		margin-bottom: 0.75rem;
 	}
 
-	.candidate-input {
+	.option-input {
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
 	}
 
-	.candidate-input input {
+	.option-input input {
 		flex: 1;
 	}
 

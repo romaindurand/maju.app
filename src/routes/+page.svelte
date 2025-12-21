@@ -16,7 +16,7 @@
 
 	<footer>
 		<p>
-			Le jugement majoritaire permet à chaque votant d'évaluer tous les candidats sur une échelle de
+			Le jugement majoritaire permet à chaque votant d'évaluer toutes les options sur une échelle de
 			mentions. Le gagnant est celui qui obtient la meilleure mention majoritaire.
 		</p>
 	</footer>

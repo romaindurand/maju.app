@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			id: poll.id,
 			title: poll.title,
 			description: poll.description,
-			candidates: JSON.parse(poll.candidates),
+			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			createdAt: poll.createdAt
 		});

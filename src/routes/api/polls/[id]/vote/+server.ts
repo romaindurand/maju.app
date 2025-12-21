@@ -40,25 +40,25 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 		}
 
 		// Validate ballot structure
-		const candidates = JSON.parse(poll.candidates) as string[];
+		const options = JSON.parse(poll.options) as string[];
 		const grades = JSON.parse(poll.grades) as string[];
 
-		for (const candidate of candidates) {
-			if (!(candidate in data.ballot)) {
+		for (const option of options) {
+			if (!(option in data.ballot)) {
 				return json(
-					{ error: `Missing grade for candidate: ${candidate}` },
+					{ error: `Missing grade for option: ${option}` },
 					{ status: 400 }
 				);
 			}
 
-			const gradeIndex = data.ballot[candidate];
+			const gradeIndex = data.ballot[option];
 			if (
 				typeof gradeIndex !== 'number' ||
 				gradeIndex < 0 ||
 				gradeIndex >= grades.length
 			) {
 				return json(
-					{ error: `Invalid grade for candidate: ${candidate}` },
+					{ error: `Invalid grade for option: ${option}` },
 					{ status: 400 }
 				);
 			}

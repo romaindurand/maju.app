@@ -15,7 +15,7 @@ model Poll {
   id          String   @id @default(cuid())
   title       String
   description String?
-  candidates  String // JSON array of candidate names
+  options     String // JSON array of option names
   grades      String // JSON array of grade labels
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -25,7 +25,7 @@ model Poll {
 model Vote {
   id              String   @id @default(cuid())
   pollId          String
-  ballot          String // JSON object mapping candidate names to grade indices
+  ballot          String // JSON object mapping option names to grade indices
   voterIdentifier String // Hashed fingerprint + localStorage + cookie
   createdAt       DateTime @default(now())
   poll            Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
