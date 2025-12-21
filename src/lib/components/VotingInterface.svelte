@@ -119,14 +119,14 @@
 				{#each poll.options as option (option)}
 					<div class="bg-white border-2 border-gray-200 rounded-xl p-6 transition" class:border-blue-500={ballot[option] >= 0}>
 						<h3 class="text-xl font-semibold mb-4 text-gray-800">{option}</h3>
-						<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+						<div class="flex flex-col sm:flex-row sm:flex-nowrap gap-2">
 							{#each poll.grades as grade, gradeIndex (gradeIndex)}
 								<button
 									type="button"
 									onclick={() => selectGrade(option, gradeIndex)}
-									class="px-3 py-2 border-2 rounded-lg bg-white text-gray-700 text-sm font-medium transition text-center hover:-translate-y-0.5"
+									class="px-2 sm:px-3 py-1 sm:py-2 border-2 rounded-md bg-white text-gray-700 text-xs sm:text-sm font-medium transition text-center hover:-translate-y-0.5"
 									style="
-										border-color: {ballot[option] === gradeIndex ? getGradeColor(gradeIndex) : ''};
+										border-color: {getGradeColor(gradeIndex)};
 										background-color: {ballot[option] === gradeIndex ? getGradeColor(gradeIndex) : ''};
 										color: {ballot[option] === gradeIndex ? '#fff' : ''};
 									"
