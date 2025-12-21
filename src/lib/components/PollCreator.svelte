@@ -10,13 +10,13 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 
-	function setOptionRef(node: HTMLInputElement, idx: number) {
-		optionRefs[idx] = node;
-		return {
-			destroy() {
+	function setOptionRef(idx: number) {
+		return (node: HTMLInputElement) => {
+			optionRefs[idx] = node;
+			return () => {
 				// Optionnel: nettoyage si nécessaire
 				optionRefs[idx] = undefined as unknown as HTMLInputElement;
-			}
+			};
 		};
 	}
 
@@ -47,6 +47,18 @@
 		if (validOptions.length < 2) {
 			error = 'Au moins 2 options sont requises';
 			return;
+		}
+
+		// Duplicate validation (case-insensitive, trimmed)
+		const normalized = validOptions.map((c) => c.trim().toLowerCase());
+		const seen: Record<string, true> = {};
+		for (let i = 0; i < normalized.length; i++) {
+			const val = normalized[i];
+			if (seen[val]) {
+				error = 'Les options doivent être uniques';
+				return;
+			}
+			seen[val] = true;
 		}
 
 		isSubmitting = true;
@@ -111,7 +123,7 @@
 						<input
 							type="text"
 							bind:value={options[index]}
-							use:setOptionRef={index}
+							{@attach setOptionRef(index)}
 							placeholder={`Option ${index + 1}`}
 							required
 						/>
