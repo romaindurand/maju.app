@@ -9,6 +9,7 @@
 			description: string | null;
 			options: string[];
 			grades: string[];
+			preventMultipleVotes: boolean;
 		};
 	}
 
@@ -18,7 +19,7 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 	let success = $state(false);
-	let alreadyVoted = $derived(hasVotedLocally(poll.id));
+	let alreadyVoted = $derived(poll.preventMultipleVotes && hasVotedLocally(poll.id));
 
 	// Initialize ballot with null selections (single init)
 	// svelte-ignore state_referenced_locally

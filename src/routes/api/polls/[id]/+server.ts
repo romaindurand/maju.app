@@ -19,6 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			description: poll.description,
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
+			preventMultipleVotes: poll.preventMultipleVotes,
 			createdAt: poll.createdAt
 		});
 	} catch (error) {

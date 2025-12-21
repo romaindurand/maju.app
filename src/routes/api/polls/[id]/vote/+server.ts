@@ -27,16 +27,19 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			return json({ error: 'Poll not found' }, { status: 404 });
 		}
 
-		// Check if user has already voted (server-side check)
-		const existingVote = await db.vote.findFirst({
-			where: {
-				pollId: params.id,
-				voterIdentifier: data.voterIdentifier
-			}
-		});
 
-		if (existingVote) {
-			return json({ error: 'You have already voted on this poll' }, { status: 409 });
+		// Check if user has already voted (server-side check) when prevention enabled
+		if (poll.preventMultipleVotes) {
+			const existingVote = await db.vote.findFirst({
+				where: {
+					pollId: params.id,
+					voterIdentifier: data.voterIdentifier
+				}
+			});
+
+			if (existingVote) {
+				return json({ error: 'You have already voted on this poll' }, { status: 409 });
+			}
 		}
 
 		// Validate ballot structure

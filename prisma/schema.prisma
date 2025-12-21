@@ -17,6 +17,7 @@ model Poll {
   description String?
   options     String // JSON array of option names
   grades      String // JSON array of grade labels
+  preventMultipleVotes Boolean @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   votes       Vote[]

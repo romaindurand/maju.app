@@ -55,7 +55,7 @@
 		</div>
 	{:else}
 		<div class="mb-12">
-			<h3 class="text-2xl font-bold mb-6 text-gray-800">Classement par jugement majoritaire</h3>
+			<h3 class="text-2xl font-bold mb-6 text-gray-800">Résultats</h3>
 			<div class="flex flex-col gap-4">
 				{#each results.ranking as option (option.name)}
 					<div class="flex items-center gap-6 p-6 bg-white border-2 border-gray-200 rounded-xl transition hover:border-blue-500 hover:translate-x-1 hover:shadow-md">

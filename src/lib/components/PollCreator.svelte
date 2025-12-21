@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { DEFAULT_GRADES } from '$lib/config';
 	import { tick } from 'svelte';
+	import ToggleSwitch from '$lib/components/ToggleSwitch.svelte';
 
 	let title = $state('');
 	let description = $state('');
@@ -9,6 +10,7 @@
 	let optionRefs: HTMLInputElement[] = [];
 	let isSubmitting = $state(false);
 	let error = $state('');
+	let preventMultipleVotes = $state(true);
 
 	function setOptionRef(idx: number) {
 		return (node: HTMLInputElement) => {
@@ -71,7 +73,8 @@
 					title: title.trim(),
 					description: description.trim() || null,
 					options: validOptions,
-					grades: DEFAULT_GRADES
+					grades: DEFAULT_GRADES,
+					preventMultipleVotes
 				})
 			});
 
@@ -150,6 +153,15 @@
 			>
 				+ Ajouter une option
 			</button>
+		</fieldset>
+
+		<fieldset class="mt-6">
+			<legend class="mb-2 font-semibold text-gray-700">Paramètres</legend>
+			<ToggleSwitch
+				label="Interdire les votes multiples"
+				description="Empêche un même utilisateur de voter plusieurs fois pour ce sondage."
+				bind:checked={preventMultipleVotes}
+			/>
 		</fieldset>
 
 		{#if error}

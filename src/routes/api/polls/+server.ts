@@ -20,13 +20,18 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Use default grades if not provided
 		const grades = data.grades || DEFAULT_GRADES;
 
+		// Settings: preventMultipleVotes (default true)
+		const preventMultipleVotes =
+			typeof data.preventMultipleVotes === 'boolean' ? data.preventMultipleVotes : true;
+
 		// Create poll in database
 		const poll = await db.poll.create({
 			data: {
 				title: data.title.trim(),
 				description: data.description?.trim() || null,
 				options: JSON.stringify(data.options.map((c: string) => c.trim())),
-				grades: JSON.stringify(grades)
+				grades: JSON.stringify(grades),
+				preventMultipleVotes
 			}
 		});
 
@@ -36,6 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			description: poll.description,
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
+			preventMultipleVotes: poll.preventMultipleVotes,
 			createdAt: poll.createdAt
 		});
 	} catch (error) {
