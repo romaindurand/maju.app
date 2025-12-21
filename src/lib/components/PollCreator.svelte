@@ -1,15 +1,30 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { DEFAULT_GRADES } from '$lib/config';
+	import { tick } from 'svelte';
 
 	let title = $state('');
 	let description = $state('');
 	let options = $state(['', '']);
+	let optionRefs: HTMLInputElement[] = [];
 	let isSubmitting = $state(false);
 	let error = $state('');
 
-	function addOption() {
+	function setOptionRef(node: HTMLInputElement, idx: number) {
+		optionRefs[idx] = node;
+		return {
+			destroy() {
+				// Optionnel: nettoyage si nécessaire
+				optionRefs[idx] = undefined as unknown as HTMLInputElement;
+			}
+		};
+	}
+
+	async function addOption() {
 		options = [...options, ''];
+		await tick();
+		// Focus sur le nouvel input créé
+		optionRefs[options.length - 1]?.focus();
 	}
 
 	function removeOption(index: number) {
@@ -91,11 +106,12 @@
 		<fieldset class="form-group">
 			<legend>Options *</legend>
 			<div class="options-list">
-				{#each options as option, index}
+				{#each options as option, index (index)}
 					<div class="option-input">
 						<input
 							type="text"
 							bind:value={options[index]}
+							use:setOptionRef={index}
 							placeholder={`Option ${index + 1}`}
 							required
 						/>
