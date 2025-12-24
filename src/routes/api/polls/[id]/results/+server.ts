@@ -39,8 +39,8 @@ export const GET: RequestHandler = async ({ params }) => {
 
 		// Convert votes to maju format
 		// maju expects: array of ballots, where each ballot is an object mapping option names to grade indices
-		const ballots: Record<string, number>[] = poll.votes.map((vote) => {
-			const ballot = JSON.parse(vote.ballot) as Record<string, number>;
+		const ballots: Record<string, number>[] = poll.votes.map((vote: { ballot: string }) => {
+			const ballot = JSON.parse(vote.ballot as string) as Record<string, number>;
 			return ballot;
 		});
 
@@ -51,14 +51,28 @@ export const GET: RequestHandler = async ({ params }) => {
 		mj.addVotes(ballots);
 		const results = mj.getResults();
 
+		// Build per-option grade distribution from maju results
+		const distributions: Record<string, { gradeIndex: number; label: string; count: number; percentage: number }[]> = {};
+		for (const option of results) {
+			const name = option.name;
+			const optDist = option.distribution ?? [];
+			distributions[name] = optDist.map((d, gradeIndex) => ({
+				gradeIndex,
+				label: grades[gradeIndex],
+				count: d.count,
+				// Normalize ratio (0..1) to percentage (0..100) with two decimals
+				percentage: Math.round((d.percentage ?? 0) * 10000) / 100
+			}));
+		}
+
 		// Format results
-		const ranking = results
-			.map((option) => ({
-				rank: option.rank,
-				name: option.name,
-				medianGrade: option.medianGrade,
-				medianGradeLabel: grades[option.medianGrade],
-			}))
+		const ranking = results.map((option) => ({
+			rank: option.rank,
+			name: option.name,
+			medianGrade: option.medianGrade,
+			medianGradeLabel: grades[option.medianGrade],
+			distribution: distributions[option.name]
+		}));
 
 		// Create a map for easy lookup
 		const optionResults = options.map((name) => {
@@ -68,6 +82,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				medianGrade: result?.medianGrade ?? null,
 				medianGradeLabel: result?.medianGradeLabel ?? null,
 				rank: result?.rank ?? null,
+				distribution: distributions[name]
 			};
 		});
 

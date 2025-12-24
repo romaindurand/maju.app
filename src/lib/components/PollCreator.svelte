@@ -170,7 +170,7 @@
 
 		<button
 			type="submit"
-			class="w-full px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+			class="w-full px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
 			disabled={isSubmitting}
 		>
 			{isSubmitting ? 'Création...' : 'Créer le sondage'}

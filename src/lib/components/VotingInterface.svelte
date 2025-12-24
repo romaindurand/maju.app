@@ -96,14 +96,14 @@
 <div class="max-w-3xl mx-auto">
 	{#if alreadyVoted && success}
 		<div class="text-center p-12">
-			<div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl">✓</div>
+			<div class="w-20 h-20 mx-auto mb-6 bg-linear-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl">✓</div>
 			<h3 class="text-2xl font-bold text-gray-800 mb-2">Vote enregistré !</h3>
 			<p class="text-gray-600">Redirection vers les résultats...</p>
 		</div>
 	{:else if alreadyVoted}
 		<div class="text-center p-12">
 			<p class="text-xl text-gray-500 mb-6">Vous avez déjà voté pour ce sondage.</p>
-			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
+			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
 		</div>
 	{:else}
 		<div class="mb-8">
@@ -145,7 +145,7 @@
 
 			<button
 				type="submit"
-				class="w-full px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+				class="w-full px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
 				disabled={isSubmitting || !isComplete()}
 			>
 				{isSubmitting ? 'Envoi...' : 'Soumettre mon vote'}

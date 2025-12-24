@@ -72,8 +72,8 @@ importers:
         specifier: ^16.5.0
         version: 16.5.0
       maju:
-        specifier: 3.0.0-beta.3
-        version: 3.0.0-beta.3
+        specifier: 3.0.0-beta.4
+        version: 3.0.0-beta.4
       node-gyp:
         specifier: ^12.1.0
         version: 12.1.0
@@ -1434,8 +1434,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  maju@3.0.0-beta.3:
-    resolution: {integrity: sha512-XUuWTpYgweoF2XQvwWeA/Z8tABSEw/SITwlwUl5dXv84ofKzE8R5mbzTISkBO01D/h8G3n6cXAA/BWxG8tJGTg==}
+  maju@3.0.0-beta.4:
+    resolution: {integrity: sha512-yMx/XIHihLygR2T30gC7ZuNlDTzQU4LzOLKkg66zarGP7us92Go7cN5sG0ms9ZwzTHW7HdM3svfZjAPKPhSi8A==}
 
   make-fetch-happen@15.0.3:
     resolution: {integrity: sha512-iyyEpDty1mwW3dGlYXAJqC/azFn5PPvgKVwXayOGBSmKLxhKZ9fg4qIan2ePpp1vJIwfFiO34LAPZgq9SZW9Aw==}
@@ -3385,7 +3385,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  maju@3.0.0-beta.3: {}
+  maju@3.0.0-beta.4: {}
 
   make-fetch-happen@15.0.3:
     dependencies:
