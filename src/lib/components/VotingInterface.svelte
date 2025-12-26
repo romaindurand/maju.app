@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { generateVoterIdentifier, hasVotedLocally, markAsVoted } from '$lib/utils/voter';
+	import { generateBrowserFingerprint } from '$lib/utils/fingerprint';
 
 	interface Props {
 		poll: {
@@ -45,15 +46,17 @@
 		isSubmitting = true;
 
 		try {
-			// Generate voter identifier
+			// Generate voter identifier and fingerprint
 			const voterIdentifier = await generateVoterIdentifier();
+			const fingerprint = await generateBrowserFingerprint();
 
 			const response = await fetch(`/api/polls/${poll.id}/vote`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					ballot,
-					voterIdentifier
+					voterIdentifier,
+					fingerprint
 				})
 			});
 

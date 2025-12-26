@@ -28,9 +28,11 @@ model Vote {
   pollId          String
   ballot          String // JSON object mapping option names to grade indices
   voterIdentifier String // Hashed fingerprint + localStorage + cookie
+  fingerprint     String @default("") // Browser fingerprint hash (SHA-256)
   createdAt       DateTime @default(now())
   poll            Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
   @@index([pollId])
   @@index([voterIdentifier, pollId])
+  @@index([fingerprint, pollId])
 }

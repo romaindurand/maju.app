@@ -13,6 +13,16 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			return json({ error: 'Voter identifier is required' }, { status: 400 });
 		}
 
+		// Validate fingerprint (required)
+		if (!data.fingerprint || typeof data.fingerprint !== 'string') {
+			return json({ error: 'Fingerprint is required' }, { status: 400 });
+		}
+		// Basic fingerprint format check: SHA-256 hex (64 chars)
+		const isHex64 = /^[a-f0-9]{64}$/i.test(data.fingerprint);
+		if (!isHex64) {
+			return json({ error: 'Invalid fingerprint format' }, { status: 400 });
+		}
+
 		// Validate ballot
 		if (!data.ballot || typeof data.ballot !== 'object') {
 			return json({ error: 'Ballot is required' }, { status: 400 });
@@ -33,7 +43,10 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			const existingVote = await db.vote.findFirst({
 				where: {
 					pollId: params.id,
-					voterIdentifier: data.voterIdentifier
+					OR: [
+						{ voterIdentifier: data.voterIdentifier },
+						{ fingerprint: data.fingerprint }
+					]
 				}
 			});
 
@@ -72,7 +85,8 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			data: {
 				pollId: params.id,
 				ballot: JSON.stringify(data.ballot),
-				voterIdentifier: data.voterIdentifier
+				voterIdentifier: data.voterIdentifier,
+				fingerprint: data.fingerprint
 			}
 		});
 
