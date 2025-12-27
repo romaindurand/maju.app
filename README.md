@@ -96,7 +96,7 @@ src/
 ```typescript
 export const DEFAULT_GRADES = [
 	'Excellent',
-	'Très bien',
+	'Très bien'
 	// ... vos mentions personnalisées
 ];
 ```

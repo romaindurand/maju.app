@@ -57,7 +57,10 @@ export const GET: RequestHandler = async ({ params }) => {
 		const results = mj.getResults();
 
 		// Build per-option grade distribution from maju results
-		const distributions: Record<string, { gradeIndex: number; label: string; count: number; percentage: number }[]> = {};
+		const distributions: Record<
+			string,
+			{ gradeIndex: number; label: string; count: number; percentage: number }[]
+		> = {};
 		for (const option of results) {
 			const name = option.name;
 			const optDist = option.distribution ?? [];

@@ -28,11 +28,12 @@
 	let remainingMs = $state(0);
 	let countdownText = $derived(formatCountdown(remainingMs));
 	let hasCountdown = $derived(!!parseExpiresAt());
-	let expired = $derived(hasCountdown ? (remainingMs <= 0 || poll.isExpired === true) : false);
+	let expired = $derived(hasCountdown ? remainingMs <= 0 || poll.isExpired === true : false);
 
 	function parseExpiresAt(): Date | null {
 		if (!poll.expiresAt) return null;
-		const d = typeof poll.expiresAt === 'string' ? new Date(poll.expiresAt) : (poll.expiresAt as Date);
+		const d =
+			typeof poll.expiresAt === 'string' ? new Date(poll.expiresAt) : (poll.expiresAt as Date);
 		return isNaN(d.getTime()) ? null : d;
 	}
 
@@ -71,7 +72,7 @@
 
 	// Initialize ballot with null selections (single init)
 	// svelte-ignore state_referenced_locally
-		ballot = Object.fromEntries(poll.options.map((option) => [option, -1])) as Record<string, number>;
+	ballot = Object.fromEntries(poll.options.map((option) => [option, -1])) as Record<string, number>;
 
 	function selectGrade(option: string, gradeIndex: number) {
 		ballot[option] = gradeIndex;
@@ -153,18 +154,30 @@
 		<div class="text-center p-12">
 			<h3 class="text-2xl font-bold text-gray-800 mb-2">Sondage terminé</h3>
 			<p class="text-gray-600 mb-6">Les votes ne sont plus possibles.</p>
-			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
+			<a
+				href="/poll/{poll.id}/results"
+				class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg"
+				>Voir les résultats</a
+			>
 		</div>
 	{:else if alreadyVoted && success}
 		<div class="text-center p-12">
-			<div class="w-20 h-20 mx-auto mb-6 bg-linear-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl">✓</div>
+			<div
+				class="w-20 h-20 mx-auto mb-6 bg-linear-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl"
+			>
+				✓
+			</div>
 			<h3 class="text-2xl font-bold text-gray-800 mb-2">Vote enregistré !</h3>
 			<p class="text-gray-600">Redirection vers les résultats...</p>
 		</div>
 	{:else if alreadyVoted}
 		<div class="text-center p-12">
 			<p class="text-xl text-gray-500 mb-6">Vous avez déjà voté pour ce sondage.</p>
-			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
+			<a
+				href="/poll/{poll.id}/results"
+				class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg"
+				>Voir les résultats</a
+			>
 		</div>
 	{:else}
 		<div class="mb-8">
@@ -173,13 +186,20 @@
 				<p class="text-lg text-gray-500 mb-4">{poll.description}</p>
 			{/if}
 			<div class="flex items-center justify-between gap-4">
-				<p class="text-sm text-gray-600 italic">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
+				<p class="text-sm text-gray-600 italic">
+					Évaluez chaque option selon l'échelle du jugement majoritaire :
+				</p>
 				<div class="text-sm font-medium text-gray-700">
 					{#if hasCountdown}
 						{#if !expired}
-							<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 border">⏳ Termine dans {countdownText}</span>
+							<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 border"
+								>⏳ Termine dans {countdownText}</span
+							>
 						{:else}
-							<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-50 border border-red-200 text-red-700">Sondage terminé</span>
+							<span
+								class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-50 border border-red-200 text-red-700"
+								>Sondage terminé</span
+							>
 						{/if}
 					{/if}
 				</div>
@@ -189,7 +209,10 @@
 		<form onsubmit={handleSubmit} class="space-y-6">
 			<div class="flex flex-col gap-6 mb-8">
 				{#each poll.options as option (option)}
-					<div class="bg-white border-2 border-gray-200 rounded-xl p-6 transition" class:border-blue-500={ballot[option] >= 0}>
+					<div
+						class="bg-white border-2 border-gray-200 rounded-xl p-6 transition"
+						class:border-blue-500={ballot[option] >= 0}
+					>
 						<h3 class="text-xl font-semibold mb-4 text-gray-800">{option}</h3>
 						<div class="flex flex-col sm:flex-row sm:flex-nowrap gap-2">
 							{#each poll.grades as grade, gradeIndex (gradeIndex)}
@@ -212,7 +235,9 @@
 			</div>
 
 			{#if error}
-				<div class="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-center">{error}</div>
+				<div class="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-center">
+					{error}
+				</div>
 			{/if}
 
 			<button

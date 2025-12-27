@@ -47,10 +47,7 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			const existingVote = await db.vote.findFirst({
 				where: {
 					pollId: params.id,
-					OR: [
-						{ voterIdentifier: data.voterIdentifier },
-						{ fingerprint: data.fingerprint }
-					]
+					OR: [{ voterIdentifier: data.voterIdentifier }, { fingerprint: data.fingerprint }]
 				}
 			});
 
@@ -65,22 +62,12 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 
 		for (const option of options) {
 			if (!(option in data.ballot)) {
-				return json(
-					{ error: `Missing grade for option: ${option}` },
-					{ status: 400 }
-				);
+				return json({ error: `Missing grade for option: ${option}` }, { status: 400 });
 			}
 
 			const gradeIndex = data.ballot[option];
-			if (
-				typeof gradeIndex !== 'number' ||
-				gradeIndex < 0 ||
-				gradeIndex >= grades.length
-			) {
-				return json(
-					{ error: `Invalid grade for option: ${option}` },
-					{ status: 400 }
-				);
+			if (typeof gradeIndex !== 'number' || gradeIndex < 0 || gradeIndex >= grades.length) {
+				return json({ error: `Invalid grade for option: ${option}` }, { status: 400 });
 			}
 		}
 

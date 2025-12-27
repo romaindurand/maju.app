@@ -6,9 +6,9 @@ import PollCreator from './PollCreator.svelte';
 describe('PollCreator.svelte', () => {
 	it('empêche la création si des options sont dupliquées (insensible à la casse)', async () => {
 		// Mock fetch pour vérifier qu'il n'est pas appelé
-		const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-			new Response(JSON.stringify({ id: 'dummy' }), { status: 200 })
-		);
+		const fetchSpy = vi
+			.spyOn(globalThis, 'fetch')
+			.mockResolvedValue(new Response(JSON.stringify({ id: 'dummy' }), { status: 200 }));
 
 		render(PollCreator);
 

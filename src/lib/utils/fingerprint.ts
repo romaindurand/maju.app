@@ -81,9 +81,7 @@ function getWebGLFingerprint(): string {
 		if (!debugInfo) return 'no-debug-info';
 
 		const vendor = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-		const renderer = (gl as WebGLRenderingContext).getParameter(
-			debugInfo.UNMASKED_RENDERER_WEBGL
-		);
+		const renderer = (gl as WebGLRenderingContext).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
 
 		return `${vendor}~${renderer}`;
 	} catch {

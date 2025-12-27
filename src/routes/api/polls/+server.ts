@@ -13,8 +13,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Title is required' }, { status: 400 });
 		}
 
-		    if (!data.options || !Array.isArray(data.options) || data.options.length < 2) {
-			    return json({ error: 'At least 2 options are required' }, { status: 400 });
+		if (!data.options || !Array.isArray(data.options) || data.options.length < 2) {
+			return json({ error: 'At least 2 options are required' }, { status: 400 });
 		}
 
 		// Use default grades if not provided
@@ -23,7 +23,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Settings: preventMultipleVotes (default true)
 		const preventMultipleVotes =
 			typeof data.preventMultipleVotes === 'boolean' ? data.preventMultipleVotes : true;
-
 
 		// Expiration handling: accepts either absolute `expiresAt` (ISO string)
 		// or relative `durationSeconds` (number). Defaults to 24h.
@@ -40,7 +39,11 @@ export const POST: RequestHandler = async ({ request }) => {
 					expiresAt = d;
 				}
 			}
-			if (!expiresAt && typeof data.durationSeconds === 'number' && isFinite(data.durationSeconds)) {
+			if (
+				!expiresAt &&
+				typeof data.durationSeconds === 'number' &&
+				isFinite(data.durationSeconds)
+			) {
 				const ms = Math.max(0, Math.floor(data.durationSeconds) * 1000);
 				expiresAt = new Date(now.getTime() + ms);
 			}
@@ -51,7 +54,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			// Ensure expiration is in the future (min 1 minute)
 			const minFuture = new Date(now.getTime() + 60 * 1000);
 			if (expiresAt < minFuture) {
-				return json({ error: 'Expiration invalide: doit être au moins dans 1 minute.' }, { status: 400 });
+				return json(
+					{ error: 'Expiration invalide: doit être au moins dans 1 minute.' },
+					{ status: 400 }
+				);
 			}
 		}
 

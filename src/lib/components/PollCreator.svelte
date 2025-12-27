@@ -13,7 +13,7 @@
 	let preventMultipleVotes = $state(true);
 
 	// Expiration configuration
-	let expirationMode: 'duration' | 'datetime' = $state('duration');
+	let expirationMode: 'duration' | 'datetime' | 'none' = $state('duration');
 	let durationHours = $state(24);
 	let durationMinutes = $state(0);
 	let expiresAtLocal = $state(''); // YYYY-MM-DDTHH:MM (local)
@@ -84,21 +84,21 @@
 					...(expirationMode === 'none'
 						? { noTimeLimit: true }
 						: expirationMode === 'datetime'
-						? (() => {
-							// Convert datetime-local to ISO
-							const local = expiresAtLocal?.trim();
-							if (local) {
-								// Treat as local time, create Date
-								const d = new Date(local);
-								if (!isNaN(d.getTime())) {
-									return { expiresAt: d.toISOString() };
-								}
-							}
-							return {};
-						})()
-						: {
-							durationSeconds: Math.max(60, durationHours * 3600 + durationMinutes * 60)
-						})
+							? (() => {
+									// Convert datetime-local to ISO
+									const local = expiresAtLocal?.trim();
+									if (local) {
+										// Treat as local time, create Date
+										const d = new Date(local);
+										if (!isNaN(d.getTime())) {
+											return { expiresAt: d.toISOString() };
+										}
+									}
+									return {};
+								})()
+							: {
+									durationSeconds: Math.max(60, durationHours * 3600 + durationMinutes * 60)
+								})
 				})
 			});
 
@@ -134,7 +134,9 @@
 		</div>
 
 		<div>
-			<label for="description" class="block font-semibold mb-2 text-gray-700">Description (optionnel)</label>
+			<label for="description" class="block font-semibold mb-2 text-gray-700"
+				>Description (optionnel)</label
+			>
 			<textarea
 				id="description"
 				bind:value={description}
@@ -191,15 +193,33 @@
 				<h3 class="font-semibold text-gray-700 mb-3">Expiration du sondage</h3>
 				<div class="flex flex-wrap gap-3 mb-4">
 					<label class="inline-flex items-center gap-2">
-						<input type="radio" name="exp-mode" value="duration" checked={expirationMode === 'duration'} onchange={() => (expirationMode = 'duration')} />
+						<input
+							type="radio"
+							name="exp-mode"
+							value="duration"
+							checked={expirationMode === 'duration'}
+							onchange={() => (expirationMode = 'duration')}
+						/>
 						<span>Durée</span>
 					</label>
 					<label class="inline-flex items-center gap-2">
-						<input type="radio" name="exp-mode" value="datetime" checked={expirationMode === 'datetime'} onchange={() => (expirationMode = 'datetime')} />
+						<input
+							type="radio"
+							name="exp-mode"
+							value="datetime"
+							checked={expirationMode === 'datetime'}
+							onchange={() => (expirationMode = 'datetime')}
+						/>
 						<span>Date/Heure</span>
 					</label>
 					<label class="inline-flex items-center gap-2">
-						<input type="radio" name="exp-mode" value="none" checked={expirationMode === 'none'} onchange={() => (expirationMode = 'none')} />
+						<input
+							type="radio"
+							name="exp-mode"
+							value="none"
+							checked={expirationMode === 'none'}
+							onchange={() => (expirationMode = 'none')}
+						/>
 						<span>Aucune limite</span>
 					</label>
 				</div>
@@ -208,18 +228,38 @@
 					<div class="flex items-center gap-3">
 						<div>
 							<label for="exp-hours" class="block text-sm text-gray-600 mb-1">Heures</label>
-							<input id="exp-hours" type="number" min="0" max="168" bind:value={durationHours} class="w-24 p-2 border-2 border-gray-200 rounded" />
+							<input
+								id="exp-hours"
+								type="number"
+								min="0"
+								max="168"
+								bind:value={durationHours}
+								class="w-24 p-2 border-2 border-gray-200 rounded"
+							/>
 						</div>
 						<div>
 							<label for="exp-mins" class="block text-sm text-gray-600 mb-1">Minutes</label>
-							<input id="exp-mins" type="number" min="0" max="59" bind:value={durationMinutes} class="w-24 p-2 border-2 border-gray-200 rounded" />
+							<input
+								id="exp-mins"
+								type="number"
+								min="0"
+								max="59"
+								bind:value={durationMinutes}
+								class="w-24 p-2 border-2 border-gray-200 rounded"
+							/>
 						</div>
-						<div class="text-sm text-gray-500">Par défaut: 24h</div>
 					</div>
 				{:else if expirationMode === 'datetime'}
 					<div>
-						<label for="exp-datetime" class="block text-sm text-gray-600 mb-1">Date et heure de fin</label>
-						<input id="exp-datetime" type="datetime-local" bind:value={expiresAtLocal} class="p-2 border-2 border-gray-200 rounded w-64" />
+						<label for="exp-datetime" class="block text-sm text-gray-600 mb-1"
+							>Date et heure de fin</label
+						>
+						<input
+							id="exp-datetime"
+							type="datetime-local"
+							bind:value={expiresAtLocal}
+							class="p-2 border-2 border-gray-200 rounded w-64"
+						/>
 					</div>
 				{:else}
 					<div class="text-sm text-gray-600">Le sondage n’aura pas de limite de temps.</div>
