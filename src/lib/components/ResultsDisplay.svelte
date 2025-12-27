@@ -9,6 +9,7 @@
 			totalVotes: number;
 			expiresAt?: string | Date;
 			isExpired?: boolean;
+			participants?: string[];
 			ranking: Array<{
 				rank: number;
 				name: string;
@@ -216,6 +217,23 @@
 				{/each}
 			</div>
 		</div>
+
+		{#if results.participants && results.totalVotes >= 2}
+			<div class="bg-gray-50 p-6 rounded-xl mb-8">
+				<h4 class="text-lg font-semibold mb-4 text-gray-800">
+					Participants ({results.participants.length})
+				</h4>
+				<ul class="list-disc pl-5 text-gray-700">
+					{#each results.participants as p, i (i)}
+						<li>{p}</li>
+					{/each}
+				</ul>
+			</div>
+		{:else if results.totalVotes === 1}
+			<div class="bg-gray-50 p-6 rounded-xl mb-8 text-gray-700">
+				1 personne a voté.
+			</div>
+		{/if}
 	{/if}
 
 	<div class="flex gap-4 justify-center flex-wrap">

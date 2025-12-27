@@ -13,6 +13,10 @@
 			preventMultipleVotes: boolean;
 			expiresAt?: string | Date;
 			isExpired?: boolean;
+			askName?: boolean;
+			showParticipants?: 'always' | 'after_expiration' | 'never';
+			voteCount?: number;
+			participants?: string[];
 		};
 	}
 
@@ -23,6 +27,7 @@
 	let error = $state('');
 	let success = $state(false);
 	let alreadyVoted = $derived(poll.preventMultipleVotes && hasVotedLocally(poll.id));
+	let firstName = $state('');
 
 	// Countdown state
 	let remainingMs = $state(0);
@@ -60,8 +65,6 @@
 					remainingMs = target.getTime() - Date.now();
 					if ((remainingMs <= 0 || poll.isExpired === true) && timer !== undefined) {
 						clearInterval(timer);
-						// If expires during voting, redirect to results (client-only)
-						goto(`/poll/${poll.id}/results`);
 					}
 				};
 				update();
@@ -96,6 +99,11 @@
 			return;
 		}
 
+		if (poll.askName && !firstName.trim()) {
+			error = 'Veuillez saisir votre prénom';
+			return;
+		}
+
 		isSubmitting = true;
 
 		try {
@@ -109,7 +117,8 @@
 				body: JSON.stringify({
 					ballot,
 					voterIdentifier,
-					fingerprint
+					fingerprint,
+					...(poll.askName ? { name: firstName.trim() } : {})
 				})
 			});
 
@@ -123,10 +132,6 @@
 			success = true;
 			alreadyVoted = true;
 
-			// Redirect to results after a short delay
-			setTimeout(() => {
-				goto(`/poll/${poll.id}/results`);
-			}, 1500);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Une erreur est survenue';
 		} finally {
@@ -168,7 +173,12 @@
 				✓
 			</div>
 			<h3 class="text-2xl font-bold text-gray-800 mb-2">Vote enregistré !</h3>
-			<p class="text-gray-600">Redirection vers les résultats...</p>
+			<p class="text-gray-600 mb-6">Votre vote a bien été pris en compte.</p>
+			<a
+				href="/poll/{poll.id}/results"
+				class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg"
+				>Voir les résultats</a
+			>
 		</div>
 	{:else if alreadyVoted}
 		<div class="text-center p-12">
@@ -207,6 +217,22 @@
 		</div>
 
 		<form onsubmit={handleSubmit} class="space-y-6">
+			{#if poll.askName}
+				<div>
+					<label for="first-name" class="block font-semibold mb-2 text-gray-700">Votre prénom</label
+					>
+					<input
+						id="first-name"
+						type="text"
+						placeholder="Ex: Alice"
+						bind:value={firstName}
+						class="w-full p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500"
+					/>
+					<p class="text-xs text-gray-500 mt-1">
+						Ce prénom sera visible selon la configuration du sondage.
+					</p>
+				</div>
+			{/if}
 			<div class="flex flex-col gap-6 mb-8">
 				{#each poll.options as option (option)}
 					<div
@@ -248,6 +274,23 @@
 				{isSubmitting ? 'Envoi...' : 'Soumettre mon vote'}
 			</button>
 		</form>
+
+		{#if poll.participants && (poll.voteCount ?? poll.participants.length) >= 2}
+			<div class="mt-10 bg-gray-50 p-4 rounded-lg border border-gray-200">
+				<h4 class="font-semibold text-gray-800 mb-2">
+					Participants ({poll.participants.length})
+				</h4>
+				<ul class="list-disc pl-5 text-gray-700">
+					{#each poll.participants as p, i (i)}
+						<li>{p}</li>
+					{/each}
+				</ul>
+			</div>
+		{:else if poll.voteCount === 1}
+			<div class="mt-10 bg-gray-50 p-4 rounded-lg border border-gray-200 text-gray-700">
+				1 personne a voté.
+			</div>
+		{/if}
 	{/if}
 </div>
 

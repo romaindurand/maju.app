@@ -42,6 +42,17 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			return json({ error: 'Le sondage est terminé' }, { status: 403 });
 		}
 
+		// If poll requires name, validate it
+		if (poll.askName) {
+			const rawName = typeof data.name === 'string' ? data.name.trim() : '';
+			if (!rawName) {
+				return json({ error: 'Le prénom est requis pour voter' }, { status: 400 });
+			}
+			if (rawName.length > 80) {
+				return json({ error: 'Le prénom est trop long' }, { status: 400 });
+			}
+		}
+
 		// Check if user has already voted (server-side check) when prevention enabled
 		if (poll.preventMultipleVotes) {
 			const existingVote = await db.vote.findFirst({
@@ -77,7 +88,8 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 				pollId: params.id,
 				ballot: JSON.stringify(data.ballot),
 				voterIdentifier: data.voterIdentifier,
-				fingerprint: data.fingerprint
+				fingerprint: data.fingerprint,
+				name: poll.askName && typeof data.name === 'string' ? data.name.trim() : null
 			}
 		});
 

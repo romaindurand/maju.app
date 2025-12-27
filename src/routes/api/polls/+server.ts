@@ -24,6 +24,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		const preventMultipleVotes =
 			typeof data.preventMultipleVotes === 'boolean' ? data.preventMultipleVotes : true;
 
+		// Ask for first name (default false)
+		const askName = typeof data.askName === 'boolean' ? data.askName : false;
+
+		// Show participants config: 'always' | 'after_expiration' | 'never' (default 'never')
+		const allowedShowValues = ['always', 'after_expiration', 'never'] as const;
+		const showParticipants = allowedShowValues.includes(data.showParticipants)
+			? (data.showParticipants as (typeof allowedShowValues)[number])
+			: 'never';
+
 		// Expiration handling: accepts either absolute `expiresAt` (ISO string)
 		// or relative `durationSeconds` (number). Defaults to 24h.
 		const now = new Date();
@@ -69,7 +78,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				options: JSON.stringify(data.options.map((c: string) => c.trim())),
 				grades: JSON.stringify(grades),
 				preventMultipleVotes,
-				expiresAt
+				expiresAt,
+				askName,
+				showParticipants
 			}
 		});
 
@@ -80,6 +91,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			preventMultipleVotes: poll.preventMultipleVotes,
+			askName: poll.askName,
+			showParticipants: poll.showParticipants,
 			createdAt: poll.createdAt,
 			expiresAt: poll.expiresAt
 		});

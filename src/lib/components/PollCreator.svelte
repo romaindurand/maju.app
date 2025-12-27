@@ -3,6 +3,7 @@
 	import { DEFAULT_GRADES } from '$lib/config';
 	import { tick } from 'svelte';
 	import ToggleSwitch from '$lib/components/ToggleSwitch.svelte';
+	import { slide } from 'svelte/transition';
 
 	let title = $state('');
 	let description = $state('');
@@ -11,6 +12,8 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 	let preventMultipleVotes = $state(true);
+	let askName = $state(false);
+	let showParticipants: 'always' | 'after_expiration' | 'never' = $state('never');
 
 	// Expiration configuration
 	let expirationMode: 'duration' | 'datetime' | 'none' = $state('duration');
@@ -81,6 +84,8 @@
 					options: validOptions,
 					grades: DEFAULT_GRADES,
 					preventMultipleVotes,
+					askName,
+					showParticipants,
 					...(expirationMode === 'none'
 						? { noTimeLimit: true }
 						: expirationMode === 'datetime'
@@ -189,6 +194,37 @@
 				bind:checked={preventMultipleVotes}
 			/>
 
+			<div class="mt-4 space-y-4">
+				<ToggleSwitch
+					label="Demander le prénom"
+					description="Chaque participant devra saisir son prénom avant de voter."
+					bind:checked={askName}
+				/>
+
+				{#if askName}
+					<div class="bg-white border-2 border-gray-200 rounded-lg p-4" transition:slide>
+						<label for="show-participants" class="block font-semibold text-gray-700 mb-2"
+							>Affichage des participants</label
+						>
+						<select
+							id="show-participants"
+							bind:value={showParticipants}
+							class="w-full p-2 border-2 border-gray-200 rounded"
+						>
+							<option value="never">Ne pas montrer</option>
+							<option value="always">Montrer</option>
+							{#if expirationMode !== 'none'}
+								<option value="after_expiration">Montrer après l'expiration du sondage</option>
+							{/if}
+						</select>
+
+						<p class="text-sm text-gray-500 mt-2">
+							La liste des prénoms sera visible sur la page de vote et les résultats selon le mode choisi.
+						</p>
+					</div>
+				{/if}
+			</div>
+
 			<div class="mt-6 border-2 border-gray-200 rounded-lg p-4">
 				<h3 class="font-semibold text-gray-700 mb-3">Expiration du sondage</h3>
 				<div class="flex flex-wrap gap-3 mb-4">
@@ -218,7 +254,12 @@
 							name="exp-mode"
 							value="none"
 							checked={expirationMode === 'none'}
-							onchange={() => (expirationMode = 'none')}
+							onchange={() => {
+								expirationMode = 'none';
+								if (showParticipants === 'after_expiration') {
+									showParticipants = 'never';
+								}
+							}}
 						/>
 						<span>Aucune limite</span>
 					</label>

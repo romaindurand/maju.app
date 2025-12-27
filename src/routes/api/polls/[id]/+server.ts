@@ -6,7 +6,8 @@ import { db } from '$lib/server/db';
 export const GET: RequestHandler = async ({ params }) => {
 	try {
 		const poll = await db.poll.findUnique({
-			where: { id: params.id }
+			where: { id: params.id },
+			include: { votes: true }
 		});
 
 		if (!poll) {
@@ -16,6 +17,20 @@ export const GET: RequestHandler = async ({ params }) => {
 		const expiresAt = poll.expiresAt; // null means no time limit
 		const isExpired = expiresAt ? new Date() > expiresAt : false;
 
+		const voteCount = poll.votes?.length ?? 0;
+
+		// Build participants list based on configuration and privacy (need at least 2 votes)
+		let participants: string[] | undefined;
+		if (voteCount >= 2) {
+			if (poll.showParticipants === 'always') {
+				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
+			} else if (poll.showParticipants === 'after_expiration' && isExpired) {
+				participants = poll.votes
+					.map((v) => (v.name || '').trim())
+					.filter((n) => n.length > 0);
+			}
+		}
+
 		return json({
 			id: poll.id,
 			title: poll.title,
@@ -23,9 +38,13 @@ export const GET: RequestHandler = async ({ params }) => {
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			preventMultipleVotes: poll.preventMultipleVotes,
+			askName: poll.askName,
+			showParticipants: poll.showParticipants,
 			createdAt: poll.createdAt,
 			expiresAt,
-			isExpired
+			isExpired,
+			voteCount,
+			...(participants ? { participants } : {})
 		});
 	} catch (error) {
 		console.error('Error fetching poll:', error);

@@ -23,6 +23,16 @@ export const GET: RequestHandler = async ({ params }) => {
 		const expiresAt = poll.expiresAt; // null means no time limit
 		const isExpired = expiresAt ? new Date() > expiresAt : false;
 
+		// Build participants list depending on configuration
+		let participants: string[] | undefined;
+		if (poll.votes.length >= 2) {
+			if (poll.showParticipants === 'always') {
+				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
+			} else if (poll.showParticipants === 'after_expiration' && isExpired) {
+				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
+			}
+		}
+
 		// If no votes yet, return empty results
 		if (poll.votes.length === 0) {
 			return json({
@@ -38,7 +48,8 @@ export const GET: RequestHandler = async ({ params }) => {
 					medianGradeLabel: null,
 					rank: null
 				})),
-				ranking: []
+				ranking: [],
+				...(participants ? { participants } : {})
 			});
 		}
 
@@ -103,7 +114,8 @@ export const GET: RequestHandler = async ({ params }) => {
 			isExpired,
 			options: optionResults,
 			ranking,
-			grades
+			grades,
+			...(participants ? { participants } : {})
 		});
 	} catch (error) {
 		console.error('Error calculating results:', error);
