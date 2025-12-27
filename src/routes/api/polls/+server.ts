@@ -24,6 +24,37 @@ export const POST: RequestHandler = async ({ request }) => {
 		const preventMultipleVotes =
 			typeof data.preventMultipleVotes === 'boolean' ? data.preventMultipleVotes : true;
 
+
+		// Expiration handling: accepts either absolute `expiresAt` (ISO string)
+		// or relative `durationSeconds` (number). Defaults to 24h.
+		const now = new Date();
+		let expiresAt: Date | null = null;
+
+		// Allow explicit no time limit
+		const noTimeLimit = data.noTimeLimit === true;
+
+		if (!noTimeLimit) {
+			if (data.expiresAt && typeof data.expiresAt === 'string') {
+				const d = new Date(data.expiresAt);
+				if (!isNaN(d.getTime())) {
+					expiresAt = d;
+				}
+			}
+			if (!expiresAt && typeof data.durationSeconds === 'number' && isFinite(data.durationSeconds)) {
+				const ms = Math.max(0, Math.floor(data.durationSeconds) * 1000);
+				expiresAt = new Date(now.getTime() + ms);
+			}
+			if (!expiresAt) {
+				// Default 24 hours
+				expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+			}
+			// Ensure expiration is in the future (min 1 minute)
+			const minFuture = new Date(now.getTime() + 60 * 1000);
+			if (expiresAt < minFuture) {
+				return json({ error: 'Expiration invalide: doit être au moins dans 1 minute.' }, { status: 400 });
+			}
+		}
+
 		// Create poll in database
 		const poll = await db.poll.create({
 			data: {
@@ -31,7 +62,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				description: data.description?.trim() || null,
 				options: JSON.stringify(data.options.map((c: string) => c.trim())),
 				grades: JSON.stringify(grades),
-				preventMultipleVotes
+				preventMultipleVotes,
+				expiresAt
 			}
 		});
 
@@ -42,7 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			preventMultipleVotes: poll.preventMultipleVotes,
-			createdAt: poll.createdAt
+			createdAt: poll.createdAt,
+			expiresAt: poll.expiresAt
 		});
 	} catch (error) {
 		console.error('Error creating poll:', error);

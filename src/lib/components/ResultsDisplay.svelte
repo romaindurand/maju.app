@@ -7,6 +7,8 @@
 			title: string;
 			description: string | null;
 			totalVotes: number;
+			expiresAt?: string | Date;
+			isExpired?: boolean;
 			ranking: Array<{
 				rank: number;
 				name: string;
@@ -19,6 +21,44 @@
 	}
 
 	let { results }: Props = $props();
+
+	let remainingMs = $state(0);
+	let countdownText = $derived(formatCountdown(remainingMs));
+	let hasCountdown = $derived(!!parseExpiresAt());
+	let expired = $derived(hasCountdown ? (remainingMs <= 0 || results.isExpired === true) : false);
+
+	function parseExpiresAt(): Date | null {
+		if (!results.expiresAt) return null;
+		const d = typeof results.expiresAt === 'string' ? new Date(results.expiresAt) : (results.expiresAt as Date);
+		return isNaN(d.getTime()) ? null : d;
+	}
+
+	function formatCountdown(ms: number): string {
+		if (ms <= 0) return '00:00:00';
+		const totalSeconds = Math.floor(ms / 1000);
+		const days = Math.floor(totalSeconds / 86400);
+		const hours = Math.floor((totalSeconds % 86400) / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = totalSeconds % 60;
+		const hh = String(hours).padStart(2, '0');
+		const mm = String(minutes).padStart(2, '0');
+		const ss = String(seconds).padStart(2, '0');
+		return days > 0 ? `${days}j ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
+	}
+
+	{
+		if (typeof window !== 'undefined') {
+			const target = parseExpiresAt();
+			if (target) {
+				let timer: number | undefined;
+				const update = () => {
+					remainingMs = target.getTime() - Date.now();
+				};
+				update();
+				timer = setInterval(update, 1000) as unknown as number;
+			}
+		}
+	}
 
 	// Get color for grade
 	function getGradeColor(gradeIndex: number): string {
@@ -50,6 +90,15 @@
 <div class="max-w-4xl mx-auto">
 	<div class="text-center mb-12">
 		<h2 class="text-4xl font-bold mb-3 text-gray-800">{results.title}</h2>
+		<div class="mt-2">
+			{#if hasCountdown}
+				{#if expired}
+					<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-50 border border-red-200 text-red-700">Sondage terminé</span>
+				{:else}
+					<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 border">⏳ Termine dans {countdownText}</span>
+				{/if}
+			{/if}
+		</div>
 	</div>
 
 	{#if results.totalVotes === 0}

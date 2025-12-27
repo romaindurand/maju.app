@@ -11,6 +11,8 @@
 			options: string[];
 			grades: string[];
 			preventMultipleVotes: boolean;
+			expiresAt?: string | Date;
+			isExpired?: boolean;
 		};
 	}
 
@@ -21,6 +23,51 @@
 	let error = $state('');
 	let success = $state(false);
 	let alreadyVoted = $derived(poll.preventMultipleVotes && hasVotedLocally(poll.id));
+
+	// Countdown state
+	let remainingMs = $state(0);
+	let countdownText = $derived(formatCountdown(remainingMs));
+	let hasCountdown = $derived(!!parseExpiresAt());
+	let expired = $derived(hasCountdown ? (remainingMs <= 0 || poll.isExpired === true) : false);
+
+	function parseExpiresAt(): Date | null {
+		if (!poll.expiresAt) return null;
+		const d = typeof poll.expiresAt === 'string' ? new Date(poll.expiresAt) : (poll.expiresAt as Date);
+		return isNaN(d.getTime()) ? null : d;
+	}
+
+	function formatCountdown(ms: number): string {
+		if (ms <= 0) return '00:00:00';
+		const totalSeconds = Math.floor(ms / 1000);
+		const days = Math.floor(totalSeconds / 86400);
+		const hours = Math.floor((totalSeconds % 86400) / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = totalSeconds % 60;
+		const hh = String(hours).padStart(2, '0');
+		const mm = String(minutes).padStart(2, '0');
+		const ss = String(seconds).padStart(2, '0');
+		return days > 0 ? `${days}j ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
+	}
+
+	// Init countdown
+	{
+		if (typeof window !== 'undefined') {
+			const target = parseExpiresAt();
+			if (target) {
+				let timer: number | undefined;
+				const update = () => {
+					remainingMs = target.getTime() - Date.now();
+					if ((remainingMs <= 0 || poll.isExpired === true) && timer !== undefined) {
+						clearInterval(timer);
+						// If expires during voting, redirect to results (client-only)
+						goto(`/poll/${poll.id}/results`);
+					}
+				};
+				update();
+				timer = setInterval(update, 1000) as unknown as number;
+			}
+		}
+	}
 
 	// Initialize ballot with null selections (single init)
 	// svelte-ignore state_referenced_locally
@@ -37,6 +84,11 @@
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		error = '';
+
+		if (expired) {
+			error = 'Le sondage est terminé';
+			return;
+		}
 
 		if (!isComplete()) {
 			error = 'Veuillez évaluer toutes les options';
@@ -97,7 +149,13 @@
 </script>
 
 <div class="max-w-3xl mx-auto">
-	{#if alreadyVoted && success}
+	{#if expired}
+		<div class="text-center p-12">
+			<h3 class="text-2xl font-bold text-gray-800 mb-2">Sondage terminé</h3>
+			<p class="text-gray-600 mb-6">Les votes ne sont plus possibles.</p>
+			<a href="/poll/{poll.id}/results" class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg">Voir les résultats</a>
+		</div>
+	{:else if alreadyVoted && success}
 		<div class="text-center p-12">
 			<div class="w-20 h-20 mx-auto mb-6 bg-linear-to-tr from-emerald-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl">✓</div>
 			<h3 class="text-2xl font-bold text-gray-800 mb-2">Vote enregistré !</h3>
@@ -114,7 +172,18 @@
 			{#if poll.description}
 				<p class="text-lg text-gray-500 mb-4">{poll.description}</p>
 			{/if}
-			<p class="text-sm text-gray-600 italic">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
+			<div class="flex items-center justify-between gap-4">
+				<p class="text-sm text-gray-600 italic">Évaluez chaque option selon l'échelle du jugement majoritaire :</p>
+				<div class="text-sm font-medium text-gray-700">
+					{#if hasCountdown}
+						{#if !expired}
+							<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-gray-100 border">⏳ Termine dans {countdownText}</span>
+						{:else}
+							<span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-50 border border-red-200 text-red-700">Sondage terminé</span>
+						{/if}
+					{/if}
+				</div>
+			</div>
 		</div>
 
 		<form onsubmit={handleSubmit} class="space-y-6">
@@ -149,7 +218,7 @@
 			<button
 				type="submit"
 				class="w-full px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg text-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-				disabled={isSubmitting || !isComplete()}
+				disabled={isSubmitting || !isComplete() || expired}
 			>
 				{isSubmitting ? 'Envoi...' : 'Soumettre mon vote'}
 			</button>

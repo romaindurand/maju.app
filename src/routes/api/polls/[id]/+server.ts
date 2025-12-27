@@ -13,6 +13,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			return json({ error: 'Poll not found' }, { status: 404 });
 		}
 
+		const expiresAt = poll.expiresAt; // null means no time limit
+		const isExpired = expiresAt ? new Date() > expiresAt : false;
+
 		return json({
 			id: poll.id,
 			title: poll.title,
@@ -20,7 +23,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			preventMultipleVotes: poll.preventMultipleVotes,
-			createdAt: poll.createdAt
+			createdAt: poll.createdAt,
+			expiresAt,
+			isExpired
 		});
 	} catch (error) {
 		console.error('Error fetching poll:', error);

@@ -20,6 +20,8 @@ export const GET: RequestHandler = async ({ params }) => {
 
 		const options = JSON.parse((poll as unknown as { options: string }).options) as string[];
 		const grades = JSON.parse(poll.grades) as string[];
+		const expiresAt = poll.expiresAt; // null means no time limit
+		const isExpired = expiresAt ? new Date() > expiresAt : false;
 
 		// If no votes yet, return empty results
 		if (poll.votes.length === 0) {
@@ -27,6 +29,9 @@ export const GET: RequestHandler = async ({ params }) => {
 				pollId: poll.id,
 				title: poll.title,
 				totalVotes: 0,
+				description: poll.description,
+				expiresAt,
+				isExpired,
 				options: options.map((name) => ({
 					name,
 					medianGrade: null,
@@ -91,6 +96,8 @@ export const GET: RequestHandler = async ({ params }) => {
 			title: poll.title,
 			description: poll.description,
 			totalVotes: poll.votes.length,
+			expiresAt,
+			isExpired,
 			options: optionResults,
 			ranking,
 			grades

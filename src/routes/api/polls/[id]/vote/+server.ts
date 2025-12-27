@@ -37,6 +37,10 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			return json({ error: 'Poll not found' }, { status: 404 });
 		}
 
+		// Disallow voting if poll expired (only if time-limited)
+		if (poll.expiresAt && new Date() > poll.expiresAt) {
+			return json({ error: 'Le sondage est terminé' }, { status: 403 });
+		}
 
 		// Check if user has already voted (server-side check) when prevention enabled
 		if (poll.preventMultipleVotes) {
