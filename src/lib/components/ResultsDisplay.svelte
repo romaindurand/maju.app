@@ -9,6 +9,8 @@
 			totalVotes: number;
 			expiresAt?: string | Date;
 			isExpired?: boolean;
+			askName?: boolean;
+			showParticipants?: 'always' | 'after_expiration' | 'never';
 			participants?: string[];
 			ranking: Array<{
 				rank: number;
@@ -229,7 +231,7 @@
 					{/each}
 				</ul>
 			</div>
-		{:else if results.totalVotes === 1}
+		{:else if results.totalVotes === 1 && results.askName}
 			<div class="bg-gray-50 p-6 rounded-xl mb-8 text-gray-700">
 				1 personne a voté.
 			</div>

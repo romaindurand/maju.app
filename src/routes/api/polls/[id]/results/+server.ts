@@ -112,6 +112,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			totalVotes: poll.votes.length,
 			expiresAt,
 			isExpired,
+			// Expose configuration to the client for conditional UI
+			askName: poll.askName,
+			showParticipants: poll.showParticipants,
 			options: optionResults,
 			ranking,
 			grades,
