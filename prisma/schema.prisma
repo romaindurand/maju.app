@@ -23,6 +23,7 @@ model Poll {
   // New settings
   askName     Boolean  @default(false) // Ask participants for first name
   showParticipants String @default("never") // 'always' | 'after_expiration' | 'never'
+  participants String @default("[]") // JSON array of first names (in order of counted votes)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   votes       Vote[]
@@ -34,7 +35,6 @@ model Vote {
   ballot          String // JSON object mapping option names to grade indices
   voterIdentifier String // Hashed fingerprint + localStorage + cookie
   fingerprint     String @default("") // Browser fingerprint hash (SHA-256)
-  name            String?
   createdAt       DateTime @default(now())
   poll            Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
 

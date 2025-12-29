@@ -22,12 +22,15 @@ export const GET: RequestHandler = async ({ params }) => {
 		// Build participants list based on configuration and privacy (need at least 2 votes)
 		let participants: string[] | undefined;
 		if (voteCount >= 2) {
-			if (poll.showParticipants === 'always') {
-				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
-			} else if (poll.showParticipants === 'after_expiration' && isExpired) {
-				participants = poll.votes
-					.map((v) => (v.name || '').trim())
-					.filter((n) => n.length > 0);
+			try {
+				const stored = JSON.parse((poll as unknown as { participants?: string }).participants ?? '[]') as string[];
+				if (poll.showParticipants === 'always') {
+					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
+				} else if (poll.showParticipants === 'after_expiration' && isExpired) {
+					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
+				}
+			} catch {
+				// ignore parsing errors and omit participants
 			}
 		}
 

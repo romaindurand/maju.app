@@ -82,16 +82,38 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 			}
 		}
 
-		// Create vote
+		// Create vote and, if applicable, append participant name to poll
 		const vote = await db.vote.create({
 			data: {
 				pollId: params.id,
 				ballot: JSON.stringify(data.ballot),
 				voterIdentifier: data.voterIdentifier,
-				fingerprint: data.fingerprint,
-				name: poll.askName && typeof data.name === 'string' ? data.name.trim() : null
+				fingerprint: data.fingerprint
 			}
 		});
+
+		// If a first name was provided and the poll asks for it, store it on the poll
+		if (poll.askName && typeof data.name === 'string') {
+			const firstName = data.name.trim();
+			if (firstName) {
+				try {
+					const existing = Array.isArray(JSON.parse(poll.participants as unknown as string))
+						? (JSON.parse(poll.participants as unknown as string) as string[])
+						: [];
+					const updated = [...existing, firstName];
+					await db.poll.update({
+						where: { id: poll.id },
+						data: { participants: JSON.stringify(updated) }
+					});
+				} catch {
+					// Fallback if parsing fails: initialize with the single name
+					await db.poll.update({
+						where: { id: poll.id },
+						data: { participants: JSON.stringify([firstName]) }
+					});
+				}
+			}
+		}
 
 		// Set cookie for additional tracking
 		const cookieToken = crypto.randomUUID();

@@ -26,10 +26,15 @@ export const GET: RequestHandler = async ({ params }) => {
 		// Build participants list depending on configuration
 		let participants: string[] | undefined;
 		if (poll.votes.length >= 2) {
-			if (poll.showParticipants === 'always') {
-				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
-			} else if (poll.showParticipants === 'after_expiration' && isExpired) {
-				participants = poll.votes.map((v) => (v.name || '').trim()).filter((n) => n.length > 0);
+			try {
+				const stored = JSON.parse((poll as unknown as { participants?: string }).participants ?? '[]') as string[];
+				if (poll.showParticipants === 'always') {
+					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
+				} else if (poll.showParticipants === 'after_expiration' && isExpired) {
+					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
+				}
+			} catch {
+				// ignore parsing errors and omit participants
 			}
 		}
 
