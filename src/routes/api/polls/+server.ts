@@ -24,6 +24,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		const preventMultipleVotes =
 			typeof data.preventMultipleVotes === 'boolean' ? data.preventMultipleVotes : true;
 
+		// Public visibility (default false)
+		const isPublic = typeof data.isPublic === 'boolean' ? data.isPublic : false;
+
 		// Ask for first name (default false)
 		const askName = typeof data.askName === 'boolean' ? data.askName : false;
 
@@ -78,6 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				options: JSON.stringify(data.options.map((c: string) => c.trim())),
 				grades: JSON.stringify(grades),
 				preventMultipleVotes,
+				isPublic,
 				expiresAt,
 				askName,
 				showParticipants
@@ -91,6 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			options: JSON.parse(poll.options),
 			grades: JSON.parse(poll.grades),
 			preventMultipleVotes: poll.preventMultipleVotes,
+			isPublic: poll.isPublic,
 			askName: poll.askName,
 			showParticipants: poll.showParticipants,
 			createdAt: poll.createdAt,

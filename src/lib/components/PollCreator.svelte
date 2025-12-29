@@ -12,6 +12,7 @@
 	let isSubmitting = $state(false);
 	let error = $state('');
 	let preventMultipleVotes = $state(true);
+	let isPublic = $state(false);
 	let askName = $state(false);
 	let showParticipants: 'always' | 'after_expiration' | 'never' = $state('never');
 
@@ -84,6 +85,7 @@
 					options: validOptions,
 					grades: DEFAULT_GRADES,
 					preventMultipleVotes,
+					isPublic,
 					askName,
 					showParticipants,
 					...(expirationMode === 'none'
@@ -194,10 +196,17 @@
 				bind:checked={preventMultipleVotes}
 			/>
 
+			<ToggleSwitch
+				label="Sondage public"
+				description="Permet d'afficher ce sondage sur la page d'accueil dans la section ‘Sondages populaires’."
+				bind:checked={isPublic}
+				classes="mt-4"
+			/>
+
 			<div class="mt-4 space-y-4">
 				<ToggleSwitch
 					label="Demander le prénom"
-					description="Chaque participant devra saisir son prénom avant de voter."
+					description="Chaque participant devra saisir son prénom avant de voter. Les votes restent anonymes."
 					bind:checked={askName}
 				/>
 

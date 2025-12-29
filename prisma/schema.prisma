@@ -18,10 +18,11 @@ model Poll {
   options     String // JSON array of option names
   grades      String // JSON array of grade labels
   preventMultipleVotes Boolean @default(true)
+  isPublic    Boolean  @default(false) // Public polls can appear on homepage
   expiresAt   DateTime?
   // New settings
   askName     Boolean  @default(false) // Ask participants for first name
-  showParticipants String @default("never") // 'always' | 'results_if_timed' | 'never'
+  showParticipants String @default("never") // 'always' | 'after_expiration' | 'never'
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   votes       Vote[]
