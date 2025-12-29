@@ -15,6 +15,7 @@
 	let isPublic = $state(false);
 	let askName = $state(false);
 	let showParticipants: 'always' | 'after_expiration' | 'never' = $state('never');
+	let hideResultsUntilExpiration = $state(false);
 
 	// Expiration configuration
 	let expirationMode: 'duration' | 'datetime' | 'none' = $state('duration');
@@ -26,7 +27,6 @@
 		return (node: HTMLInputElement) => {
 			optionRefs[idx] = node;
 			return () => {
-				// Optionnel: nettoyage si nécessaire
 				optionRefs[idx] = undefined as unknown as HTMLInputElement;
 			};
 		};
@@ -35,7 +35,6 @@
 	async function addOption() {
 		options = [...options, ''];
 		await tick();
-		// Focus sur le nouvel input créé
 		optionRefs[options.length - 1]?.focus();
 	}
 
@@ -88,20 +87,15 @@
 					isPublic,
 					askName,
 					showParticipants,
+					hideResultsUntilExpiration:
+						expirationMode === 'none' ? false : hideResultsUntilExpiration,
 					...(expirationMode === 'none'
 						? { noTimeLimit: true }
 						: expirationMode === 'datetime'
 							? (() => {
-									// Convert datetime-local to ISO
 									const local = expiresAtLocal?.trim();
-									if (local) {
-										// Treat as local time, create Date
-										const d = new Date(local);
-										if (!isNaN(d.getTime())) {
-											return { expiresAt: d.toISOString() };
-										}
-									}
-									return {};
+									const d = local ? new Date(local) : null;
+									return d && !isNaN(d.getTime()) ? { expiresAt: d.toISOString() } : {};
 								})()
 							: {
 									durationSeconds: Math.max(60, durationHours * 3600 + durationMinutes * 60)
@@ -228,7 +222,8 @@
 						</select>
 
 						<p class="text-sm text-gray-500 mt-2">
-							La liste des prénoms sera visible sur la page de vote et les résultats selon le mode choisi.
+							La liste des prénoms sera visible sur la page de vote et les résultats selon le mode
+							choisi.
 						</p>
 					</div>
 				{/if}
@@ -313,6 +308,16 @@
 					</div>
 				{:else}
 					<div class="text-sm text-gray-600">Le sondage n’aura pas de limite de temps.</div>
+				{/if}
+
+				{#if expirationMode !== 'none'}
+					<div class="mt-4">
+						<ToggleSwitch
+							label="Cacher les résultats avant l'expiration"
+							description="Les résultats ne seront visibles qu'après l'expiration du sondage."
+							bind:checked={hideResultsUntilExpiration}
+						/>
+					</div>
 				{/if}
 			</div>
 		</fieldset>

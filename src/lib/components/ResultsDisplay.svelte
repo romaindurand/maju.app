@@ -9,6 +9,7 @@
 			totalVotes: number;
 			expiresAt?: string | Date;
 			isExpired?: boolean;
+			hideResultsUntilExpiration?: boolean;
 			askName?: boolean;
 			showParticipants?: 'always' | 'after_expiration' | 'never';
 			participants?: string[];
@@ -29,6 +30,9 @@
 	let countdownText = $derived(formatCountdown(remainingMs));
 	let hasCountdown = $derived(!!parseExpiresAt());
 	let expired = $derived(hasCountdown ? remainingMs <= 0 || results.isExpired === true : false);
+	let lockResults = $derived(
+		hasCountdown && !expired && results.hideResultsUntilExpiration === true
+	);
 
 	function parseExpiresAt(): Date | null {
 		if (!results.expiresAt) return null;
@@ -66,25 +70,18 @@
 		}
 	}
 
-	// Get color for grade
 	function getGradeColor(gradeIndex: number): string {
-		let gradient = tinygradient(['#880000', '#88FF88']);
-		let tinycolors = gradient.hsv(results.grades.length, false);
-		let colors = tinycolors.map((t: any) => t.toHexString());
+		const gradient = tinygradient(['#880000', '#88FF88']);
+		const tinycolors = gradient.hsv(results.grades.length, false);
+		const colors = tinycolors.map((t: any) => t.toHexString());
 		return colors[gradeIndex] || '#6b7280';
 	}
 
-	// Get medal emoji for top 3
 	function getMedal(rank: number): string {
 		if (rank === 0) return '🥇';
 		if (rank === 1) return '🥈';
 		if (rank === 2) return '🥉';
 		return '';
-	}
-
-	// Position of the 50% cumulative point along the normalized bar
-	function getMedianPositionPercent(): number {
-		return 50;
 	}
 
 	let activeTooltip: string | null = $state(null);
@@ -112,14 +109,21 @@
 		</div>
 	</div>
 
-	{#if results.totalVotes === 0}
+	{#if results.totalVotes === 0 && !lockResults}
 		<div class="text-center p-12 bg-gray-50 rounded-xl mb-8">
 			<p class="text-xl text-gray-500 mb-6">Aucun vote pour le moment.</p>
 			<a
 				href="/poll/{results.pollId}"
-				class="inline-block px-6 py-3 bg-linear-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg"
+				class="inline-block px-6 py-3 bg-gradient-to-tr from-blue-500 to-blue-600 text-white rounded-lg font-semibold transition hover:-translate-y-0.5 hover:shadow-lg"
 				>Soyez le premier à voter !</a
 			>
+		</div>
+	{:else if lockResults}
+		<div class="mb-12">
+			<h3 class="text-2xl font-bold mb-3 text-gray-800">Résultats</h3>
+			<div class="p-6 bg-yellow-50 border border-yellow-200 rounded-xl text-yellow-800">
+				Les résultats sont cachés jusqu'à l'expiration du sondage.
+			</div>
 		</div>
 	{:else}
 		<div class="mb-12">
@@ -129,10 +133,9 @@
 					<div
 						class="relative p-6 bg-white border-2 border-gray-200 rounded-xl transition hover:border-blue-500 hover:translate-x-1 hover:shadow-md"
 					>
-						<!-- En-tête: médaille à gauche, nom + mention en dessous -->
 						<div class="flex items-start gap-4 mb-3">
 							<div
-								class="w-12 h-12 flex items-center justify-center rounded-full bg-linear-to-tr from-gray-100 to-gray-200 text-2xl"
+								class="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-tr from-gray-100 to-gray-200 text-2xl"
 							>
 								{#if option.rank <= 2}
 									<span>{getMedal(option.rank)}</span>
@@ -140,7 +143,6 @@
 									<span class="text-xl font-bold text-gray-700">{option.rank + 1}</span>
 								{/if}
 							</div>
-							<!-- CHANGEMENT: empiler le nom puis la mention sous le nom -->
 							<div class="flex flex-col gap-1">
 								<h4 class="text-xl font-semibold text-gray-800">{option.name}</h4>
 								<div class="flex items-center gap-2">
@@ -155,7 +157,6 @@
 						</div>
 
 						{#if results.totalVotes > 0}
-							<!-- Barre horizontale pleine largeur -->
 							<div
 								class="relative flex flex-row h-8 w-full rounded overflow-visible bg-gray-100 gap-px"
 							>
@@ -196,7 +197,6 @@
 									{/if}
 								{/each}
 
-								<!-- Repère 50% vertical -->
 								<div class="absolute top-0 bottom-0 left-1/2">
 									<div class="h-full w-px bg-gray-700 opacity-40"></div>
 								</div>
@@ -209,7 +209,6 @@
 
 		<div class="bg-gray-50 p-6 rounded-xl mb-8">
 			<h4 class="text-lg font-semibold mb-4 text-gray-800">Échelle d'évaluation</h4>
-			<!-- CHANGEMENT: affichage vertical forcé -->
 			<div class="grid grid-cols-1 gap-3">
 				{#each results.grades as grade, index (index)}
 					<div class="flex items-center gap-2">
@@ -232,9 +231,7 @@
 				</ul>
 			</div>
 		{:else if results.totalVotes === 1 && results.askName}
-			<div class="bg-gray-50 p-6 rounded-xl mb-8 text-gray-700">
-				1 personne a voté.
-			</div>
+			<div class="bg-gray-50 p-6 rounded-xl mb-8 text-gray-700">1 personne a voté.</div>
 		{/if}
 	{/if}
 
@@ -252,4 +249,4 @@
 	</div>
 </div>
 
-<!-- Styles supprimés au profit des utilitaires Tailwind -->
+<!-- Styles via utilitaires Tailwind -->

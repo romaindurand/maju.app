@@ -23,7 +23,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		let participants: string[] | undefined;
 		if (voteCount >= 2) {
 			try {
-				const stored = JSON.parse((poll as unknown as { participants?: string }).participants ?? '[]') as string[];
+				const stored = JSON.parse(
+					(poll as unknown as { participants?: string }).participants ?? '[]'
+				) as string[];
 				if (poll.showParticipants === 'always') {
 					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
 				} else if (poll.showParticipants === 'after_expiration' && isExpired) {

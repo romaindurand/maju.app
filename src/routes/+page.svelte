@@ -54,7 +54,10 @@
 			<h2 class="text-2xl font-bold mb-4 text-white">Sondages populaires</h2>
 			<div class="flex flex-wrap gap-4">
 				{#each safePopular as poll (poll.id)}
-					<a href={`/poll/${poll.id}`} class="block rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm hover:border-blue-400 hover:shadow-md transition-colors w-[320px]">
+					<a
+						href={`/poll/${poll.id}`}
+						class="block rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm hover:border-blue-400 hover:shadow-md transition-colors w-[320px]"
+					>
 						<h3 class="text-lg font-semibold text-gray-800">{poll.title}</h3>
 						{#if poll.description}
 							<p class="text-sm text-gray-700 mt-1">{poll.description}</p>
@@ -62,15 +65,19 @@
 						{#if poll.options?.length}
 							<ul class="flex flex-wrap gap-2 mt-3">
 								{#each poll.options.slice(0, 6) as opt (opt)}
-									<li class="px-2 py-1 text-xs bg-gray-100 border border-gray-200 rounded">{opt}</li>
+									<li class="px-2 py-1 text-xs bg-gray-100 border border-gray-200 rounded">
+										{opt}
+									</li>
 								{/each}
 							</ul>
 						{/if}
 						<div class="mt-3 text-sm text-gray-700">
-							<span class="font-medium">Votes:</span> {poll.totalVotes}
+							<span class="font-medium">Votes:</span>
+							{poll.totalVotes}
 						</div>
 						<div class="mt-1 text-xs text-gray-600">
-							<span class="font-medium">Dernier vote:</span> {timeAgo(poll.lastVoteAt)}
+							<span class="font-medium">Dernier vote:</span>
+							{timeAgo(poll.lastVoteAt)}
 						</div>
 					</a>
 				{/each}

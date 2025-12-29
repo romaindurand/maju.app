@@ -22,12 +22,13 @@ export const GET: RequestHandler = async ({ params }) => {
 		const grades = JSON.parse(poll.grades) as string[];
 		const expiresAt = poll.expiresAt; // null means no time limit
 		const isExpired = expiresAt ? new Date() > expiresAt : false;
+		const hideResultsUntilExpiration = poll.hideResultsUntilExpiration ?? false;
 
 		// Build participants list depending on configuration
 		let participants: string[] | undefined;
 		if (poll.votes.length >= 2) {
 			try {
-				const stored = JSON.parse((poll as unknown as { participants?: string }).participants ?? '[]') as string[];
+				const stored = JSON.parse(poll.participants ?? '[]') as string[];
 				if (poll.showParticipants === 'always') {
 					participants = stored.filter((n) => typeof n === 'string' && n.trim().length > 0);
 				} else if (poll.showParticipants === 'after_expiration' && isExpired) {
@@ -39,7 +40,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		}
 
 		// If no votes yet, return empty results
-		if (poll.votes.length === 0) {
+		if (poll.votes.length === 0 || (hideResultsUntilExpiration && !isExpired)) {
 			return json({
 				pollId: poll.id,
 				title: poll.title,
@@ -47,6 +48,8 @@ export const GET: RequestHandler = async ({ params }) => {
 				description: poll.description,
 				expiresAt,
 				isExpired,
+				// Expose configuration for UI gating
+				hideResultsUntilExpiration,
 				options: options.map((name) => ({
 					name,
 					medianGrade: null,
@@ -120,6 +123,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			// Expose configuration to the client for conditional UI
 			askName: poll.askName,
 			showParticipants: poll.showParticipants,
+			hideResultsUntilExpiration,
 			options: optionResults,
 			ranking,
 			grades,

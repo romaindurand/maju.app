@@ -131,7 +131,6 @@
 			markAsVoted(poll.id);
 			success = true;
 			alreadyVoted = true;
-
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Une erreur est survenue';
 		} finally {

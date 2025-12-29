@@ -30,6 +30,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Ask for first name (default false)
 		const askName = typeof data.askName === 'boolean' ? data.askName : false;
 
+		// Hide results until expiration (default false)
+		const hideResultsUntilExpiration =
+			typeof data.hideResultsUntilExpiration === 'boolean'
+				? data.hideResultsUntilExpiration
+				: false;
+
 		// Show participants config: 'always' | 'after_expiration' | 'never' (default 'never')
 		const allowedShowValues = ['always', 'after_expiration', 'never'] as const;
 		const showParticipants = allowedShowValues.includes(data.showParticipants)
@@ -84,7 +90,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				isPublic,
 				expiresAt,
 				askName,
-				showParticipants
+				showParticipants,
+				hideResultsUntilExpiration
 			}
 		});
 
@@ -98,6 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			isPublic: poll.isPublic,
 			askName: poll.askName,
 			showParticipants: poll.showParticipants,
+			hideResultsUntilExpiration: poll.hideResultsUntilExpiration ?? false,
 			createdAt: poll.createdAt,
 			expiresAt: poll.expiresAt
 		});

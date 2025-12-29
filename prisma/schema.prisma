@@ -20,6 +20,8 @@ model Poll {
   preventMultipleVotes Boolean @default(true)
   isPublic    Boolean  @default(false) // Public polls can appear on homepage
   expiresAt   DateTime?
+  // Results visibility control when an expiration is set
+  hideResultsUntilExpiration Boolean @default(false) // If true and expiresAt is set, results are hidden until expiration
   // New settings
   askName     Boolean  @default(false) // Ask participants for first name
   showParticipants String @default("never") // 'always' | 'after_expiration' | 'never'

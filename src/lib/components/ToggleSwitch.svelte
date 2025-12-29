@@ -16,7 +16,9 @@
 	}: Props = $props();
 </script>
 
-<div class={`flex items-center justify-between bg-white border-2 border-gray-200 rounded-lg p-4 ${classes}`}>
+<div
+	class={`flex items-center justify-between bg-white border-2 border-gray-200 rounded-lg p-4 ${classes}`}
+>
 	<div>
 		<label for={id} class="block font-semibold text-gray-700">{label}</label>
 		{#if description}
