@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
-	import PollBasicInfo from './poll-creator/PollBasicInfo.svelte';
-	import PollOptions from './poll-creator/PollOptions.svelte';
-	import PollSettings from './poll-creator/PollSettings.svelte';
-	import PollParticipants from './poll-creator/PollParticipants.svelte';
-	import PollExpiration from './poll-creator/PollExpiration.svelte';
+	import PollBasicInfo from './PollBasicInfo.svelte';
+	import PollOptions from './PollOptions.svelte';
+	import PollSettings from './PollSettings.svelte';
+	import PollParticipants from './PollParticipants.svelte';
+	import PollExpiration from './PollExpiration.svelte';
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
