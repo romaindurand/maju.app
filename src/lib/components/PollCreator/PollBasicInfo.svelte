@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
+	import { pollCreatorStore } from '$lib/components/PollCreator/pollCreatorStore.svelte';
 </script>
 
 <div>

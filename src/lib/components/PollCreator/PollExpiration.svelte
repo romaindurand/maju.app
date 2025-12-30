@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ToggleSwitch from '$lib/components/ToggleSwitch.svelte';
-	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
+	import { pollCreatorStore } from '$lib/components/PollCreator/pollCreatorStore.svelte';
 </script>
 
 <div class="border-2 border-gray-200 rounded-lg p-4">

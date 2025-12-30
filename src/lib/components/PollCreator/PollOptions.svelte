@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
+	import { pollCreatorStore } from '$lib/components/PollCreator/pollCreatorStore.svelte';
 
 	let optionRefs: HTMLInputElement[] = [];
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
+	import { pollCreatorStore } from '$lib/components/PollCreator/pollCreatorStore.svelte';
 	import PollBasicInfo from './PollBasicInfo.svelte';
 	import PollOptions from './PollOptions.svelte';
 	import PollSettings from './PollSettings.svelte';

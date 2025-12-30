@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ToggleSwitch from '$lib/components/ToggleSwitch.svelte';
 	import { slide } from 'svelte/transition';
-	import { pollCreatorStore } from '$lib/stores/pollCreatorStore.svelte';
+	import { pollCreatorStore } from '$lib/components/PollCreator/pollCreatorStore.svelte';
 </script>
 
 <div class="space-y-4">
