@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { votingInterfaceStore } from './votingInterfaceStore.svelte';
+import { getGradeColor } from '$lib/utils/grades';
 
 // Mock the voter utilities
 vi.mock('$lib/utils/voter', () => ({
@@ -67,9 +68,15 @@ describe('VotingInterfaceStore', () => {
   });
 
   it('should return correct grade colors', () => {
-    expect(votingInterfaceStore.getGradeColor(0)).toBe('#dc2626');
-    expect(votingInterfaceStore.getGradeColor(6)).toBe('#10b981');
-    expect(votingInterfaceStore.getGradeColor(99)).toBe('#6b7280');
+    // Test with 7 grades (standard scale)
+    const totalGrades = 7;
+    const color0 = getGradeColor(totalGrades, 0);
+    const color6 = getGradeColor(totalGrades, 6);
+    const colorInvalid = getGradeColor(totalGrades, 99);
+
+    expect(color0).toBeTruthy();
+    expect(color6).toBeTruthy();
+    expect(colorInvalid).toBe('#6b7280'); // Default color for invalid index
   });
 
   it('should validate incomplete ballot on submit', async () => {

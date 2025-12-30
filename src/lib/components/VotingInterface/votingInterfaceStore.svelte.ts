@@ -1,5 +1,6 @@
 import { generateVoterIdentifier, hasVotedLocally, markAsVoted } from '$lib/utils/voter';
 import { generateBrowserFingerprint } from '$lib/utils/fingerprint';
+import { getGradeColor } from '$lib/utils/grades';
 
 interface Poll {
   id: string;
@@ -119,22 +120,6 @@ class VotingInterfaceStore {
   isComplete(): boolean {
     if (!this.poll) return false;
     return this.poll.options.every((option) => this.ballot[option] >= 0);
-  }
-
-  /**
-   * Get color for a grade index
-   */
-  getGradeColor(index: number): string {
-    const colors = [
-      '#dc2626', // À rejeter - red
-      '#ef4444',
-      '#f97316', // Passable - orange
-      '#fb923c',
-      '#fbbf24', // Bien - yellow
-      '#34d399',
-      '#10b981' // Excellent - green
-    ];
-    return colors[index] || '#6b7280';
   }
 
   /**

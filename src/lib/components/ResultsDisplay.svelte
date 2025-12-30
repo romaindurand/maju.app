@@ -1,5 +1,5 @@
 <script lang="ts">
-	import tinygradient from 'tinygradient';
+	import { getGradeColor } from '$lib/utils/grades';
 
 	interface Props {
 		results: {
@@ -68,13 +68,6 @@
 				timer = setInterval(update, 1000) as unknown as number;
 			}
 		}
-	}
-
-	function getGradeColor(gradeIndex: number): string {
-		const gradient = tinygradient(['#880000', '#88FF88']);
-		const tinycolors = gradient.hsv(results.grades.length, false);
-		const colors = tinycolors.map((t: any) => t.toHexString());
-		return colors[gradeIndex] || '#6b7280';
 	}
 
 	function getMedal(rank: number): string {
@@ -148,8 +141,10 @@
 								<div class="flex items-center gap-2">
 									<span
 										class="px-2 py-1 rounded-md text-white font-semibold text-sm"
-										style="background-color: {getGradeColor(option.medianGrade)}"
-										>{option.medianGradeLabel}</span
+										style="background-color: {getGradeColor(
+											results.grades.length,
+											option.medianGrade
+										)}">{option.medianGradeLabel}</span
 									>
 									<span class="text-sm text-gray-500">Mention majoritaire</span>
 								</div>
@@ -166,6 +161,7 @@
 											type="button"
 											class="group relative flex items-center justify-center text-[10px] sm:text-xs font-semibold text-white"
 											style="background-color: {getGradeColor(
+												results.grades.length,
 												seg.gradeIndex
 											)}; flex: 0 0 {seg.percentage}%"
 											onmouseenter={() => (activeTooltip = tooltipKey(option.name, seg.gradeIndex))}
@@ -212,7 +208,10 @@
 			<div class="grid grid-cols-1 gap-3">
 				{#each results.grades as grade, index (index)}
 					<div class="flex items-center gap-2">
-						<span class="w-6 h-6 rounded" style="background-color: {getGradeColor(index)}"></span>
+						<span
+							class="w-6 h-6 rounded"
+							style="background-color: {getGradeColor(results.grades.length, index)}"
+						></span>
 						<span>{grade}</span>
 					</div>
 				{/each}

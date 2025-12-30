@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { votingInterfaceStore } from './votingInterfaceStore.svelte';
+	import { getGradeColor } from '$lib/utils/grades';
 
 	interface Props {
 		options: string[];
@@ -23,9 +24,9 @@
 						onclick={() => votingInterfaceStore.selectGrade(option, gradeIndex)}
 						class="px-2 sm:px-3 py-1 sm:py-2 border-2 rounded-md bg-white text-gray-700 text-xs sm:text-sm font-medium transition text-center hover:-translate-y-0.5"
 						style="
-							border-color: {votingInterfaceStore.getGradeColor(gradeIndex)};
+							border-color: {getGradeColor(grades.length, gradeIndex)};
 							background-color: {votingInterfaceStore.ballot[option] === gradeIndex
-							? votingInterfaceStore.getGradeColor(gradeIndex)
+							? getGradeColor(grades.length, gradeIndex)
 							: ''};
 							color: {votingInterfaceStore.ballot[option] === gradeIndex ? '#fff' : ''};
 						"
