@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PollCreator from '$lib/components/PollCreator.svelte';
+	import PollCreator from '$lib/components/PollCreator/PollCreator.svelte';
 	const { data } = $props<{
 		data: {
 			popular: Array<{

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import VotingInterface from '$lib/components/VotingInterface.svelte';
+	import VotingInterface from '$lib/components/VotingInterface/VotingInterface.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
