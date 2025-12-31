@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { votingInterfaceStore } from './votingInterfaceStore.svelte';
+import { votingInterfaceStore, type Poll } from './votingInterfaceStore.svelte';
 import { getGradeColor } from '$lib/utils/grades';
 
 // Mock the voter utilities
@@ -21,8 +21,10 @@ describe('VotingInterfaceStore', () => {
     options: ['Option 1', 'Option 2', 'Option 3'],
     grades: ['À rejeter', 'Insuffisant', 'Passable', 'Assez bien', 'Bien', 'Très bien'],
     preventMultipleVotes: true,
-    askName: false
-  };
+    askName: false,
+    expiresAt: new Date(),
+    showParticipants: 'always',
+  } as Poll;
 
   beforeEach(() => {
     votingInterfaceStore.reset();

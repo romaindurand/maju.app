@@ -6,6 +6,7 @@
 	import VotingBallot from './VotingBallot.svelte';
 	import VotingStatusMessage from './VotingStatusMessage.svelte';
 	import VotingParticipants from './VotingParticipants.svelte';
+	import type { ParticipantsVisibility } from '$lib/types';
 
 	interface Props {
 		poll: {
@@ -15,10 +16,10 @@
 			options: string[];
 			grades: string[];
 			preventMultipleVotes: boolean;
-			expiresAt?: string | Date;
+			expiresAt: Date | null;
 			isExpired?: boolean;
 			askName?: boolean;
-			showParticipants?: 'always' | 'after_expiration' | 'never';
+			showParticipants: ParticipantsVisibility;
 			voteCount?: number;
 			participants?: string[];
 		};

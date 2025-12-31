@@ -1,8 +1,10 @@
 <script lang="ts">
+	import type { ParticipantsVisibility } from '$lib/types';
+
 	interface Props {
 		participants?: string[];
 		voteCount?: number;
-		showParticipants?: 'always' | 'after_expiration' | 'never';
+		showParticipants?: ParticipantsVisibility;
 		expired: boolean;
 	}
 

@@ -1,18 +1,18 @@
 import { generateVoterIdentifier, hasVotedLocally, markAsVoted } from '$lib/utils/voter';
 import { generateBrowserFingerprint } from '$lib/utils/fingerprint';
-import { getGradeColor } from '$lib/utils/grades';
+import type { ParticipantsVisibility } from '$lib/types';
 
-interface Poll {
+export interface Poll {
   id: string;
   title: string;
   description: string | null;
   options: string[];
   grades: string[];
   preventMultipleVotes: boolean;
-  expiresAt?: string | Date;
+  expiresAt: Date | null;
   isExpired?: boolean;
   askName?: boolean;
-  showParticipants?: 'always' | 'after_expiration' | 'never';
+  showParticipants: ParticipantsVisibility;
   voteCount?: number;
   participants?: string[];
 }
@@ -152,21 +152,14 @@ class VotingInterfaceStore {
       const voterIdentifier = await generateVoterIdentifier();
       const fingerprint = await generateBrowserFingerprint();
 
-      const response = await fetch(`/api/polls/${this.poll.id}/vote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ballot: this.ballot,
-          voterIdentifier,
-          fingerprint,
-          ...(this.poll.askName ? { name: this.firstName.trim() } : {})
-        })
+      const { submitVoteCommand } = await import('./submitVote.remote');
+      await submitVoteCommand({
+        pollId: this.poll.id,
+        ballot: this.ballot,
+        voterIdentifier,
+        fingerprint,
+        ...(this.poll.askName ? { name: this.firstName.trim() } : {})
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Erreur lors du vote');
-      }
 
       // Mark as voted locally
       markAsVoted(this.poll.id);

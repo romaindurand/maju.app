@@ -1,4 +1,5 @@
 import { DEFAULT_GRADES } from '$lib/config';
+import type { ParticipantsVisibility } from '$lib/types';
 
 class PollCreatorStore {
   // Basic info
@@ -14,7 +15,7 @@ class PollCreatorStore {
 
   // Participants
   askName = $state(false);
-  showParticipants = $state<'always' | 'after_expiration' | 'never'>('never');
+  showParticipants = $state<ParticipantsVisibility>('never');
 
   // Expiration
   expirationMode = $state<'duration' | 'datetime' | 'none'>('duration');

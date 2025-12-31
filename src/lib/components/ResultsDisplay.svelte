@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getGradeColor } from '$lib/utils/grades';
+	import type { ParticipantsVisibility } from '$lib/types';
 
 	interface Props {
 		results: {
@@ -7,11 +8,11 @@
 			title: string;
 			description: string | null;
 			totalVotes: number;
-			expiresAt?: string | Date;
+			expiresAt: Date | null;
 			isExpired?: boolean;
 			hideResultsUntilExpiration?: boolean;
 			askName?: boolean;
-			showParticipants?: 'always' | 'after_expiration' | 'never';
+			showParticipants: ParticipantsVisibility;
 			participants?: string[];
 			ranking: Array<{
 				rank: number;

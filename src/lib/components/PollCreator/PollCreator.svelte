@@ -6,47 +6,43 @@
 	import PollSettings from './PollSettings.svelte';
 	import PollParticipants from './PollParticipants.svelte';
 	import PollExpiration from './PollExpiration.svelte';
+	import { createPoll } from './createPoll.remote';
 
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		pollCreatorStore.error = '';
-
-		// Validate
+	function validateBeforeSubmit(): string | null {
+		// Validate via store
 		const validationError = pollCreatorStore.validate();
-		if (validationError) {
-			pollCreatorStore.error = validationError;
-			return;
-		}
-
-		pollCreatorStore.isSubmitting = true;
-
-		try {
-			const response = await fetch('/api/polls', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(pollCreatorStore.getFormData())
-			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.error || 'Erreur lors de la création du sondage');
-			}
-
-			const poll = await response.json();
-			pollCreatorStore.reset();
-			goto(`/poll/${poll.id}`);
-		} catch (err) {
-			pollCreatorStore.error = err instanceof Error ? err.message : 'Une erreur est survenue';
-		} finally {
-			pollCreatorStore.isSubmitting = false;
-		}
+		if (validationError) return validationError;
+		return null;
 	}
 </script>
 
 <div class="max-w-xl mx-auto">
 	<h2 class="text-3xl font-bold mb-6 text-gray-800">Créer un nouveau sondage</h2>
 
-	<form onsubmit={handleSubmit} class="space-y-6">
+	<form
+		{...createPoll.enhance(async ({ submit }) => {
+			pollCreatorStore.error = '';
+			const err = validateBeforeSubmit();
+			if (err) {
+				pollCreatorStore.error = err;
+				return;
+			}
+			pollCreatorStore.isSubmitting = true;
+			try {
+				await submit();
+				const id = createPoll.result?.id;
+				if (id) {
+					pollCreatorStore.reset();
+					await goto(`/poll/${id}`);
+				}
+			} catch (e) {
+				pollCreatorStore.error = e instanceof Error ? e.message : 'Une erreur est survenue';
+			} finally {
+				pollCreatorStore.isSubmitting = false;
+			}
+		})}
+		class="space-y-6"
+	>
 		<PollBasicInfo />
 
 		<PollOptions />
@@ -70,6 +66,13 @@
 				{pollCreatorStore.error}
 			</div>
 		{/if}
+
+		<!-- Charge utile JSON transmise via champ caché pour la remote form -->
+		<input
+			{...createPoll.fields.payload.as('text')}
+			value={JSON.stringify(pollCreatorStore.getFormData())}
+			type="hidden"
+		/>
 
 		<button
 			type="submit"

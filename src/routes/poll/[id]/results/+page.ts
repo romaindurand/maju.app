@@ -1,12 +1,7 @@
 import type { PageLoad } from './$types';
+import { getPollResults } from '$lib/remotes/polls.remote';
 
-export const load: PageLoad = async ({ params, fetch }) => {
-	const response = await fetch(`/api/polls/${params.id}/results`);
-
-	if (!response.ok) {
-		throw new Error('Failed to load results');
-	}
-
-	const results = await response.json();
+export const load: PageLoad = async ({ params }) => {
+	const results = await getPollResults(params.id);
 	return { results };
 };

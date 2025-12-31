@@ -2,6 +2,7 @@ import { page } from 'vitest/browser';
 import { describe, it, expect } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import ResultsDisplay from './ResultsDisplay.svelte';
+import type { ParticipantsVisibility } from '$lib/types';
 
 describe('ResultsDisplay', () => {
 	const baseResults = {
@@ -9,8 +10,9 @@ describe('ResultsDisplay', () => {
 		title: 'Sondage',
 		description: null as string | null,
 		totalVotes: 1,
-		expiresAt: undefined as unknown as string | Date,
+		expiresAt: null,
 		isExpired: false,
+		showParticipants: 'never' as ParticipantsVisibility,
 		ranking: [
 			{
 				rank: 0,
