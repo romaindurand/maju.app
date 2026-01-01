@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Poll {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  options     String // JSON array of option names
+  grades      String // JSON array of grade labels
+  preventMultipleVotes Boolean @default(true)
+  isPublic    Boolean  @default(false) // Public polls can appear on homepage
+  expiresAt   DateTime?
+  // Results visibility control when an expiration is set
+  hideResultsUntilExpiration Boolean @default(false) // If true and expiresAt is set, results are hidden until expiration
+  // New settings
+  askName     Boolean  @default(false) // Ask participants for first name
+  showParticipants String @default("never") // 'always' | 'after_expiration' | 'never'
+  participants String @default("[]") // JSON array of first names (in order of counted votes)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  votes       Vote[]
+}
+
+model Vote {
+  id              String   @id @default(cuid())
+  pollId          String
+  ballot          String // JSON object mapping option names to grade indices
+  voterIdentifier String // Hashed fingerprint + localStorage + cookie
+  fingerprint     String @default("") // Browser fingerprint hash (SHA-256)
+  createdAt       DateTime @default(now())
+  poll            Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  @@index([pollId])
+  @@index([voterIdentifier, pollId])
+  @@index([fingerprint, pollId])
+}

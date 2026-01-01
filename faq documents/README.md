@@ -1,1 +1,0 @@
-Edit and commit these documents, then transform them using https://www.freeformatter.com/json-escape.html to generate the JSON escaped string required by the locale file format.
